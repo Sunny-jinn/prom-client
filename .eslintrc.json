@@ -11,7 +11,7 @@
   ],
   "ignorePatterns": ["dist", ".eslintrc.json"],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["react", "react-hooks", "react-refresh", "@typescript-eslint"],
+  "plugins": ["react", "react-hooks", "react-refresh", "@typescript-eslint", "prettier"],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true

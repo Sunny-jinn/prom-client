@@ -6,6 +6,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "format:fix": "prettier --write --ignore-path .gitignore .",
+    "https-preview": "serve dist",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -31,6 +32,7 @@
     "eslint-plugin-react": "^7.34.4",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
+    "https-localhost": "^4.7.1",
     "prettier": "^3.3.3",
     "typescript": "^5.2.2",
     "vite": "^5.3.4",

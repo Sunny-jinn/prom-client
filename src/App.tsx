@@ -1,13 +1,12 @@
-import { Route, Routes } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
+import RootRouter from '@/RootRouter';
 
 function App() {
   return (
-    <Routes>
-      <Route path='/on-boarding' element={<div></div>} />
-      <Route path='/sign-in' element={<div></div>} />
-      <Route path='/sign-up' element={<div></div>} />
-    </Routes>
-  )
+    <BrowserRouter>
+      <RootRouter />
+    </BrowserRouter>
+  );
 }
 
 export default App;

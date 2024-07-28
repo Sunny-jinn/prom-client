@@ -2,8 +2,9 @@
   "name": "Prom",
   "short_name": "Prom",
   "description": "숏폼으로 보는 예술가의 포트폴리오",
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "theme_color": "#121212",
+  "background_color": "#121212",
+  "start_url": "/",
   "icons": [
     {
       "src": "pwa-192x192.png",

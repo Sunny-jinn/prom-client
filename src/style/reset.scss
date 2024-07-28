@@ -32,3 +32,12 @@ p, h1, h2, h3, h4, h5, h6 {
 #root {
   isolation: isolate;
 }
+
+//custom style
+//TODO: 컬러 variant 설정 후 하단 값 변경
+body, #root {
+  width: 100%;
+  height: 100%;
+  background-color: #121212;
+
+}

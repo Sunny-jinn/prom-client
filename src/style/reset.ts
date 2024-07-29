@@ -54,6 +54,7 @@ export const reset = css`
 
   html {
     box-sizing: border-box;
+    line-height: 1.2;
   }
 
   *,

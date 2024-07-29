@@ -9,6 +9,7 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
+    margin-bottom: 20px;
     flex: 1;
     .on-boarding-top {
       display: flex;
@@ -19,8 +20,6 @@
 
       &-skip {
         font-size: 15px;
-        //line-height: 1.6; // 전역으로 1.5 설정?
-        line-height: 25px;
         font-weight: 500;
         color: #7bf7ff;
       }
@@ -44,6 +43,9 @@
           object-fit: cover;
         }
         &:not(:last-child) > img {
+          width: 90%;
+          max-width: 390px;
+          object-fit: contain;
           padding: 0 25px;
         }
 
@@ -51,14 +53,12 @@
           margin-top: 45px;
           font-size: 31px;
           font-weight: 700;
-          line-height: 28px;
           color: #ffffff;
         }
 
         &-description {
           margin-top: 18px;
           font-size: 15px;
-          line-height: 23px;
           color: #b8b8b8;
           white-space: pre-wrap;
           text-align: center;

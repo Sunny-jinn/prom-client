@@ -13,9 +13,9 @@ const OnBoarding = () => {
 
   return (
     <div id={'OnBoarding'}>
-      <div className="on-boarding-content">
-        <div className="on-boarding-top">
-          <span className="on-boarding-top-skip">
+      <div className='on-boarding-content'>
+        <div className='on-boarding-top'>
+          <span className='on-boarding-top-skip'>
             {activeSlideIndex !== ON_BOARDING_SWIPER_DATA.length - 1 ? '건너뛰기' : ''}
           </span>
         </div>
@@ -27,13 +27,13 @@ const OnBoarding = () => {
             clickable: false,
           }}
           modules={[Pagination]}
-          className="on-boarding-swiper"
+          className='on-boarding-swiper'
         >
           {ON_BOARDING_SWIPER_DATA.map((el) => (
             <SwiperSlide className={'on-boarding-swiper-slide'}>
               {el.asset}
-              <span className="on-boarding-swiper-slide-title">{el.title}</span>
-              <span className="on-boarding-swiper-slide-description">{el.description}</span>
+              <span className='on-boarding-swiper-slide-title'>{el.title}</span>
+              <span className='on-boarding-swiper-slide-description'>{el.description}</span>
             </SwiperSlide>
           ))}
         </Swiper>

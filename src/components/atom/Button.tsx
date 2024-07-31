@@ -19,6 +19,7 @@ const Button = styled.button<ButtonProps>`
     background-color: #47a5ac;
   }
   &:disabled {
+    background-color: #47a5ac;
   }
 `;
 

@@ -17,9 +17,58 @@
       font-weight: 700;
       font-size: 23px;
     }
+
+    &-small-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
   }
 
   .sign-up-bottom {
     margin-top: 117px;
+  }
+
+  .sign-up-password-validation {
+    display: flex;
+    gap: 10px;
+  }
+
+  .sign-up-password-invalid {
+    color: #fff;
+    padding: 6px 9px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #7bf7ff;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #7bf7ff;
+
+    img {
+      width: 17px;
+      margin-right: 2px;
+    }
+  }
+
+  .password-valid {
+    background-color: #7bf7ff;
+    color: #000;
+    font-weight: 500;
+    padding: 5px 9px;
+    align-items: flex-end;
+  }
+
+  .sign-up-nickname-top {
+    margin-top: 21px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    &-small-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
   }
 }

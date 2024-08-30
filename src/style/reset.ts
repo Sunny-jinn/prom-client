@@ -1,6 +1,10 @@
 import { css } from '@emotion/react';
+import "@/style/_fonts.scss";
 
 export const reset = css`
+  * {
+    font-family: Pretendard, sans-serif;
+  }
   /*! minireset.css v0.0.6 | MIT License | github.com/jgthms/minireset.css */
   html,
   body,
@@ -91,5 +95,19 @@ export const reset = css`
     width: 100%;
     height: 100%;
     background-color: #121212;
+    //background-color: #ffffff;
   }
+  html {
+    width: 100%;
+    height: 100dvh;
+    //padding-top: env(safe-area-inset-top);
+    //overscroll-behavior: none;
+
+    @media all and (display-mode: standalone) {
+      height: 100vh;
+      overscroll-behavior: none;
+    }
+  }
+  body { overflow-y: auto; }
+  input, select, textarea, button, a, label {-webkit-tap-highlight-color:rgba(0,0,0,0);}
 `;

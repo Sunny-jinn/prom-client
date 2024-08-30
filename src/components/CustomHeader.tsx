@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled from '@emotion/styled';
-import leftArrowIcon from '@/assets/left_arrow.png';
+import leftArrowIcon from '@/assets/img/left_arrow.png';
 
 type CustomHeaderProps = {
   title: string;

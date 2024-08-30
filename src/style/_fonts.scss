@@ -1,0 +1,19 @@
+@mixin font-face($font-name, $file-name, $weight: normal, $style: normal) {
+  @font-face {
+    font-family: "#{$font-name}";
+    src: url("../assets/fonts/#{$file-name}.otf") format("truetype");
+    font-weight: $weight;
+    font-style: $style;
+  }
+}
+
+@include font-face("Pretendard", "Pretendard-Black", 900, normal);
+@include font-face("Pretendard", "Pretendard-ExtraBold", 800, normal);
+@include font-face("Pretendard", "Pretendard-Bold", 700, normal);
+@include font-face("Pretendard", "Pretendard-SemiBold", 600, normal);
+@include font-face("Pretendard", "Pretendard-Medium", 500, normal);
+@include font-face("Pretendard", "Pretendard-Regular", 400, normal);
+@include font-face("Pretendard", "Pretendard-ExtraLight", 200, normal);
+@include font-face("Pretendard", "Pretendard-Light", 300, normal);
+@include font-face("Pretendard", "Pretendard-Thin", 100, normal);
+@include font-face("Gyeongbokgung", "Gyeongbokgung", 700, normal);

@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import check from '@/assets/check.png';
+import check from '@/assets/img/check.png';
 import CustomHeader from '@/components/CustomHeader';
 import Button from '@/components/atom/Button';
 import Input from '@/components/atom/Input';

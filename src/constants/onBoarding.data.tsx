@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import OnBoardingImg1 from '@/assets/img_onboard_1.png';
-import OnBoardingImg2 from '@/assets/img_onboard_2.png';
-import OnBoardingImg4 from '@/assets/img_onboard_4.png';
+import OnBoardingImg1 from '@/assets/img/img_onboard_1.png';
+import OnBoardingImg2 from '@/assets/img/img_onboard_2.png';
+import OnBoardingImg4 from '@/assets/img/img_onboard_4.png';
 
 type OnBoardingData = {
   asset: ReactNode;

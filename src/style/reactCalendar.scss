@@ -1,0 +1,166 @@
+@import '@/style/_variables.scss';
+
+.react-calendar {
+  width: 100%;
+  background: transparent;
+  padding-top: 20px;
+}
+
+.react-calendar--doubleView {
+  width: 700px;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer {
+  display: flex;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer > * {
+  width: 50%;
+}
+
+.react-calendar,
+.react-calendar *,
+.react-calendar *:before,
+.react-calendar *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.react-calendar button {
+  margin: 0;
+  border: 0;
+  outline: none;
+}
+
+.react-calendar button {
+  cursor: pointer;
+}
+
+.react-calendar__month-view__weekdays {
+  padding: 8px 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  color: #A1A1A1;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.react-calendar__month-view__weekdays__weekday--weekend abbr[title="일요일"] {
+  color: $red-color;
+}
+
+.react-calendar__month-view__weekNumbers .react-calendar__tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: $red-color;
+}
+
+
+
+.react-calendar__month-view__days__day--neighboringMonth,
+.react-calendar__decade-view__years__year--neighboringDecade,
+.react-calendar__century-view__decades__decade--neighboringCentury {
+  color: #A1A1A1;
+}
+
+.react-calendar__year-view .react-calendar__tile,
+.react-calendar__decade-view .react-calendar__tile,
+.react-calendar__century-view .react-calendar__tile {
+  //padding: 2em 0.5em;
+  padding: 15px;
+}
+
+.react-calendar__tile {
+  max-width: 100%;
+  background: transparent;
+  text-align: center;
+  padding: 10px 0;
+
+  abbr{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 15px;
+    height: 15px;
+    padding: 15px;
+    // 밀림 방지용
+    border: 1px solid transparent;
+    aspect-ratio: 1/1;
+    font-size: 14px;
+  }
+}
+
+.react-calendar__tile:hover,
+.react-calendar__tile:active,
+.react-calendar__tile:visited,
+.react-calendar__tile:focus {
+  background-color: transparent;
+}
+
+.react-calendar__month-view__days__day{
+  display: flex;
+  flex-direction: column;
+  //justify-content: center;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+}
+
+.react-calendar__month-view__days__day--weekend{
+  color: $red-color;
+}
+
+//.react-calendar__tile:disabled {
+//  background-color: #f0f0f0;
+//  color: #ababab;
+//}
+
+.react-calendar__month-view__days__day--neighboringMonth,
+.react-calendar__decade-view__years__year--neighboringDecade,
+.react-calendar__century-view__decades__decade--neighboringCentury {
+  color: #A1A1A1;
+}
+
+.react-calendar__tile--now {
+  abbr{
+    color: #000000;
+    background-color: $main-color;
+    border-radius: 50px;
+  }
+}
+
+.react-calendar__tile--hasActive {
+  background-color: transparent;
+}
+
+.react-calendar__tile--hasActive:enabled:hover,
+.react-calendar__tile--hasActive:enabled:focus {
+  background-color: transparent;
+}
+
+.react-calendar__tile--active {
+  background-color: transparent;
+  abbr {
+    border: 1px solid $main-color;
+    border-radius: 50px;
+  }
+
+}
+
+.react-calendar--selectRange .react-calendar__tile--hover {
+  background-color: transparent;
+}
+

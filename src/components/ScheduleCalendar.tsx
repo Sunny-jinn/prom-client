@@ -4,6 +4,7 @@ import { MySchedule } from '@/feature/types/client';
 import { dateFormatter } from '@/utils/date.utils';
 import styled from '@emotion/styled';
 import { RowFlexBox } from '@/components/atom/RowFlexBox';
+import '@/style/reactCalendar.scss';
 
 type ScheduleCalendarProps = {
   onChange: (value: Date) => void;
@@ -32,7 +33,7 @@ const ScheduleCalendar = (props: ScheduleCalendarProps) => {
           // 0 ~ 3
           html.push(
             <RowFlexBox gap={3}>
-              {filteredSchedule.map(el => <Dot color={el.color}/>)}
+              {filteredSchedule.map((el, index) => <Dot key={index} color={el.color} />)}
             </RowFlexBox>,
           );
         }
@@ -40,7 +41,6 @@ const ScheduleCalendar = (props: ScheduleCalendarProps) => {
           // 4 이상
           html.push(<Count>+{filteredSchedule.length}</Count>);
         }
-        console.log(filteredSchedule);
         return <>{html}</>;
       }}
     />
@@ -56,7 +56,7 @@ const Dot = styled.div<{ color: string }>`
 `;
 
 const Count = styled.span`
-  font-size: 12px;
+  font-size: 10px;
   color: #7BF7FF;
 `;
 

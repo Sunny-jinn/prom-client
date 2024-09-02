@@ -65,7 +65,7 @@ export const reset = css`
   *,
   *::before,
   *::after {
-    box-sizing: inherit;
+    box-sizing: border-box;
   }
 
   img,

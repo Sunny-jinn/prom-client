@@ -4,6 +4,7 @@ import SignUp from './pages/SignUp';
 import { useEffect } from 'react';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import Schedule from '@/pages/Schedule';
+import ScheduleDetail from '@/pages/ScheduleDetail';
 
 const RootRouter = () => {
   return (
@@ -13,7 +14,10 @@ const RootRouter = () => {
         <Route path='on-boarding' element={<OnBoarding />} />
         <Route path='sign-in' element={<div></div>} />
         <Route path='sign-up' element={<SignUp />} />
-        <Route path='schedule' element={<Schedule />} />
+        <Route path='schedule/*'>
+          <Route index element={<Schedule />}/>
+          <Route path={':id'} element={<ScheduleDetail />}/>
+        </Route>
       </Route>
     </Routes>
   );

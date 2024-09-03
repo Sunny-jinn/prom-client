@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import Schedule from '@/pages/Schedule';
 import ScheduleDetail from '@/pages/ScheduleDetail';
+import SignIn from '@/pages/SignIn';
 import Splash from '@/pages/Splash';
 import { refreshAPI } from '@/feature/api/user.api';
 
@@ -14,7 +15,7 @@ const RootRouter = () => {
       <Route index element={<div>웹사이트</div>} />
       <Route path='app/*' element={<AppRoute />}>
         <Route path='on-boarding' element={<OnBoarding />} />
-        <Route path='sign-in' element={<SignUp />} />
+        <Route path='sign-in' element={<SignIn />} />
         <Route path='sign-up' element={<SignUp />} />
         <Route element={<Auth />}>
           <Route path='schedule/*'>

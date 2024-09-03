@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import './ScheduleDetail.scss';
 import LeftArrow from '@/assets/img/icon_arrow.svg?react';
@@ -25,10 +24,10 @@ const schedule = {
 };
 
 const ScheduleDetail = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
   const navigate = useAppNavigate();
-  const [artistDetail, setArtistDetail] = useState(artist);
-  const [scheduleDetail, setScheduleDetail] = useState(schedule);
+  const [artistDetail] = useState(artist);
+  const [scheduleDetail] = useState(schedule);
 
   return (
     <div className={'schedule-detail'}>

@@ -1,0 +1,19 @@
+.splash-main{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  span{
+    font-size: 20px;
+    font-weight: 500;
+    color: #ffffff;
+  }
+}
+
+.splash-bottom{
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}

@@ -1,6 +1,6 @@
 import { PageLayout } from '@/components/PageLayout';
 import './Schedule.scss';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { dateFormatter } from '@/utils/date.utils';
 import dayjs from 'dayjs';
 import { ChevronDown } from 'lucide-react';
@@ -29,8 +29,8 @@ const Schedule = () => {
   const [selectedDate, setSelectedDate] = useState<string>(dateFormatter(new Date()));
   const setFormattedDate = (value: Date) => setSelectedDate(dateFormatter(value));
 
-  const artistButtonRef = useRef();
-  const arttyButtonRef = useRef();
+  // const artistButtonRef = useRef();
+  // const arttyButtonRef = useRef();
 
   const [mySchedule, setMySchedule] = useState<Array<MySchedule>>([]);
 
@@ -58,7 +58,7 @@ const Schedule = () => {
     getMySchedule();
   }, []);
   return (
-    <PageLayout safeAreaBackground={'#292929'} direction={'column'}>
+    <PageLayout padding={30} safeAreaBackground={'#292929'} flexDirection={'column'}>
       <Drawer placement={'top'} onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent bgColor={'#292929'} paddingTop={'env(safe-area-inset-top)'}>

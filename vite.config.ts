@@ -1,11 +1,10 @@
 import react from '@vitejs/plugin-react';
 import * as path from 'path';
 import { defineConfig } from 'vite';
-import { VitePWA } from 'vite-plugin-pwa';
+import { ManifestOptions, VitePWA } from 'vite-plugin-pwa';
 import manifest from './manifest.json';
 import svgr from "vite-plugin-svgr";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react({
@@ -15,10 +14,7 @@ export default defineConfig({
       },
     }),
     VitePWA({
-      manifest: {
-        ...manifest,
-        display: 'standalone',
-      },
+      manifest: manifest as Partial<ManifestOptions>,
       includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
       // switch to "true" to enable sw on development
       devOptions: {

@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
+import { CSSProperties } from 'react';
 
-type PageLayoutProps = {
-  direction: 'column' | 'row' | 'row-reverse' | 'column-reverse';
+type PageLayoutProps = CSSProperties & {
   safeAreaBackground?: string;
 }
 
 export const PageLayout = styled.div<PageLayoutProps>`
   display: flex;
-  flex-direction: ${(props) => props.direction ?? 'row'};
+  flex-direction: ${(props) => props.flexDirection ?? 'row'};
   width: 100%;
   height: 100%;
   padding-top: env(safe-area-inset-top);

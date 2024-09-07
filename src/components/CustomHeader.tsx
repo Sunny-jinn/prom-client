@@ -1,16 +1,16 @@
-import { ButtonHTMLAttributes } from 'react';
 import styled from '@emotion/styled';
-import leftArrowIcon from '@/assets/img/left_arrow.png';
+import LeftArrowIcon from '@/assets/img/icon_left_arrow.svg?react';
+import { ReactNode } from 'react';
 
 type CustomHeaderProps = {
-  title: string;
-  onClick?: () => void;
+  children?: ReactNode
+  leftOnClick?: () => void;
 };
 
 const Wrapper = styled.header`
   display: flex;
   width: 100%;
-  padding: 22px 0;
+  height: 44px;
   align-items: center;
   justify-content: space-between;
 
@@ -20,24 +20,12 @@ const Wrapper = styled.header`
   }
 `;
 
-const Button = styled.button<ButtonHTMLAttributes<HTMLButtonElement>>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: none;
-  :disabled {
-    display: none;
-  }
-`;
-
-const CustomHeader = ({ title, onClick }: CustomHeaderProps) => {
+const CustomHeader = ({ children, leftOnClick }: CustomHeaderProps) => {
   return (
     <Wrapper>
-      <Button onClick={onClick}>
-        <img src={leftArrowIcon} alt="left-arrow-icon" />
-      </Button>
-      <span>{title}</span>
-      <div style={{ width: 30 }} />
+      {leftOnClick ? <LeftArrowIcon onClick={leftOnClick} /> : <div style={{width: 37}}/>}
+      {children && children}
+      <div style={{width: 37}}/>
     </Wrapper>
   );
 };

@@ -3,10 +3,9 @@ import { create } from 'zustand';
 //TODO: 위치 변경될수도
 export type User = {
   email: string;
-  nickname: string;
-  profile_image: string;
-  role: 'ARTIST' | 'USER';
-  status: number; // 0: 회원가입 완료, 프로필 세팅 x 1: 모두 완료
+  username: string;
+  profileImage: string;
+  role: 'USER' | 'ARTIST' | 'ARTTY';
 }
 
 interface IUserStore {

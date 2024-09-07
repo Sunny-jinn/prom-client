@@ -1,0 +1,35 @@
+.wave-box {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 84px;
+  height: 84px;
+
+  .waves {
+    position: absolute;
+    width: 84px;
+    height: 84px;
+    background: #7BF7FF;
+    opacity: 0;
+    border-radius: 100%;
+    z-index: 0;
+    -webkit-animation: waves 3s ease-in-out infinite;
+    animation: waves 3s ease-in-out infinite;
+  }
+
+  .waves.wave-1 {
+    -webkit-animation-delay: 0s;
+    animation-delay: 0s;
+  }
+
+  .waves.wave-2 {
+    -webkit-animation-delay: 1s;
+    animation-delay: 1s;
+  }
+
+  .waves.wave-3 {
+    -webkit-animation-delay: 2s;
+    animation-delay: 2s;
+  }
+}

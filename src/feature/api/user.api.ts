@@ -1,21 +1,54 @@
-import { wait } from '@/feature/parser/utils';
-import { User } from '@/store/User';
+import { addAccessTokenToServer, Server } from '@/feature/api/index';
+
+type UserResponse = {
+  id: number;
+  role: 'USER' | 'ARTIST' | 'ARTTY';
+  username: string | null,
+  description: string | null,
+  profileImage: string | null,
+  email: string | null,
+  birth: string | null,
+  phoneNumber: string | null,
+  socialType: number | null
+}
 
 const refreshAPI = async () => {
-  const user: User = {
-    email        : 'euiwang0323@gmail.com',
-    nickname     : '의왕',
-    profile_image: 'https://i.ibb.co/dMVY15S/image.png',
-    role         : 'ARTIST',
-    status       : 0,
-  };
-  const result = await wait(user);
+  const result = await Server.post('reissue', {}, {
+    withCredentials: true,
+  });
   console.log(result);
-  // throw new Error('error')
-  return result
+  return result.data;
+};
 
+const joinAPI = async ({ email, password }: { email: string, password: string }) => {
+  const result = await Server.post('join', {
+    email,
+    password,
+  });
+  const {data}: {data: UserResponse} = result.data;
+  return data
+};
+
+const loginAPI = async ({ email, password }: { email: string, password: string }) => {
+  const result = await Server.post('login', {
+    email,
+    password,
+  });
+  const { accessToken } = result.data;
+  addAccessTokenToServer(accessToken);
+  return result.data;
+};
+
+const getMyInfoAPI = async () => {
+  const result = await Server.get('users/my');
+  const { data }: {data: UserResponse} = result.data;
+
+  return data;
 };
 
 export {
   refreshAPI,
+  joinAPI,
+  loginAPI,
+  getMyInfoAPI,
 };

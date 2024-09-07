@@ -1,4 +1,4 @@
-import { Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 import OnBoarding from '@/pages/OnBoarding';
 import SignUp from './pages/SignUp';
 import { useEffect, useState } from 'react';
@@ -8,16 +8,20 @@ import ScheduleDetail from '@/pages/ScheduleDetail';
 import SignIn from '@/pages/SignIn';
 import Splash from '@/pages/Splash';
 import { refreshAPI } from '@/feature/api/user.api';
+import Init from '@/pages/Init';
+import userStore from '@/store/User';
 
 const RootRouter = () => {
   return (
     <Routes>
       <Route index element={<div>웹사이트</div>} />
       <Route path='app/*' element={<AppRoute />}>
-        <Route path='on-boarding' element={<OnBoarding />} />
+        <Route path='on-board' element={<OnBoarding />} />
         <Route path='sign-in' element={<SignIn />} />
         <Route path='sign-up' element={<SignUp />} />
         <Route element={<Auth />}>
+          <Route path='init' element={<Init />} />
+          <Route path='home' element={<div>home</div>} />
           <Route path='schedule/*'>
             <Route index element={<Schedule />} />
             <Route path={':id'} element={<ScheduleDetail />} />
@@ -32,16 +36,21 @@ export default RootRouter;
 
 // '',app,''
 const AppRoute = () => {
-  const location = useLocation();
   const navigate = useAppNavigate();
   const [appLoading, setAppLoading] = useState(true);
+  const { setUser } = userStore(state => state);
 
   const refresh = async () => {
     try {
       const result = await refreshAPI();
-      console.log(result);
+      setUser(result);
+      if(result.role === 'USER') {
+        navigate('init');
+        return;
+      }
+      navigate('home');
     } catch (e) {
-      navigate('sign-in');
+      navigate('on-board');
     } finally {
       setAppLoading(false);
     }
@@ -60,5 +69,6 @@ const AppRoute = () => {
 
 const Auth = () => {
   // 로그인하지 않은 유저는 접근 불가, sign-in으로 이동
+  // const {user} = userStore(state => state)
   return <Outlet />;
 };

@@ -31,5 +31,5 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "svg.d.ts"]
+  "include": ["src", "svg.d.ts", "video.d.ts"]
 }

@@ -26,6 +26,7 @@ type UserRole = 'ARTIST' | 'ARTTY';
 type InitProfile = {
   role: UserRole | null;
   profileImage: File | null;
+  nickname: string;
   interest: Array<Interest>;
   keywords: Record<Interest, Array<string>> | null;
 }
@@ -35,6 +36,7 @@ const Init = () => {
   const [step, setStep] = useState<number>(0);
   const [profile, setProfile] = useState<InitProfile>({
     role        : null,
+    nickname    : '',
     profileImage: null,
     interest    : [],
     keywords    : null,
@@ -56,7 +58,7 @@ const Init = () => {
   }, [profile, step]);
   return (
     <PageLayout flexDirection={'column'}>
-      {step === 4 && <InitComplete/>}
+      {step === 4 && <InitComplete />}
       {step !== 4 &&
         <div id={'Init'}>
           <CustomHeader leftOnClick={() => navigate(-1)}>
@@ -138,6 +140,8 @@ const InitStep1 = (props: InitStepProps) => {
 const InitStep2 = (props: InitStepProps) => {
   const ref = useRef<HTMLInputElement | null>(null);
   const { profile, setProfile, setStep } = props;
+  const [checkNickname, setCheckNickname] = useState(false);
+  const [isAbleNickname, setIsAbleNickname] = useState(false);
 
   const preview = useMemo(() => {
     if(profile.profileImage === null) {
@@ -148,12 +152,22 @@ const InitStep2 = (props: InitStepProps) => {
 
   const isAbleToNext = useIsAble([
     profile.profileImage !== null,
+    profile.nickname !== '',
   ]);
 
   const onClickProfileSelect = () => {
     if(ref && ref.current) {
       ref.current?.click();
     }
+  };
+
+  const setNickname = (e: ChangeEvent<HTMLInputElement>) => {
+    setProfile(prev => {
+      return {
+        ...prev,
+        nickname: e.target.value,
+      };
+    });
   };
 
   const onFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
@@ -167,16 +181,50 @@ const InitStep2 = (props: InitStepProps) => {
     });
   };
 
+  const nicknameStatus = useMemo(() => {
+    if(!checkNickname && !isAbleNickname) {
+      return 'NO_CHECK';
+    }
+    if(checkNickname && !isAbleNickname) {
+      return 'UNAVAILABLE';
+    }
+    if(checkNickname && isAbleNickname) {
+      return 'AVAILABLE';
+    }
+    return 'NONE';
+  }, [checkNickname, isAbleNickname]);
+
+  const nicknameInputBorderStyle = useMemo(() => {
+    switch (nicknameStatus) {
+      case 'UNAVAILABLE':
+        return {
+          border: '1px solid #FF6D6D',
+        };
+      default:
+        return {
+          border: '1px solid #292929',
+        };
+    }
+  }, [nicknameStatus]);
+
   return (
     <div className='init-step-2'>
       <div className='init-step-2-profile-wrapper'>
-        <input ref={ref} type='file' accept={'image/*'} onChange={(e) => onFileSelect(e)} />
-        <div onClick={() => onClickProfileSelect()} className='init-step-2-profile'>
-          {(profile.profileImage && preview) && <img src={preview} alt='preview' />}
-          {!profile.profileImage && <span>등록하기</span>}
-          {!profile.profileImage &&
-            <div className='init-profile-add'><Plus color={'#ffffff'} strokeLinecap={'square'} strokeWidth={3} /></div>}
+        <div className='init-step-2-profile-image'>
+          <input ref={ref} type='file' accept={'image/*'} onChange={(e) => onFileSelect(e)} />
+          <div onClick={() => onClickProfileSelect()} className='init-step-2-profile'>
+            {(profile.profileImage && preview) && <img src={preview} alt='preview' />}
+            {!profile.profileImage && <span>등록하기</span>}
+            {!profile.profileImage &&
+              <div className='init-profile-add'><Plus color={'#ffffff'} strokeLinecap={'square'} strokeWidth={3} />
+              </div>}
+          </div>
         </div>
+        <div className='init-step-2-profile-nickname'>
+          <input value={profile.nickname} onChange={e => setNickname(e)} placeholder={'이름을 입력해주세요.'} maxLength={15}
+                 type='text' style={{ ...nicknameInputBorderStyle }} />
+        </div>
+
       </div>
       <div className='init-button-wrapper'>
         <Button onClick={() => setStep(prev => prev + 1)} disabled={!isAbleToNext}>
@@ -361,7 +409,7 @@ const InitComplete = () => {
     <div className='init-complete'>
       <div className='init-complete-wrapper'>
         <div className='init-complete-view'>
-          <CheckWave/>
+          <CheckWave />
           <div className='init-complete-view-text'>
             <span className='init-complete-view-main'>설정이 완료되었습니다!</span>
             <span className='init-complete-view-sub'>PROM에서 자신의 매력을 뽐내보세요.</span>
@@ -376,5 +424,5 @@ const InitComplete = () => {
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};

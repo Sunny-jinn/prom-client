@@ -138,50 +138,76 @@
 
   .init-step-2-profile-wrapper {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-
-    input[type='file'] {
-      display: none;
-    }
-
-    .init-step-2-profile {
-      position: relative;
+    gap: 34px;
+    .init-step-2-profile-image{
       display: flex;
       justify-content: center;
-      align-items: center;
-      width: 108px;
-      height: 108px;
-      border-radius: 50%;
-      border: 1px solid #ffffff;
-
-      span {
-        color: #ffffff;
-        font-size: 16px;
-        font-weight: 600;
+      input[type='file'] {
+        display: none;
       }
 
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        object-position: center;
-      }
-
-      .init-profile-add {
-        position: absolute;
+      .init-step-2-profile {
+        position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
-        right: 0;
-        bottom: 0;
-        width: 36px;
-        height: 36px;
-        background-color: #545454;
+        width: 108px;
+        height: 108px;
         border-radius: 50%;
-        z-index: 2;
+        border: 1px solid #ffffff;
+
+        span {
+          color: #ffffff;
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          object-fit: cover;
+          object-position: center;
+        }
+
+        .init-profile-add {
+          position: absolute;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          right: 0;
+          bottom: 0;
+          width: 36px;
+          height: 36px;
+          background-color: #545454;
+          border-radius: 50%;
+          z-index: 2;
+        }
       }
     }
+    .init-step-2-profile-nickname{
+      position: relative;
+      display: flex;
+      width: 100%;
+      height: 48px;
+      background-color: #292929;
+      border-radius: 15px;
+
+      input{
+        width: 100%;
+        height: 100%;
+        padding-left: 18px;
+        border-radius: 15px;
+        background-color: transparent;
+        color: #ffffff;
+        &::placeholder{
+          color: #A1A1A1;
+        }
+      }
+    }
+
   }
 }
 

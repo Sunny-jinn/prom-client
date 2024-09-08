@@ -140,8 +140,8 @@ const InitStep1 = (props: InitStepProps) => {
 const InitStep2 = (props: InitStepProps) => {
   const ref = useRef<HTMLInputElement | null>(null);
   const { profile, setProfile, setStep } = props;
-  const [checkNickname, setCheckNickname] = useState(false);
-  const [isAbleNickname, setIsAbleNickname] = useState(false);
+  // const [checkNickname, setCheckNickname] = useState(false);
+  // const [isAbleNickname, setIsAbleNickname] = useState(false);
 
   const preview = useMemo(() => {
     if(profile.profileImage === null) {
@@ -152,7 +152,7 @@ const InitStep2 = (props: InitStepProps) => {
 
   const isAbleToNext = useIsAble([
     profile.profileImage !== null,
-    profile.nickname !== '',
+    // profile.nickname !== '',
   ]);
 
   const onClickProfileSelect = () => {
@@ -161,14 +161,14 @@ const InitStep2 = (props: InitStepProps) => {
     }
   };
 
-  const setNickname = (e: ChangeEvent<HTMLInputElement>) => {
-    setProfile(prev => {
-      return {
-        ...prev,
-        nickname: e.target.value,
-      };
-    });
-  };
+  // const setNickname = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setProfile(prev => {
+  //     return {
+  //       ...prev,
+  //       nickname: e.target.value,
+  //     };
+  //   });
+  // };
 
   const onFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if(!e.target.files) return;
@@ -181,31 +181,31 @@ const InitStep2 = (props: InitStepProps) => {
     });
   };
 
-  const nicknameStatus = useMemo(() => {
-    if(!checkNickname && !isAbleNickname) {
-      return 'NO_CHECK';
-    }
-    if(checkNickname && !isAbleNickname) {
-      return 'UNAVAILABLE';
-    }
-    if(checkNickname && isAbleNickname) {
-      return 'AVAILABLE';
-    }
-    return 'NONE';
-  }, [checkNickname, isAbleNickname]);
-
-  const nicknameInputBorderStyle = useMemo(() => {
-    switch (nicknameStatus) {
-      case 'UNAVAILABLE':
-        return {
-          border: '1px solid #FF6D6D',
-        };
-      default:
-        return {
-          border: '1px solid #292929',
-        };
-    }
-  }, [nicknameStatus]);
+  // const nicknameStatus = useMemo(() => {
+  //   if(!checkNickname && !isAbleNickname) {
+  //     return 'NO_CHECK';
+  //   }
+  //   if(checkNickname && !isAbleNickname) {
+  //     return 'UNAVAILABLE';
+  //   }
+  //   if(checkNickname && isAbleNickname) {
+  //     return 'AVAILABLE';
+  //   }
+  //   return 'NONE';
+  // }, [checkNickname, isAbleNickname]);
+  //
+  // const nicknameInputBorderStyle = useMemo(() => {
+  //   switch (nicknameStatus) {
+  //     case 'UNAVAILABLE':
+  //       return {
+  //         border: '1px solid #FF6D6D',
+  //       };
+  //     default:
+  //       return {
+  //         border: '1px solid #292929',
+  //       };
+  //   }
+  // }, [nicknameStatus]);
 
   return (
     <div className='init-step-2'>
@@ -221,8 +221,8 @@ const InitStep2 = (props: InitStepProps) => {
           </div>
         </div>
         <div className='init-step-2-profile-nickname'>
-          <input value={profile.nickname} onChange={e => setNickname(e)} placeholder={'이름을 입력해주세요.'} maxLength={15}
-                 type='text' style={{ ...nicknameInputBorderStyle }} />
+          {/*<input value={profile.nickname} onChange={e => setNickname(e)} placeholder={'이름을 입력해주세요.'} maxLength={15}*/}
+          {/*       type='text' style={{ ...nicknameInputBorderStyle }} />*/}
         </div>
 
       </div>

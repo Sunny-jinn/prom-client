@@ -97,6 +97,8 @@ const getMyScheduleParser = async (): Promise<Array<MySchedule>> => {
     { id: 1, color: '#32D4E0' },
     { id: 2, color: '#FFD440' }];
   const result = await wait(data, 0);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   return result.map(el => {
     let themeColor = '#ffffff';
     const theme = color.find(color => color.id === el.artistId);

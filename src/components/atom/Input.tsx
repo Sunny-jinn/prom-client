@@ -5,10 +5,14 @@ const Input = styled.input<InputHTMLAttributes<HTMLInputElement>>`
   background: none;
   border: 1px solid #7bf7ff;
   width: 100%;
-  padding: 19.5px 22px;
+  height: 56px;
+  padding: 16px 22px;
   border-radius: 17px;
   color: #fff;
   font-size: 15px;
+  &::placeholder{
+    color: #A6A6A6;
+  }
 `;
 
 export default Input;

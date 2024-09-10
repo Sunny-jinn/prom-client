@@ -12,8 +12,8 @@ const Button = styled.button<ButtonProps>`
   height: 57px;
   border-radius: 17px;
   background-color: #7bf7ff;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   transition: background-color ease-in-out 0.15s;
   &:hover {
     background-color: #47a5ac;

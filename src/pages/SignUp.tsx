@@ -1,115 +1,144 @@
-import { ChangeEvent, useState } from 'react';
+import { useEffect, useState } from 'react';
 import check from '@/assets/img/check.png';
 import CustomHeader from '@/components/CustomHeader';
 import Button from '@/components/atom/Button';
 import Input from '@/components/atom/Input';
 import './SignUp.scss';
+import useAppNavigate from '@/hooks/useAppNavigate';
+import { PageLayout } from '@/components/PageLayout';
+import { joinAPI, loginAPI } from '@/feature/api/user.api';
+import CheckWave from '@/components/atom/CheckWave';
+import useIsAble from '@/hooks/useIsAble';
+import userStore from '@/store/User';
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
+  const { setUser } = userStore(state => state);
+  const navigate = useAppNavigate();
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [page, setPage] = useState(0);
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [step, setStep] = useState(0);
 
-  const validateEmail = (email: string) => {
+  const emailRegexValidator = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  const handleClickButton = () => {
-    setPage((page) => page + 1);
-    setIsButtonDisabled(true);
-  };
-
-  const handleEmailInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const inputEmail = e.target.value;
-    setEmail(inputEmail);
-
-    setIsButtonDisabled(!validateEmail(inputEmail));
-  };
-
-  const handlePasswordInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const inputPassword = e.target.value;
-    setPassword(inputPassword);
-  };
-
-  const isPasswordValid = (password: string) => {
+  const passwordRegexValidator = (password: string) => {
     const hasLetters = /[a-zA-Z]/.test(password);
     const hasNumbers = /[0-9]/.test(password);
     const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
     return hasLetters && hasNumbers && hasSpecialChars;
   };
 
+  const isValidEmail = useIsAble([
+    emailRegexValidator(email)
+  ])
+
+  const isValidPassword = useIsAble([
+    passwordRegexValidator(password),
+    password.length >= 10,
+    confirmPassword === password
+  ])
+
+  const handleClickButton = async() => {
+    if(step === 0) {
+      setStep((step) => step + 1);
+      return;
+    }
+    // Sign up
+    try{
+      const result = await joinAPI({
+        email,
+        password
+      })
+      await loginAPI({
+        email,
+        password,
+      });
+      setUser({
+        email: result.email ?? '',
+        username: result.username ?? '',
+        profileImage: result.profileImage ?? '',
+        role: result.role,
+      });
+      setStep((step) => step + 1);
+    }catch (e) {
+      console.log(e);
+    }
+    // step === 1일 경우 회원가입 진행
+  };
+
+  useEffect(() => {
+    if(step === 2){
+      setTimeout(() => {
+        navigate('init')
+      }, 3000)
+    }
+  }, [step])
+
   return (
-    <div id="SignUp">
-      <CustomHeader title="회원가입" />
-      {page === 0 && (
-        <>
-          <div className="sign-up-top">
-            <span className="sign-up-top-text">이메일을 입력해주세요.</span>
-            <Input
-              placeholder="예 : prom@gmail.com"
-              value={email}
-              onChange={handleEmailInputChange}
-            />
-          </div>
-          <Button disabled={isButtonDisabled} onClick={handleClickButton}>
-            다음
-          </Button>
-        </>
-      )}
-      {page === 1 && (
-        <>
-          <div className="sign-up-top">
-            <span className="sign-up-top-text">비밀번호를 입력해주세요.</span>
-            <Input
-              placeholder="비밀번호"
-              value={password}
-              onChange={handlePasswordInputChange}
-              type="password"
-            />
-            <div className="sign-up-password-validation">
-              <div
-                className={`sign-up-password-invalid ${password.length >= 10 && 'password-valid'}`}
-              >
-                {password.length >= 10 && <img src={check} alt="check" />}10자 이상
-              </div>
-              <div
-                className={`sign-up-password-invalid ${
-                  isPasswordValid(password) && 'password-valid'
-                }`}
-              >
-                {isPasswordValid(password) && <img src={check} alt="check" />}영문, 숫자, 특수문자
-                포함
+    <PageLayout flexDirection={'column'}>
+      <div id='SignUp'>
+        <CustomHeader leftOnClick={step !== 2 ? () => navigate('sign-in') : undefined}>
+          <span>회원가입</span>
+        </CustomHeader>
+        {step === 0 && (
+          <>
+            <div className='sign-up-top'>
+              <span className='sign-up-top-text'>이메일을 입력해주세요.</span>
+              <Input
+                placeholder='예 : prom@gmail.com'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <Button disabled={!isValidEmail} onClick={handleClickButton}>
+              다음
+            </Button>
+          </>
+        )}
+        {step === 1 && (
+          <>
+            <div className='sign-up-top'>
+              <span className='sign-up-top-text'>비밀번호를 입력해주세요.</span>
+              <Input
+                placeholder='비밀번호'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type='password'
+              />
+              <Input
+                placeholder='비밀번호 확인'
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                type='password'
+              />
+              <div className='sign-up-password-validation'>
+                <div className={`sign-up-password-invalid ${password.length >= 10 && 'password-valid'}`}>
+                  {password.length >= 10 && <img src={check} alt='check' />}10자 이상
+                </div>
+                <div className={`sign-up-password-invalid ${passwordRegexValidator(password) && 'password-valid'}`}>
+                  {passwordRegexValidator(password) && <img src={check} alt='check' />}
+                  영문, 숫자, 특수문자 포함
+                </div>
               </div>
             </div>
+            <Button disabled={!isValidPassword} onClick={handleClickButton}>
+              다음
+            </Button>
+          </>
+        )}
+        {step === 2 && (
+          <div className='complete-sign-up'>
+            <div className='complete-sign-up-view'>
+              <CheckWave/>
+              <span>회원가입이 완료되었습니다!</span>
+            </div>
           </div>
-          <Button
-            disabled={password.length < 10 || !isPasswordValid(password)}
-            onClick={handleClickButton}
-          >
-            다음
-          </Button>
-        </>
-      )}
-      {page === 2 && (
-        <>
-          <div className="sign-up-nickname-top">
-            <span className="sign-up-top-small-text">닉네임</span>
-            <Input
-              placeholder="영문 혹은 한글 12자 이하"
-              onChange={handlePasswordInputChange}
-              style={{ marginTop: '12px', marginBottom: '30px' }}
-            />
-            <span className="sign-up-top-small-text">이메일</span>
-            <Input value={email} onChange={handlePasswordInputChange} readOnly />
-          </div>
-          <Button disabled={isButtonDisabled} onClick={handleClickButton}>
-            다음
-          </Button>
-        </>
-      )}
-    </div>
+        )}
+      </div>
+    </PageLayout>
   );
 };
 

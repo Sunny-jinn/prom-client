@@ -1,0 +1,159 @@
+@import '@/style/_variables.scss';
+
+#PostDetail {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0 16px 25px 16px;
+  color: #fff;
+  overflow-x: hidden;
+
+  .post-detail-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 20px 7px 16px;
+
+    .post-detail-user {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 16.7px;
+
+      &-name {
+        color: #a1a1a1;
+      }
+    }
+
+    .post-detail-ellipsis-btn {
+      width: 25px;
+    }
+  }
+
+  .post-detail-carousel {
+    margin-top: 27px;
+
+    img {
+      border-radius: 25px;
+      width: 100%;
+      height: 474px;
+      object-fit: cover;
+    }
+  }
+
+  .swiper {
+    overflow: visible;
+  }
+
+  .swiper-bullets {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 12px;
+
+    .bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #a1a1a1;
+
+      &.active {
+        background-color: #ffffff;
+      }
+    }
+  }
+
+  .post-detail-menus {
+    display: flex;
+    gap: 23px;
+    margin-top: 12px;
+    align-items: center;
+
+    .post-detail-menu {
+      display: flex;
+      gap: 3.5px;
+      align-items: center;
+
+      img {
+        filter: brightness(0) invert(100%);
+        width: 25px;
+      }
+
+      span {
+        font-size: 15px;
+      }
+
+      .non-clicked {
+        color: #fff;
+      }
+
+      &.clicked {
+        img {
+          filter: none;
+        }
+
+        span {
+          color: $main-color;
+        }
+      }
+
+      &.right {
+        margin-left: auto;
+        img {
+          height: 28px;
+        }
+      }
+    }
+  }
+
+  .post-detail-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 12px;
+
+    img {
+      border: 1px solid #fff;
+      width: 31px;
+      height: 31px;
+      object-fit: cover;
+      border-radius: 999px;
+    }
+
+    span {
+      font-weight: 700;
+    }
+  }
+
+  .post-detail-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 19px 22px;
+    background-color: #292929;
+    border-radius: 25px;
+    margin-top: 12px;
+
+    &-title {
+      display: flex;
+
+      &-text {
+        color: $main-color;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      &-date {
+        margin-left: auto;
+        font-size: 12px;
+        color: #a6a6a6;
+      }
+    }
+
+    &-content {
+      font-size: 14px;
+    }
+  }
+}

@@ -2,8 +2,6 @@ import { Outlet, Route, Routes } from 'react-router-dom';
 import OnBoarding from '@/pages/OnBoarding';
 import { useEffect, useState } from 'react';
 import useAppNavigate from '@/hooks/useAppNavigate';
-import Schedule from '@/pages/Schedule';
-import ScheduleDetail from '@/pages/ScheduleDetail';
 import SignIn from '@/pages/SignIn';
 import Splash from '@/pages/Splash';
 import { refreshAPI } from '@/feature/api/user.api';
@@ -13,6 +11,7 @@ import MyPage from './pages/MyPage';
 import MyPageAllPosts from './pages/MyPageAllPosts';
 import PostDetail from './pages/PostDetail';
 import SignUp from './pages/SignUp';
+import Home from '@/pages/Home';
 
 const RootRouter = () => {
   return (
@@ -24,11 +23,7 @@ const RootRouter = () => {
         <Route path='sign-up' element={<SignUp />} />
         <Route element={<Auth />}>
           <Route path='init' element={<Init />} />
-          <Route path='home' element={<div>home</div>} />
-          <Route path='schedule/*'>
-            <Route index element={<Schedule />} />
-            <Route path={':id'} element={<ScheduleDetail />} />
-          </Route>
+          <Route path='home' element={<Home/>} />
         </Route>
         <Route path="my-page/*">
           <Route index element={<MyPage />} />
@@ -58,7 +53,8 @@ const AppRoute = () => {
       }
       navigate('home');
     } catch (e) {
-      navigate('on-board');
+      navigate('home');
+      // navigate('on-board');
     } finally {
       setAppLoading(false);
     }

@@ -31,5 +31,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "svg.d.ts", "video.d.ts"]
+  "include": ["src", "svg.d.ts", "video.d.ts"],
+  "exclude": ["vite.config.ts"]
 }

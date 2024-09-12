@@ -34,7 +34,8 @@ const loginAPI = async ({ email, password }: { email: string, password: string }
     email,
     password,
   });
-  const { accessToken } = result.data;
+  const { data } = result.data;
+  const {accessToken} = data;
   addAccessTokenToServer(accessToken);
   return result.data;
 };

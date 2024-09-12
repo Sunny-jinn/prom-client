@@ -1,4 +1,4 @@
-import { PageLayout } from '@/components/PageLayout';
+import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import './Init.scss';
 import CustomHeader from '@/components/CustomHeader';
 import useAppNavigate from '@/hooks/useAppNavigate';
@@ -57,7 +57,7 @@ const Init = () => {
     }
   }, [profile, step]);
   return (
-    <PageLayout flexDirection={'column'}>
+    <SafeAreaLayout flexDirection={'column'}>
       {step === 4 && <InitComplete />}
       {step !== 4 &&
         <div id={'Init'}>
@@ -73,7 +73,7 @@ const Init = () => {
           {stepRenderer}
         </div>
       }
-    </PageLayout>
+    </SafeAreaLayout>
   );
 };
 
@@ -216,7 +216,8 @@ const InitStep2 = (props: InitStepProps) => {
             {(profile.profileImage && preview) && <img src={preview} alt='preview' />}
             {!profile.profileImage && <span>등록하기</span>}
             {!profile.profileImage &&
-              <div className='init-profile-add'><Plus color={'#ffffff'} strokeLinecap={'square'} strokeWidth={3} />
+              <div className='init-profile-add'>
+                <Plus color={'#ffffff'} strokeLinecap={'square'} strokeWidth={3} />
               </div>}
           </div>
         </div>

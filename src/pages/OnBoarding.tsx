@@ -8,7 +8,7 @@ import Button from '@/components/atom/Button';
 import { ON_BOARDING_SWIPER_DATA } from '@/constants/onBoarding.data';
 import './OnBoarding.scss';
 import useAppNavigate from '@/hooks/useAppNavigate';
-import { PageLayout } from '@/components/PageLayout';
+import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 
 const OnBoarding = () => {
   const navigate = useAppNavigate()
@@ -20,7 +20,7 @@ const OnBoarding = () => {
     }
   };
   return (
-    <PageLayout flexDirection={'column'}>
+    <SafeAreaLayout flexDirection={'column'}>
       <div id={'OnBoarding'}>
         <div className='on-boarding-content'>
           <div className='on-boarding-top'>
@@ -57,7 +57,7 @@ const OnBoarding = () => {
           )}
         </div>
       </div>
-    </PageLayout>
+    </SafeAreaLayout>
 
   );
 };

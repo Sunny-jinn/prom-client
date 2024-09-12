@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import { CSSProperties } from 'react';
 
-type PageLayoutProps = CSSProperties & {
+type SafeAreaLayoutProps = CSSProperties & {
   safeAreaBackground?: string;
 }
 
-export const PageLayout = styled.div<PageLayoutProps>`
+export const SafeAreaLayout = styled.div<SafeAreaLayoutProps>`
   display: flex;
   flex-direction: ${(props) => props.flexDirection ?? 'row'};
   width: 100%;

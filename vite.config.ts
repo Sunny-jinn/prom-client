@@ -1,13 +1,20 @@
 import react from '@vitejs/plugin-react';
-import * as path from 'path';
 import { defineConfig } from 'vite';
 import { ManifestOptions, VitePWA } from 'vite-plugin-pwa';
 import manifest from './manifest.json';
 import svgr from 'vite-plugin-svgr';
+import path from "path";
 
 export default defineConfig({
   server : {
     port: 3000,
+    proxy: {
+      "/api": {
+        target: "http://52.78.81.43/",
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, ""),
+      },
+    },
   },
   assetsInclude: ['**/*.mp4'],
   plugins: [

@@ -3,10 +3,10 @@ import CustomHeader from '@/components/CustomHeader';
 import Button from '@/components/atom/Button';
 import Input from '@/components/atom/Input';
 import './SignIn.scss';
-import { PageLayout } from '@/components/PageLayout';
+import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
-import Logo from '@/assets/img/img_splash.svg?react';
+import Logo from '@/assets/img/img_logo.svg?react';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import { useState } from 'react';
 import { getMyInfoAPI, loginAPI } from '@/feature/api/user.api';
@@ -42,7 +42,7 @@ const SignIn = () => {
   };
 
   return (
-    <PageLayout flexDirection={'column'}>
+    <SafeAreaLayout flexDirection={'column'}>
       <div id={'SignIn'}>
         <CustomHeader>
           <Logo width={70} />
@@ -78,7 +78,7 @@ const SignIn = () => {
           </button>
         </div>
       </div>
-    </PageLayout>
+    </SafeAreaLayout>
 
   );
 };

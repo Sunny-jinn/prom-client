@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const Server = axios.create({
-  baseURL: 'http://52.78.81.43/',
+  // baseURL: 'http://52.78.81.43/',
+  baseURL: '/api/',
 });
 
 const addAccessTokenToServer = (access: string) => {

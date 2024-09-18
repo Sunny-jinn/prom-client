@@ -1,6 +1,6 @@
 import { DrawerProps, Drawer, DrawerContent, DrawerOverlay } from '@chakra-ui/react';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import './Upload.scss';
 import cn from 'classnames';
 import Logo from '@/assets/img/img_logo.svg?react';
@@ -24,13 +24,7 @@ const Upload = (
   }: UploadProps) => {
 
   const [uploadType, setUploadType] = useState<UploadType>('FEED');
-
-  const renderer = useMemo(() => {
-    if(uploadType === 'FEED') {
-      return <UploadFeed uploadType={uploadType} onClose={onClose} />;
-    }
-    return <UploadPick uploadType={uploadType} onClose={onClose} />;
-  }, [uploadType]);
+  const [step, setStep] = useState(0);
 
   return (
     <Drawer onClose={onClose} isOpen={isOpen} placement='bottom' size={'full'}>
@@ -38,7 +32,10 @@ const Upload = (
       <DrawerContent>
         <SafeAreaLayout flexDirection={'column'}>
           <div className='upload'>
-            {renderer}
+            {uploadType === 'FEED' &&
+              <UploadFeed step={step} setStep={setStep} uploadType={uploadType} onClose={onClose} />}
+            {uploadType === 'PICK' &&
+              <UploadPick step={step} setStep={setStep} uploadType={uploadType} onClose={onClose} />}
             <div className='upload-type'>
               <div className='switch'>
                 <div className={cn('switch-handler', { pick: uploadType === 'PICK' })} />
@@ -65,6 +62,8 @@ export default Upload;
 
 type UploadContentProps = Pick<UploadProps, 'onClose'> & {
   uploadType: UploadType
+  step: number;
+  setStep: Dispatch<SetStateAction<number>>
 }
 
 type ImageContent = {
@@ -72,7 +71,7 @@ type ImageContent = {
   url: string;
 }
 
-const UploadFeed = ({ onClose, uploadType }: UploadContentProps) => {
+const UploadFeed = ({ onClose, uploadType, step, setStep }: UploadContentProps) => {
   const [images, setImages] = useState<Array<ImageContent>>([]);
   const [indexedImages, setIndexedImages] = useState<Array<ImageContent>>([]);
   const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
@@ -133,7 +132,7 @@ const UploadFeed = ({ onClose, uploadType }: UploadContentProps) => {
   }, [images]);
 
   return (
-    <ScrollArea>
+    <div className='upload-container'>
 
       <div className='upload-header'>
         <span style={{ color: '#ffffff' }} onClick={() => close()}>취소</span>
@@ -201,11 +200,11 @@ const UploadFeed = ({ onClose, uploadType }: UploadContentProps) => {
           }
         </div>
       </div>
-    </ScrollArea>
+    </div>
   );
 };
 
-const UploadPick = ({ onClose, uploadType }: UploadContentProps) => {
+const UploadPick = ({ onClose, uploadType, step, setStep }: UploadContentProps) => {
   const [pick, setPick] = useState<File | null>(null);
   const ref = useRef<HTMLInputElement | null>(null);
 
@@ -220,7 +219,7 @@ const UploadPick = ({ onClose, uploadType }: UploadContentProps) => {
   };
 
   return (
-    <ScrollArea>
+    <div className='upload-container'>
       <div className='upload-header'>
         <span style={{ color: '#ffffff' }} onClick={() => close()}>취소</span>
         <span style={{ color: '#ffffff', fontWeight: 600 }}>새로운 게시물</span>
@@ -249,6 +248,6 @@ const UploadPick = ({ onClose, uploadType }: UploadContentProps) => {
           }
         </div>
       </div>
-    </ScrollArea>
+    </div>
   );
 };

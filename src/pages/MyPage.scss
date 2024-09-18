@@ -3,6 +3,7 @@
 #MyPage {
   display: flex;
   flex-direction: column;
+  position: relative;
   width: 100%;
   padding: 0 16px 150px 16px;
   color: #fff;
@@ -13,7 +14,6 @@
     align-items: center;
     height: 51px;
 
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
     z-index: 1;
 
     img {
@@ -23,15 +23,49 @@
     .my-page-header-text {
       font-weight: 700;
     }
+
+    .my-page-header-cancel {
+      font-weight: 500;
+    }
+
+    .my-page-header-confirm {
+      font-weight: 700;
+      color: $main-color;
+    }
+
+    &.active {
+      padding: 0 10px;
+
+      div {
+        cursor: pointer;
+      }
+    }
   }
 
   .background-image {
     position: relative;
-    margin-top: -51px;
+    margin-top: -85px;
+
+    .background-image-wrapper {
+      position: relative;
+      width: 100%;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 25%;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+      }
+    }
 
     img {
       width: 100%;
       object-fit: cover;
+      border-bottom-left-radius: 25px;
+      border-bottom-right-radius: 25px;
     }
 
     .my-page-profile {
@@ -71,14 +105,30 @@
         }
       }
 
-      .my-page-nickname {
-        font-size: 20px;
-        font-weight: 600;
+      .my-page-profile-name {
+        display: flex;
+        align-items: center;
+
+        .my-page-nickname {
+          font-size: 20px;
+          font-weight: 600;
+        }
+
+        img:first-of-type {
+          opacity: 0;
+        }
+
+        img {
+          width: 25px;
+        }
       }
 
       .my-page-profile-tags {
+        position: relative;
         display: flex;
+        flex-wrap: wrap;
         gap: 7px;
+        justify-content: center;
       }
 
       .my-page-profile-tag {
@@ -92,6 +142,17 @@
       .main-tag {
         border: 1px solid $main-color;
         color: $main-color;
+      }
+
+      .toggle-button {
+        position: absolute;
+        right: -23px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        img {
+          width: 18px;
+        }
       }
     }
   }
@@ -128,8 +189,18 @@
     border-radius: 25px;
 
     &-title {
+      display: flex;
+      align-items: center;
       margin-bottom: 13px;
       font-weight: 700;
+
+      button {
+        margin-left: auto;
+
+        img {
+          width: 25px;
+        }
+      }
     }
 
     &-content {
@@ -209,6 +280,40 @@
         width: 100%;
         border-radius: 10px;
       }
+    }
+  }
+
+  .my-page-update-tag-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 23px 18px 23px 23px;
+    margin-top: 12px;
+    border-radius: 25px;
+    background-color: #292929;
+    gap: 21px;
+
+    .my-page-update-main-tag {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .my-page-update-main-tag-text {
+      font-weight: 500;
+      font-size: 13px;
+      color: $main-color;
+    }
+
+    .my-page-update-tag {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .my-page-update-tag-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
   }
 }

@@ -5,13 +5,6 @@ import profileBackground from '@/assets/img/profile_background.png';
 import VISUAL from '@/assets/img/visual.png';
 import WRITING from '@/assets/img/writing.png';
 
-type MyPageArtworkProp = {
-  type?: 'MUSIC' | 'VISUAL' | 'WRITING';
-  text?: string;
-  all?: boolean;
-  onClick?: () => void;
-};
-
 const images: { [key: string]: string } = {
   MUSIC,
   VISUAL,
@@ -68,11 +61,20 @@ const BottomText = styled.div`
   }
 `;
 
-const MyPageArtwork = ({ type, text, all = false, onClick }: MyPageArtworkProp) => {
+type MyPageArtworkProp = {
+  id?: number;
+  image?: any;
+  type?: 'MUSIC' | 'VISUAL' | 'WRITING';
+  text?: string;
+  all?: boolean;
+  onClick?: () => void;
+};
+
+const MyPageArtwork = ({ id, image, type, text, all = false, onClick }: MyPageArtworkProp) => {
   return (
-    <Wrapper onClick={onClick}>
+    <Wrapper onClick={onClick} key={id}>
       <TopImage all={all}>
-        <img src={profileBackground} alt="artwork" />
+        <img src={image} alt="artwork" />
         {!all && type && <TypeImage src={images[type]} alt="type" />}
         {!all && <MoreIcon src={more} alt="more" />}
       </TopImage>

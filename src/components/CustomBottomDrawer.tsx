@@ -16,6 +16,9 @@ type CustomBottomDrawerProps = {
   isOpen: boolean;
   isDelete?: boolean;
   onDelete?: () => void;
+  deleteTitle?: string;
+  deleteContent?: string;
+  deleteConfirmText?: string;
 };
 
 const CustomBottomDrawer = ({
@@ -25,6 +28,9 @@ const CustomBottomDrawer = ({
   isOpen,
   isDelete = false,
   onDelete,
+  deleteTitle,
+  deleteContent,
+  deleteConfirmText,
 }: CustomBottomDrawerProps) => {
   return (
     <Drawer onClose={onClose} isOpen={isOpen} placement="bottom">
@@ -32,7 +38,7 @@ const CustomBottomDrawer = ({
       <DrawerContent
         style={{
           background: 'none',
-          padding: 16,
+          padding: '16px 16px 25px 16px',
         }}
       >
         <Box
@@ -72,6 +78,7 @@ const CustomBottomDrawer = ({
                   <Text
                     sx={{
                       color: option.update ? '#7BF7ff' : option.delete ? '#E86969' : '#fff',
+                      fontWeight: 500,
                       fontSize: 14,
                     }}
                   >
@@ -111,16 +118,28 @@ const CustomBottomDrawer = ({
                   marginBottom: '14px',
                 }}
               />
-              <Text sx={{ color: '#fff', fontSize: '18px', fontWeight: '600' }}>
-                이 사진을 삭제하시겠습니까?
+              <Text
+                sx={{
+                  color: deleteTitle ? '#FF6D6D' : '#fff',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                }}
+              >
+                {deleteTitle}
               </Text>
-              <Text sx={{ color: '#a6a6a6', fontSize: '14px', fontWeight: '500' }}>
-                수정완료 후 사진을 복구할 수 없습니다.
+              <Text
+                sx={{
+                  color: deleteTitle ? '#fff' : '#a6a6a6',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                }}
+              >
+                {deleteContent}
               </Text>
             </Box>
             <Box
               style={{
-                backgroundColor: '#E86969',
+                backgroundColor: '#FF6D6D',
                 padding: '20px 0',
                 textAlign: 'center',
                 borderRadius: 17,
@@ -132,9 +151,10 @@ const CustomBottomDrawer = ({
                 sx={{
                   color: '#fff',
                   fontSize: 14,
+                  fontWeight: 500,
                 }}
               >
-                사진 삭제
+                {deleteConfirmText || '삭제'}
               </Text>
             </Box>
           </>
@@ -157,7 +177,7 @@ const CustomBottomDrawer = ({
                 fontSize: 14,
               }}
             >
-              취소
+              {deleteConfirmText ? '수정 계속하기' : '취소'}
             </Text>
           </Box>
         )}

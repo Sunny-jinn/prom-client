@@ -11,8 +11,12 @@ import 'swiper/css/effect-fade';
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { ARTICLES } from '@/constants/articles.data';
+import dayjs from 'dayjs';
+import userStore from '@/store/User';
 
 const Home = () => {
+  const {user} = userStore(state => state);
+  console.log(user);
   const [alarms] = useState([{ title: 1 }, { title: 2 }]);
 
   return (
@@ -60,7 +64,7 @@ const Articles = () => {
             <div className='article-content'>
               <div className='article-content-top'>
                 <span className='article-content-title'>{el.title}</span>
-                {/*<span className='article-content-date'>{dayjs(el.createdAt).format('M월 DD일')}</span>*/}
+                <span className='article-content-date'>{dayjs(el.createdAt).format('M월 DD일')}</span>
               </div>
               <span className='article-content-bottom'>{el.contents[0].content}</span>
             </div>

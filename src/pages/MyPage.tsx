@@ -21,11 +21,11 @@ const MyPage = () => {
   const navigate = useNavigate();
 
   const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
-  const {
-    isOpen: isBottomModalOpen,
-    onOpen: openBottomModal,
-    onClose: closeBottomModal,
-  } = useDisclosure();
+  // const {
+  //   isOpen: isBottomModalOpen,
+  //   onOpen: openBottomModal,
+  //   onClose: closeBottomModal,
+  // } = useDisclosure();
 
   const MyPageOptions = [
     {

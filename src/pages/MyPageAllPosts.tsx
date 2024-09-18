@@ -24,7 +24,7 @@ const MyPageAllPosts = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
   const navigate = useNavigate();
 
-  const { isOpen: isModalOpen, onOpen: openModal, onClose: closeModal } = useDisclosure();
+  const { isOpen: isModalOpen, onClose: closeModal } = useDisclosure();
   const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
   const {
     isOpen: isBottomModalOpen,
@@ -32,10 +32,10 @@ const MyPageAllPosts = () => {
     onClose: closeBottomModal,
   } = useDisclosure();
 
-  const clickHandler = () => {
-    closeDrawer();
-    openBottomModal();
-  };
+  // const clickHandler = () => {
+  //   closeDrawer();
+  //   openBottomModal();
+  // };
 
   const MyPageAllPostsOptions = [
     {

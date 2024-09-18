@@ -92,6 +92,7 @@
       .article-content {
         display: flex;
         flex-direction: column;
+        width: 100%;
         gap: 10px;
         padding: 14px 20px;
 
@@ -100,9 +101,10 @@
           justify-content: space-between;
           align-items: flex-end;
           width: 100%;
+          gap: 10px;
 
           .article-content-title {
-            width: 270px;
+            width: 260px;
             font-size: 18px;
             color: #ffffff;
             font-weight: 700;
@@ -115,6 +117,7 @@
             color: #A6A6A6;
             font-size: 13px;
             font-weight: 600;
+            white-space: nowrap;
           }
         }
 
@@ -148,5 +151,4 @@
 
 .swiper-pagination-bullet-active {
   background-color: #ffffff !important;
-
 }

@@ -53,8 +53,8 @@ const AppRoute = () => {
       }
       navigate('home');
     } catch (e) {
-      navigate('home');
-      // navigate('on-board');
+      // navigate('home');
+      navigate('on-board');
     } finally {
       setAppLoading(false);
     }

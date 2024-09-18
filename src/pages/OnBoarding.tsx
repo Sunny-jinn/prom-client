@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
-import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import CustomSwiperBullets from '@/components/CustomSwiperBullets';
 import Button from '@/components/atom/Button';
@@ -35,7 +34,7 @@ const OnBoarding = () => {
             pagination={{
               clickable: false,
             }}
-            modules={[Pagination]}
+            // modules={[Pagination]}
             className='on-boarding-swiper'
           >
             {ON_BOARDING_SWIPER_DATA.map((el) => (

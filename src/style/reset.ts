@@ -109,5 +109,5 @@ export const reset = css`
     }
   }
   body { overflow-y: auto; }
-  input, select, textarea, button, a, label {-webkit-tap-highlight-color:rgba(0,0,0,0);}
+  input, span, select, textarea, button, a, label {-webkit-tap-highlight-color:rgba(0,0,0,0);}
 `;

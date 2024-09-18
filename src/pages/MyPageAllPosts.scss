@@ -1,3 +1,5 @@
+@import '../style/_variables.scss';
+
 #MyPageAllPosts {
   display: flex;
   flex-direction: column;
@@ -8,7 +10,7 @@
   .my-page-all-posts-header {
     display: flex;
     justify-content: space-between;
-    padding: 7px 20px 7px 16px;
+    padding: 13px 26px;
 
     .my-page-all-posts-user {
       display: flex;
@@ -20,7 +22,10 @@
     }
 
     .my-page-all-posts-ellipsis-btn {
-      width: 25px;
+      span {
+        font-weight: 700;
+        color: #7bf7ff;
+      }
     }
   }
 
@@ -36,6 +41,116 @@
 
     &.active {
       filter: brightness(0) invert(1);
+    }
+  }
+
+  .my-page-artwork-add {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 50px;
+    gap: 10px;
+
+    span {
+      color: #7bf7ff;
+      font-size: 14px;
+    }
+  }
+  .my-page-artwork-thumbnail {
+    border: 1px solid $main-color;
+    border-radius: 15px;
+
+    &-image {
+      width: 281px;
+      height: 479px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+  }
+
+  .my-page-artwork-title {
+    input {
+      width: 100%;
+      background-color: #353535;
+      color: #fff;
+      padding: 13px 15px 12px 15px;
+      font-size: 14px;
+      border-radius: 15px;
+      margin-top: 37px;
+
+      &::placeholder {
+        color: #a6a6a6;
+      }
+    }
+  }
+
+  .my-page-artwork-thumbnail-update {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 48px;
+    gap: 19px;
+
+    .my-page-artwork-thumbnail-bullets {
+      display: flex;
+      gap: 5px;
+
+      .my-page-artwork-thumbnail-bullet {
+        width: 6px;
+        height: 6px;
+        background-color: #474747;
+        border-radius: 6px;
+
+        &.active {
+          background-color: #fff;
+        }
+      }
+    }
+
+    .my-page-artwork-thumbnail-list {
+      display: flex;
+      gap: 8px;
+
+      input {
+        display: none;
+      }
+
+      .my-page-artwork-thumbnail-card {
+        width: 57px;
+        height: 57px;
+        border: 2px solid #7bf7ff;
+        border-radius: 10px;
+
+        &-img {
+          width: 100%;
+          height: 100%;
+          border-radius: 10px;
+          object-fit: cover;
+        }
+
+        &.inactive {
+          border: none;
+          opacity: 0.3;
+        }
+      }
+
+      .gallery {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #3f3f3f;
+        border: none;
+
+        img {
+          width: 26px;
+        }
+
+        span {
+          font-size: 12px;
+        }
+      }
     }
   }
 }

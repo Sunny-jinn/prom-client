@@ -16,7 +16,7 @@ import './PostDetail.scss';
 
 const PostDetail = () => {
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
-  const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [isClicked] = useState<boolean>(false);
 
   const navigate = useNavigate();
 

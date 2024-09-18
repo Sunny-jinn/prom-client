@@ -5,7 +5,7 @@ import Button from '@/components/atom/Button';
 import Input from '@/components/atom/Input';
 import './SignUp.scss';
 import useAppNavigate from '@/hooks/useAppNavigate';
-import { PageLayout } from '@/components/PageLayout';
+import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import { joinAPI, loginAPI } from '@/feature/api/user.api';
 import CheckWave from '@/components/atom/CheckWave';
 import useIsAble from '@/hooks/useIsAble';
@@ -78,7 +78,7 @@ const SignUp = () => {
   }, [step])
 
   return (
-    <PageLayout flexDirection={'column'}>
+    <SafeAreaLayout flexDirection={'column'}>
       <div id='SignUp'>
         <CustomHeader leftOnClick={step !== 2 ? () => navigate('sign-in') : undefined}>
           <span>회원가입</span>
@@ -138,7 +138,7 @@ const SignUp = () => {
           </div>
         )}
       </div>
-    </PageLayout>
+    </SafeAreaLayout>
   );
 };
 

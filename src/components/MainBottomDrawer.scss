@@ -1,0 +1,18 @@
+.main-bottom-drawer{
+  height: 65vh;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  .main-bottom-drawer-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    .holder{
+      width: 27px;
+      height: 4px;
+      border-radius: 20px;
+      background-color: #686868;
+    }
+  }
+}

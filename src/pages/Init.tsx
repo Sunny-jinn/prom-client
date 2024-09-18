@@ -1,4 +1,4 @@
-import { PageLayout } from '@/components/PageLayout';
+import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import './Init.scss';
 import CustomHeader from '@/components/CustomHeader';
 import useAppNavigate from '@/hooks/useAppNavigate';
@@ -11,20 +11,19 @@ import {
   useRef,
   useState,
 } from 'react';
-import { INIT_STEP_1, INIT_STEP_3, INIT_STEP_4, INIT_STEP_HEADER_TEXT } from '@/constants/init.data';
+import { INIT_STEP_2, INIT_STEP_3, INIT_STEP_HEADER_TEXT } from '@/constants/init.data';
 import Check from '@/assets/img/icon_check.svg?react';
-import cn from 'classnames';
 import Button from '@/components/atom/Button';
 import { Plus } from 'lucide-react';
+import Logo from '@/assets/img/img_logo.svg?react';
 import useIsAble from '@/hooks/useIsAble';
 import { ScrollArea } from '@/components/ScrollArea';
 import CheckWave from '@/components/atom/CheckWave';
+import { checkNicknameAPI, updateUserInfoAPI, updateUserInterestAPI } from '@/feature/api/user.api';
 
 type Interest = 'MUSIC' | 'VISUAL' | 'WRITING';
-type UserRole = 'ARTIST' | 'ARTTY';
 
 type InitProfile = {
-  role: UserRole | null;
   profileImage: File | null;
   nickname: string;
   interest: Array<Interest>;
@@ -35,7 +34,6 @@ const Init = () => {
   const navigate = useAppNavigate();
   const [step, setStep] = useState<number>(0);
   const [profile, setProfile] = useState<InitProfile>({
-    role        : null,
     nickname    : '',
     profileImage: null,
     interest    : [],
@@ -50,19 +48,17 @@ const Init = () => {
         return <InitStep2 setStep={setStep} profile={profile} setProfile={setProfile} />;
       case 2:
         return <InitStep3 setStep={setStep} profile={profile} setProfile={setProfile} />;
-      case 3:
-        return <InitStep4 setStep={setStep} profile={profile} setProfile={setProfile} />;
       default:
         return <></>;
     }
   }, [profile, step]);
   return (
-    <PageLayout flexDirection={'column'}>
-      {step === 4 && <InitComplete />}
-      {step !== 4 &&
+    <SafeAreaLayout flexDirection={'column'}>
+      {step === 3 && <InitComplete />}
+      {step !== 3 &&
         <div id={'Init'}>
           <CustomHeader leftOnClick={() => navigate(-1)}>
-            <progress value={(step + 1) / 4} className='init-progress' />
+            <progress value={(step + 1) / 3} className='init-progress' />
           </CustomHeader>
           <div className='init-header'>
           <span className='init-header-title'>
@@ -73,7 +69,7 @@ const Init = () => {
           {stepRenderer}
         </div>
       }
-    </PageLayout>
+    </SafeAreaLayout>
   );
 };
 
@@ -86,62 +82,10 @@ type InitStepProps = {
 }
 
 const InitStep1 = (props: InitStepProps) => {
-  const { profile, setProfile, setStep } = props;
-  const isChecked = (el: UserRole) => {
-    return el === profile.role;
-  };
-
-  const selectRole = (el: UserRole) => {
-    setProfile(prev => {
-      return {
-        ...prev,
-        role: el,
-      };
-    });
-  };
-
-  const isAbleToNext = useIsAble([
-    profile.role !== null,
-  ]);
-
-  return (
-    <div className='init-step-1'>
-      <div className='init-step-1-role-wrapper'>
-        {INIT_STEP_1.map(el =>
-          <div className={cn('init-step-1-role', { check: isChecked(el.id as UserRole) })}
-               onClick={() => selectRole(el.id as UserRole)}>
-            <div className={cn('init-step-1-role-check', { check: isChecked(el.id as UserRole) })}>
-              <Check fill={isChecked(el.id as UserRole) ? '#000000' : '#212121'} width={11} height={8} />
-            </div>
-            <div className='init-step-1-role-content'>
-              <div className='init-step-1-role-content-title'>
-              <span className={cn('init-step-1-role-content-title-name', { check: isChecked(el.id as UserRole) })}>
-                {`${el.label.emoji} ${el.label.name} `}
-                <span
-                  className={cn('init-step-1-role-content-title-sub-name', { check: isChecked(el.id as UserRole) })}>{`(${el.label.subName})`}</span>
-              </span>
-              </div>
-              <span className={cn('init-step-1-role-content-description', { check: isChecked(el.id as UserRole) })}>
-              {el.description}
-            </span>
-            </div>
-          </div>,
-        )}
-      </div>
-      <div className='init-button-wrapper'>
-        <Button onClick={() => setStep(prev => prev + 1)} disabled={!isAbleToNext}>
-          다음
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-const InitStep2 = (props: InitStepProps) => {
   const ref = useRef<HTMLInputElement | null>(null);
   const { profile, setProfile, setStep } = props;
   // const [checkNickname, setCheckNickname] = useState(false);
-  // const [isAbleNickname, setIsAbleNickname] = useState(false);
+  const [isAbleNickname, setIsAbleNickname] = useState(true);
 
   const preview = useMemo(() => {
     if(profile.profileImage === null) {
@@ -152,7 +96,8 @@ const InitStep2 = (props: InitStepProps) => {
 
   const isAbleToNext = useIsAble([
     profile.profileImage !== null,
-    // profile.nickname !== '',
+    profile.nickname !== '',
+    isAbleNickname,
   ]);
 
   const onClickProfileSelect = () => {
@@ -161,14 +106,14 @@ const InitStep2 = (props: InitStepProps) => {
     }
   };
 
-  // const setNickname = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setProfile(prev => {
-  //     return {
-  //       ...prev,
-  //       nickname: e.target.value,
-  //     };
-  //   });
-  // };
+  const setNickname = (e: ChangeEvent<HTMLInputElement>) => {
+    setProfile(prev => {
+      return {
+        ...prev,
+        nickname: e.target.value,
+      };
+    });
+  };
 
   const onFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if(!e.target.files) return;
@@ -181,53 +126,65 @@ const InitStep2 = (props: InitStepProps) => {
     });
   };
 
-  // const nicknameStatus = useMemo(() => {
-  //   if(!checkNickname && !isAbleNickname) {
-  //     return 'NO_CHECK';
-  //   }
-  //   if(checkNickname && !isAbleNickname) {
-  //     return 'UNAVAILABLE';
-  //   }
-  //   if(checkNickname && isAbleNickname) {
-  //     return 'AVAILABLE';
-  //   }
-  //   return 'NONE';
-  // }, [checkNickname, isAbleNickname]);
-  //
-  // const nicknameInputBorderStyle = useMemo(() => {
-  //   switch (nicknameStatus) {
-  //     case 'UNAVAILABLE':
-  //       return {
-  //         border: '1px solid #FF6D6D',
-  //       };
-  //     default:
-  //       return {
-  //         border: '1px solid #292929',
-  //       };
-  //   }
-  // }, [nicknameStatus]);
+  const onClickNext = async () => {
+    try {
+      const isDuplicate = await checkNicknameAPI(profile.nickname);
+      //TODO: 체크
+      if(isDuplicate) {
+        setIsAbleNickname(false);
+        return;
+      }
+      setStep(prev => prev + 1);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const nicknameInputBorderStyle = useMemo(() => {
+    if(!isAbleNickname) {
+      return {
+        border: '1px solid #FF6D6D',
+      };
+    }
+    return {
+      border: '1px solid #292929',
+    };
+  }, [isAbleNickname]);
 
   return (
-    <div className='init-step-2'>
-      <div className='init-step-2-profile-wrapper'>
-        <div className='init-step-2-profile-image'>
+    <div className='init-step-1'>
+      <div className='init-step-1-profile-wrapper'>
+        <div className='init-step-1-profile-image'>
           <input ref={ref} type='file' accept={'image/*'} onChange={(e) => onFileSelect(e)} />
-          <div onClick={() => onClickProfileSelect()} className='init-step-2-profile'>
+          <div onClick={() => onClickProfileSelect()} className='init-step-1-profile'>
             {(profile.profileImage && preview) && <img src={preview} alt='preview' />}
-            {!profile.profileImage && <span>등록하기</span>}
             {!profile.profileImage &&
-              <div className='init-profile-add'><Plus color={'#ffffff'} strokeLinecap={'square'} strokeWidth={3} />
+              <div className='init-profile-preview'>
+                <Logo width={70} />
+              </div>
+            }
+            {!profile.profileImage &&
+              <div className='init-profile-add'>
+                <Plus color={'#ffffff'} strokeLinecap={'square'} strokeWidth={3} />
               </div>}
           </div>
         </div>
-        <div className='init-step-2-profile-nickname'>
-          {/*<input value={profile.nickname} onChange={e => setNickname(e)} placeholder={'이름을 입력해주세요.'} maxLength={15}*/}
-          {/*       type='text' style={{ ...nicknameInputBorderStyle }} />*/}
+        <div className='init-step-1-profile-nickname'>
+          <input value={profile.nickname}
+                 onFocus={() => setIsAbleNickname(true)}
+                 style={{ ...nicknameInputBorderStyle }}
+                 onChange={e => setNickname(e)}
+                 placeholder={'이름을 입력해주세요.'}
+                 maxLength={15}
+                 type='text' />
         </div>
 
       </div>
       <div className='init-button-wrapper'>
-        <Button onClick={() => setStep(prev => prev + 1)} disabled={!isAbleToNext}>
+        {!isAbleNickname &&
+          <span>이미 사용중인 닉네임입니다.</span>
+        }
+        <Button onClick={() => onClickNext()} disabled={!isAbleToNext}>
           다음
         </Button>
       </div>
@@ -236,7 +193,7 @@ const InitStep2 = (props: InitStepProps) => {
 };
 
 
-const InitStep3 = (props: InitStepProps) => {
+const InitStep2 = (props: InitStepProps) => {
   const { profile, setProfile, setStep } = props;
   const isAbleToNext = useIsAble([
     profile.interest.length > 0,
@@ -282,19 +239,19 @@ const InitStep3 = (props: InitStepProps) => {
   };
 
   return (
-    <div className='init-step-3'>
-      <div className='init-step-3-interest-list'>
-        {INIT_STEP_3.map(el => {
+    <div className='init-step-2'>
+      <div className='init-step-2-interest-list'>
+        {INIT_STEP_2.map(el => {
           const Icon = el.icon;
           return (
             <div onClick={() => onSelectInterest(el.name as Interest)}
                  style={{ borderColor: isSelectedInterest(el.name as Interest) ? el.color : '#212121' }}
-                 className='init-step-3-interest'>
-              <div className='init-step-3-interest-content'>
+                 className='init-step-2-interest'>
+              <div className='init-step-2-interest-content'>
                 <Icon />
-                <div className='init-step-3-interest-info'>
-                  <span className='init-step-3-interest-info-name' style={{ color: el.color }}>{el.name}</span>
-                  <span className='init-step-3-interest-info-description'>{el.description}</span>
+                <div className='init-step-2-interest-info'>
+                  <span className='init-step-2-interest-info-name' style={{ color: el.color }}>{el.name}</span>
+                  <span className='init-step-2-interest-info-description'>{el.description}</span>
                 </div>
               </div>
               <Check fill={isSelectedInterest(el.name as Interest) ? el.color : '#212121'} width={19} height={14} />
@@ -312,7 +269,7 @@ const InitStep3 = (props: InitStepProps) => {
 };
 
 
-const InitStep4 = (props: InitStepProps) => {
+const InitStep3 = (props: InitStepProps) => {
   const { profile, setProfile, setStep } = props;
   // console.log(profile);
   const isAbleToNext = useIsAble([
@@ -356,19 +313,46 @@ const InitStep4 = (props: InitStepProps) => {
     });
 
   };
+  console.log(profile.keywords);
 
+  const onClickComplete = async () => {
+    if(profile.keywords === null) return;
+    try {
+      const formData = new FormData();
+      formData.append('description', '-');
+      formData.append('profileImage', profile.profileImage as Blob);
+      formData.append('birthDate', '1999-12-31');
+      formData.append('nickname', profile.nickname);
+      formData.append('phoneNumber', '010-0000-0000');
+      formData.append('role', 'ROLE_ARTIST');
+      await updateUserInfoAPI(formData);
+      const interestArray: Array<Record<string, string>> = [];
+      Object.keys(profile.keywords).forEach(key => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const arr = profile.keywords[key as Interest].map(el => {
+          return {
+            postType: key.toLowerCase(),
+            name: el
+          }
+        });
+        interestArray.push(...arr);
+      });
+      await updateUserInterestAPI(interestArray);
+      setStep(prev => prev + 1);
 
-  const onClickComplete = () => {
-    setStep(prev => prev + 1);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
 
   return (
-    <div className='init-step-4'>
+    <div className='init-step-3'>
       <ScrollArea>
-        <div className='init-step-4-container'>
+        <div className='init-step-3-container'>
           {profile.interest.map(el => {
-            const payload = INIT_STEP_4[el];
+            const payload = INIT_STEP_3[el];
             const Icon = payload.icon;
             console.log(payload);
             return (

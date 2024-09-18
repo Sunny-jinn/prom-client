@@ -4,12 +4,8 @@ import WritingIcon from '@/assets/img/icon_Writing.svg?react';
 
 const INIT_STEP_HEADER_TEXT = [
   {
-    title   : 'PROM을 시작하기 전,',
-    subTitle: <span className='init-header-sub-title'>어떤 목적으로 이용하시나요?</span>,
-  },
-  {
     title   : '프로필 설정',
-    subTitle: <span className='init-header-sub-title'>프로필 사진을 선택해주세요.</span>,
+    subTitle: <span className='init-header-sub-title'>이름과 사진을 설정해주세요.</span>,
   },
   {
     title   : '관심 분야 설정',
@@ -42,7 +38,7 @@ const INIT_STEP_1 = [
   },
 ];
 
-const INIT_STEP_3 = [
+const INIT_STEP_2 = [
   {
     icon       : MusicIcon,
     name       : 'MUSIC',
@@ -63,7 +59,7 @@ const INIT_STEP_3 = [
   },
 ];
 
-const INIT_STEP_4 = {
+const INIT_STEP_3 = {
   'MUSIC'  : {
     icon    : MusicIcon,
     name    : 'MUSIC',
@@ -126,6 +122,6 @@ const INIT_STEP_4 = {
 export {
   INIT_STEP_HEADER_TEXT,
   INIT_STEP_1,
+  INIT_STEP_2,
   INIT_STEP_3,
-  INIT_STEP_4,
 };

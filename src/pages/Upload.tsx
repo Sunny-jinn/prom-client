@@ -15,6 +15,7 @@ import useIsAble from '@/hooks/useIsAble';
 import { ScrollArea } from '@/components/ScrollArea';
 import Button from '@/components/atom/Button';
 import { INIT_STEP_2 } from '@/constants/init.data';
+import { createFeedAPI, createPickAPI } from '@/feature/api/post.api';
 
 type UploadProps = Omit<DrawerProps, 'children'>
 type UploadType = 'FEED' | 'PICK'
@@ -96,17 +97,18 @@ type UploadContentProps = Pick<UploadProps, 'onClose'> & {
   setStep: Dispatch<SetStateAction<number>>
 }
 
-type ImageContent = {
+type Content = {
   file: File,
   url: string;
 }
 
 const UploadFeed = ({ onClose, uploadType, step, setStep }: UploadContentProps) => {
-  const [images, setImages] = useState<Array<ImageContent>>([]);
-  const [indexedImages, setIndexedImages] = useState<Array<ImageContent>>([]);
+  const [images, setImages] = useState<Array<Content>>([]);
+  const [indexedImages, setIndexedImages] = useState<Array<Content>>([]);
   const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
   const ref = useRef<HTMLInputElement | null>(null);
   const handlerType = useRef<'GET' | 'ADD'>('GET');
+  const [isUploadComplete, setIsUploadComplete] = useState(false);
 
   const onClickUpload = (type: 'GET' | 'ADD') => {
     if(!ref.current) return;
@@ -142,7 +144,7 @@ const UploadFeed = ({ onClose, uploadType, step, setStep }: UploadContentProps) 
     setImages(prev => [...prev, ...fileArray]);
   };
 
-  const onClickIndex = (el: ImageContent) => {
+  const onClickIndex = (el: Content) => {
     if(indexedImages.find(img => img === el)) {
       setIndexedImages(prev => prev.filter(prv => prv !== el));
       return;
@@ -156,9 +158,26 @@ const UploadFeed = ({ onClose, uploadType, step, setStep }: UploadContentProps) 
   };
 
   const onUpload = async (title: string, description: string, type: string) => {
-    console.log(title);
-    console.log(description);
-    console.log(type);
+    setTimeout(() => {
+      setIsUploadComplete(true);
+    }, 4000);
+    // const formData = new FormData();
+    // formData.append('title', title);
+    // formData.append('description', description);
+    // formData.append('type', type.toLowerCase());
+    // for (const image of indexedImages.map(el => el.file)) {
+    //   formData.append('images', image);
+    // }
+    // try {
+    //   const result = await createFeedAPI(formData);
+    //   console.log(result);
+    //   setIsUploadComplete(true);
+    //
+    // } catch (e) {
+    //   setStep(prev => prev - 1);
+    //   setIsUploadComplete(false);
+    //   console.log(e);
+    // }
   };
 
   useEffect(() => {
@@ -261,13 +280,19 @@ const UploadFeed = ({ onClose, uploadType, step, setStep }: UploadContentProps) 
           </Swiper>
         </UploadFinalize>
       }
+      {step === 2 &&
+        <Uploading type={'FEED'} isComplete={isUploadComplete}>
+          <img src={indexedImages[0].url} alt='preview' />
+        </Uploading>
+      }
     </>
   );
 };
 
 const UploadPick = ({ onClose, uploadType, step, setStep }: UploadContentProps) => {
-  const [pick, setPick] = useState<File | null>(null);
+  const [pick, setPick] = useState<Content | null>(null);
   const ref = useRef<HTMLInputElement | null>(null);
+  const [isUploadComplete, setIsUploadComplete] = useState(false);
 
   const isAbleToNext = useIsAble([
     Boolean(pick),
@@ -278,15 +303,40 @@ const UploadPick = ({ onClose, uploadType, step, setStep }: UploadContentProps) 
     ref.current?.click();
   };
 
+  const handlePick = (e: ChangeEvent<HTMLInputElement>) => {
+    if(!e.target.files) return;
+    const pick = e.target.files[0];
+    setPick({
+      file: pick,
+      url : URL.createObjectURL(pick),
+    });
+  };
+  console.log(pick);
+
   const close = () => {
     setPick(null);
     onClose();
   };
 
   const onUpload = async (title: string, description: string, type: string) => {
-    console.log(title);
-    console.log(description);
-    console.log(type);
+    setTimeout(() => {
+      setIsUploadComplete(true);
+    }, 4000);
+    // if(!pick) return;
+    // const formData = new FormData();
+    // formData.append('title', title);
+    // formData.append('description', description);
+    // formData.append('type', type.toLowerCase());
+    // formData.append('shortForm', pick.file);
+    // try{
+    //   const result = await createPickAPI(formData);
+    //   setIsUploadComplete(true);
+    //   console.log(result);
+    // }catch (e) {
+    //   setStep(prev => prev - 1);
+    //   setIsUploadComplete(false)
+    //   console.log(e);
+    // }
   };
 
   return (
@@ -311,14 +361,20 @@ const UploadPick = ({ onClose, uploadType, step, setStep }: UploadContentProps) 
                 <Logo width={218} height={56} color={'#ffffff'} />
               </div>
             }
+            {pick &&
+              <div className='selected-preview-wrapper'>
+                <video key={pick.url} controls autoPlay={true} playsInline={true}>
+                  <source src={pick.url} />
+                </video>
+              </div>
+            }
           </div>
           <div className='upload-content-selector-wrapper'>
             <div className='upload-content-selector-header'>
               <span>불러온 PICK</span>
               {pick && <span onClick={() => onClickUpload()} style={{ color: '#B8B8B8' }}>다시 불러오기</span>}
-
             </div>
-            <input type='file' ref={ref} accept={'video/*, audio/*'} />
+            <input type='file' onChange={e => handlePick(e)} ref={ref} accept={'video/*, audio/*'} />
             <div className='upload-content-selector'>
               {!pick &&
                 <div className='upload-content-selector-empty' onClick={() => onClickUpload()}>
@@ -330,10 +386,21 @@ const UploadPick = ({ onClose, uploadType, step, setStep }: UploadContentProps) 
           </div>
         </div>
       }
-      {step === 1 &&
+      {(step === 1 && pick) &&
         <UploadFinalize uploadType={uploadType} setStep={setStep} onUpload={onUpload}>
-          <div>asd</div>
+          <div className='pick-wrapper'>
+            <video controls autoPlay={true} playsInline={true}>
+              <source src={pick.url} />
+            </video>
+          </div>
         </UploadFinalize>
+      }
+      {(step === 2 && pick) &&
+        <Uploading type={'PICK'} isComplete={isUploadComplete}>
+          <video muted={true} autoPlay={true} playsInline={true}>
+            <source src={pick.url} />
+          </video>
+        </Uploading>
       }
     </>
 
@@ -358,6 +425,18 @@ const UploadFinalize = (props: UploadFinalizeProps) => {
     return 'PICK';
   }, [uploadType]);
 
+  const isAble = useIsAble([
+    title !== '',
+    description !== '',
+    type !== null,
+  ]);
+
+  const uploadContent = () => {
+    if(!type) return;
+    setStep(prev => prev + 1);
+    onUpload(title, description, type)
+  };
+
   return (
     <>
       <div className='upload-finalize'>
@@ -372,7 +451,7 @@ const UploadFinalize = (props: UploadFinalizeProps) => {
             isAble: false,
           }}
         />
-        <ScrollArea style={{ padding: '0 16px 20px' }}>
+        <ScrollArea style={{ padding: '0 16px' }}>
           <div className='upload-finalize-content'>
             {children}
           </div>
@@ -388,11 +467,12 @@ const UploadFinalize = (props: UploadFinalizeProps) => {
               {INIT_STEP_2.map(el => {
                 const Icon = el.icon;
                 return (
-                  <div onClick={() => setType(el.name)} className='upload-type' style={{borderColor: el.name === type ? el.color : '#000000'}}>
-                      <Icon height={14} width={14}/>
-                    <span style={{fontSize: 14, color: el.color, fontWeight: 600}}>{el.name}</span>
+                  <div onClick={() => setType(el.name)} className='upload-type'
+                       style={{ borderColor: el.name === type ? el.color : '#000000' }}>
+                    <Icon height={14} width={14} />
+                    <span style={{ fontSize: 14, color: el.color, fontWeight: 600 }}>{el.name}</span>
                   </div>
-                )
+                );
               })}
             </div>
             <div className='upload-finalize-comment'>
@@ -409,7 +489,7 @@ const UploadFinalize = (props: UploadFinalizeProps) => {
           </div>
         </ScrollArea>
         <div className='upload-button-wrapper'>
-          <Button>
+          <Button disabled={!isAble} onClick={() => uploadContent()}>
             업로드
           </Button>
         </div>
@@ -418,3 +498,28 @@ const UploadFinalize = (props: UploadFinalizeProps) => {
     </>
   );
 };
+
+const Uploading = ({ isComplete, type, children }: { isComplete: boolean, type: UploadType, children: ReactNode }) => {
+  return (
+    <div className='uploading'>
+      {isComplete && <span className='upload-complete'> 업로드가 완료되었습니다.</span>}
+      <div className='uploading-preview'>
+        <div className='uploading-preview-blur' style={{borderRadius: type === 'PICK' ? '10px' : '15px'}}>
+          {!isComplete && <span style={{ color: '#ffffff' }}>업로드중</span>}
+          {isComplete && <span style={{ color: '#ffffff' }}>완료</span>}
+        </div>
+        {children}
+      </div>
+      {!isComplete &&
+        <div className='upload-processing'>
+          <div className='upload-processing-title'>
+            <span>업로드 진행중..</span>
+          </div>
+          <span>{'PROM 팁 : AI를 통해 아트워크를\n' + '손쉽게 만들어보세요!'}</span>
+        </div>
+      }
+    </div>
+  );
+};
+
+

@@ -324,7 +324,7 @@ const InitStep3 = (props: InitStepProps) => {
       formData.append('birthDate', '1999-12-31');
       formData.append('nickname', profile.nickname);
       formData.append('phoneNumber', '010-0000-0000');
-      formData.append('role', 'ROLE_ARTIST');
+      formData.append('role', 'ROLE_ARTTY');
       await updateUserInfoAPI(formData);
       const interestArray: Array<Record<string, string>> = [];
       Object.keys(profile.keywords).forEach(key => {

@@ -1,17 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDisclosure } from '@chakra-ui/react';
+import { Box, Image, Input, Text, useDisclosure } from '@chakra-ui/react';
 import 'swiper/css';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 import comment from '@/assets/img/comment.png';
 import ellipsis from '@/assets/img/ellipsis.png';
+import icon_comment_upload from '@/assets/img/icon_comment_upload.png';
 import left_arrow from '@/assets/img/left_arrow.png';
 import like from '@/assets/img/like.png';
 import out from '@/assets/img/out.png';
 import test_image from '@/assets/img/profile_background.png';
 import bookmark from '@/assets/img/tabbar_bookmark.png';
+import Comment from '@/components/Comment';
 import CustomBottomDrawer from '@/components/CustomBottomDrawer';
 import CustomBottomModal from '@/components/CustomBottomModal';
+import MainBottomDrawer from '@/components/MainBottomDrawer';
+import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import './PostDetail.scss';
 
 const PostDetail = () => {
@@ -21,6 +25,12 @@ const PostDetail = () => {
   const navigate = useNavigate();
 
   const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
+  const {
+    isOpen: isCommentOpen,
+    onOpen: openCommentDrawer,
+    onClose: closeCommentDrawer,
+  } = useDisclosure();
+
   const {
     isOpen: isDeleteDrawerOpen,
     onOpen: openDeleteDrawer,
@@ -77,107 +87,214 @@ const PostDetail = () => {
   };
 
   return (
-    <div id="PostDetail">
-      <div className="post-detail-header">
-        <div className="post-detail-back-btn" onClick={() => navigate(-1)}>
-          <img src={left_arrow} alt="" />
+    <SafeAreaLayout flexDirection="column">
+      <div id="PostDetail">
+        <div className="post-detail-header">
+          <div className="post-detail-back-btn" onClick={() => navigate(-1)}>
+            <img src={left_arrow} alt="" />
+          </div>
+          <div className="post-detail-user">
+            <span className="post-detail-user-name">김진우 님의</span>
+            <span>게시물</span>
+          </div>
+          <div className="post-detail-ellipsis-btn" onClick={openDrawer}>
+            <img src={ellipsis} alt="" />
+          </div>
         </div>
-        <div className="post-detail-user">
-          <span className="post-detail-user-name">김진우 님의</span>
-          <span>게시물</span>
+        <div className="post-detail-carousel">
+          <Swiper
+            spaceBetween={10}
+            slidesPerView={1}
+            grabCursor={true}
+            onSlideChange={handleSlideChange}
+          >
+            <SwiperSlide>
+              <img src={test_image} alt="test" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src={test_image} alt="test" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src={test_image} alt="test" />
+            </SwiperSlide>
+          </Swiper>
+          {/**!TODO: 사진 개수 반영 */}
+          <div className="swiper-bullets">
+            {[0, 1, 2].map((index) => (
+              <div key={index} className={`bullet ${activeSlideIndex === index ? 'active' : ''}`} />
+            ))}
+          </div>
         </div>
-        <div className="post-detail-ellipsis-btn" onClick={openDrawer}>
-          <img src={ellipsis} alt="" />
+
+        <div className="post-detail-menus">
+          <div className={`post-detail-menu ${isClicked && 'clicked'}`}>
+            <img src={like} alt="like" />
+            <span>25</span>
+          </div>
+          <button className="post-detail-menu" onClick={openCommentDrawer}>
+            <img src={comment} alt="comment" />
+            <span>4</span>
+          </button>
+          <div className="post-detail-menu">
+            <img src={out} alt="out" />
+          </div>
+          <div className="post-detail-menu right">
+            <img src={bookmark} alt="out" />
+          </div>
         </div>
+
+        <div className="post-detail-author">
+          <img src={test_image} alt="profile" />
+          <span>김진우</span>
+        </div>
+
+        <div className="post-detail-intro">
+          <div className="post-detail-intro-title">
+            <span className="post-detail-intro-title-text">작품소개</span>
+            <span className="post-detail-intro-title-date">8월 12일</span>
+          </div>
+          <div className="post-detail-intro-content">
+            '자연의 소용돌이'는 아르누보 양식의 풍부한 장식성과 육시적인 곡선을 담아낸 작품으로,
+            자연의 에너지를 역동적이고도 우아한 방식으로 표현하고 있습니다.
+          </div>
+        </div>
+
+        <CustomBottomDrawer
+          options={PostDetailModal}
+          cancel
+          onClose={closeDrawer}
+          isOpen={isDrawerOpen}
+        />
+
+        <CustomBottomDrawer
+          cancel
+          onClose={closeDeleteDrawer}
+          isOpen={isDeleteDrawerOpen}
+          isDelete
+          onDelete={newDeleteClick}
+        />
+
+        <CustomBottomModal
+          text="게시물이 보관함에 보관됨"
+          icon="modal_check"
+          isOpen={isBottomModalOpen}
+          onClose={closeBottomModal}
+        />
+
+        <CustomBottomModal
+          text="게시물 삭제됨"
+          icon="modal_delete"
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+        />
+
+        <MainBottomDrawer isOpen={isCommentOpen} onClose={closeCommentDrawer}>
+          <Box sx={{ position: 'relative', height: '100%' }}>
+            <Box sx={{ textAlign: 'center', marginBottom: '15px' }}>
+              <Text sx={{ color: '#fff', fontWeight: '600' }}>댓글</Text>
+            </Box>
+            {DUMMY_COMMENTS.map((item) => (
+              <Comment
+                profile={item.profile}
+                key={item.id}
+                nickname={item.nickname}
+                content={item.content}
+                date={item.date}
+                isArtist={item.id === 1}
+              />
+            ))}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                position: 'absolute',
+                bottom: '40px',
+                width: 'calc(100% - 32px)',
+                margin: '0 16px',
+                gap: '8px',
+              }}
+            >
+              <Box sx={{ border: '1px solid #fff', borderRadius: '999' }}>
+                <Image
+                  src={test_image}
+                  alt="profile"
+                  sx={{ width: '43px', height: '43px', borderRadius: 999 }}
+                />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Input
+                  sx={{
+                    border: 'none',
+                    background: '#353535',
+                    borderRadius: '15px',
+                    padding: '13px 16px',
+                    color: '#fff',
+                    fontSize: '14px',
+                    position: 'relative',
+                  }}
+                  placeholder={`김진우 님의 게시물에 댓글달기`}
+                />
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    right: '5px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: '#1d1d1d',
+                    borderRadius: '9px',
+                    padding: '3px 6px',
+                    zIndex: '1',
+                    transition: '0.2s ease-in-out',
+                    '&:active': {
+                      background: '#000000',
+                    },
+                  }}
+                >
+                  <Image
+                    src={icon_comment_upload}
+                    alt="upload"
+                    sx={{ width: '25px', height: '25px' }}
+                  />
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </MainBottomDrawer>
       </div>
-      <div className="post-detail-carousel">
-        <Swiper
-          spaceBetween={10}
-          slidesPerView={1}
-          grabCursor={true}
-          onSlideChange={handleSlideChange}
-        >
-          <SwiperSlide>
-            <img src={test_image} alt="test" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={test_image} alt="test" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={test_image} alt="test" />
-          </SwiperSlide>
-        </Swiper>
-        {/**!TODO: 사진 개수 반영 */}
-        <div className="swiper-bullets">
-          {[0, 1, 2].map((index) => (
-            <div key={index} className={`bullet ${activeSlideIndex === index ? 'active' : ''}`} />
-          ))}
-        </div>
-      </div>
-
-      <div className="post-detail-menus">
-        <div className={`post-detail-menu ${isClicked && 'clicked'}`}>
-          <img src={like} alt="like" />
-          <span>25</span>
-        </div>
-        <div className="post-detail-menu">
-          <img src={comment} alt="comment" />
-          <span>4</span>
-        </div>
-        <div className="post-detail-menu">
-          <img src={out} alt="out" />
-        </div>
-        <div className="post-detail-menu right">
-          <img src={bookmark} alt="out" />
-        </div>
-      </div>
-
-      <div className="post-detail-author">
-        <img src={test_image} alt="profile" />
-        <span>김진우</span>
-      </div>
-
-      <div className="post-detail-intro">
-        <div className="post-detail-intro-title">
-          <span className="post-detail-intro-title-text">작품소개</span>
-          <span className="post-detail-intro-title-date">8월 12일</span>
-        </div>
-        <div className="post-detail-intro-content">
-          '자연의 소용돌이'는 아르누보 양식의 풍부한 장식성과 육시적인 곡선을 담아낸 작품으로,
-          자연의 에너지를 역동적이고도 우아한 방식으로 표현하고 있습니다.
-        </div>
-      </div>
-
-      <CustomBottomDrawer
-        options={PostDetailModal}
-        cancel
-        onClose={closeDrawer}
-        isOpen={isDrawerOpen}
-      />
-
-      <CustomBottomDrawer
-        cancel
-        onClose={closeDeleteDrawer}
-        isOpen={isDeleteDrawerOpen}
-        isDelete
-        onDelete={newDeleteClick}
-      />
-
-      <CustomBottomModal
-        text="게시물이 보관함에 보관됨"
-        icon="modal_check"
-        isOpen={isBottomModalOpen}
-        onClose={closeBottomModal}
-      />
-
-      <CustomBottomModal
-        text="게시물 삭제됨"
-        icon="modal_delete"
-        isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
-      />
-    </div>
+    </SafeAreaLayout>
   );
 };
+
+const DUMMY_COMMENTS = [
+  {
+    id: 0,
+    profile: test_image,
+    nickname: '정의왕',
+    date: '3분',
+    content: '조이 흐웨이 하고싶어요',
+  },
+  {
+    id: 1,
+    profile: test_image,
+    nickname: '정의왕',
+    date: '3분',
+    content: '조이 흐웨이 하고싶어요',
+  },
+  {
+    id: 2,
+    profile: test_image,
+    nickname: '정의왕',
+    date: '23분',
+    content:
+      '조이 흐웨이 좋아요조이 흐웨이 좋아요조이 흐웨이 좋아요조이 흐웨이 좋아요조이 흐웨이 좋아요조이 흐웨이 좋아요조이 흐웨이 좋아요',
+  },
+  {
+    id: 3,
+    profile: test_image,
+    nickname: '정의왕',
+    date: '23분',
+    content: '조이 흐웨이 하고싶어요',
+  },
+];
 
 export default PostDetail;

@@ -8,13 +8,19 @@
   padding: 0 16px 150px 16px;
   color: #fff;
 
+  .my-page-header-container {
+    position: absolute;
+    box-sizing: border-box;
+    width: calc(100% - 16px);
+    background: none;
+    z-index: 1;
+  }
+
   .my-page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 51px;
-
-    z-index: 1;
 
     img {
       width: 25px;
@@ -44,7 +50,7 @@
 
   .background-image {
     position: relative;
-    margin-top: -85px;
+    // margin-top: -85px;
 
     .background-image-wrapper {
       position: relative;
@@ -57,7 +63,7 @@
         left: 0;
         width: 100%;
         height: 25%;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
       }
     }
 

@@ -6,7 +6,7 @@ import modal_check from '@/assets/img/modal_check.png';
 
 type CustomBottomModalProps = {
   text: string;
-  content: string;
+  content?: string;
   icon?: 'modal_check' | 'modal_delete' | 'modal_eye_off';
   isOpen: boolean;
   onClose: () => void;

@@ -2,27 +2,32 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
+  Image,
   Tab,
   TabIndicator,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import edit_icon from '@/assets/img/edit.png';
 import ellipsis from '@/assets/img/ellipsis.png';
 import icon_bottom_arrow from '@/assets/img/icon_bottom_arrow.png';
 import icon_up_arrow from '@/assets/img/icon_up_arrow.png';
+import icon_right_arrow from '@/assets/img/icon_up_arrow.png';
 import profileBackground from '@/assets/img/profile_background.png';
 import tabbar_all from '@/assets/img/tabbar_all.png';
 import tabbar_shorts from '@/assets/img/tabbar_shorts.png';
 import CustomBottomDrawer from '@/components/CustomBottomDrawer';
 import CustomBottomModal from '@/components/CustomBottomModal';
+import MainBottomDrawer from '@/components/MainBottomDrawer';
 import MyPageArtwork from '@/components/MyPageArtwork';
 import MyPageTag from '@/components/MyPageTag';
-import { PageLayout } from '@/components/PageLayout';
 import PostCard from '@/components/PostCard';
+import ReportCard from '@/components/ReportCard';
+import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import './MyPage.scss';
 
 const MyPage = () => {
@@ -49,6 +54,17 @@ const MyPage = () => {
     onOpen: openBottomModal,
     onClose: closeBottomModal,
   } = useDisclosure();
+  const {
+    isOpen: isBlockModalOpen,
+    onOpen: openBlockModal,
+    onClose: closeBlockModal,
+  } = useDisclosure();
+
+  const {
+    isOpen: isReportModalOpen,
+    onOpen: openReportModal,
+    onClose: closeReportModal,
+  } = useDisclosure();
 
   const editClickHandler = () => {
     setIsEditMode(true);
@@ -63,6 +79,16 @@ const MyPage = () => {
   const deleteClickHandler = () => {
     setIsEditMode(false);
     closeCancelDrawer();
+  };
+
+  const blockClickHandler = () => {
+    closeDrawer();
+    openBlockModal();
+  };
+
+  const reportClickHandler = () => {
+    closeDrawer();
+    openReportModal();
   };
 
   const MyPageModalOptions = [
@@ -95,33 +121,45 @@ const MyPage = () => {
     {
       id: 1,
       text: '차단',
+      onClick: blockClickHandler,
     },
     {
       id: 2,
       text: '신고하기',
       delete: true,
+      onClick: reportClickHandler,
     },
   ];
 
   return (
-    <PageLayout>
+    <div>
       <div id="MyPage">
-        <div className={`my-page-header ${isEditMode && 'active'}`}>
-          {isEditMode ? (
-            <div onClick={openCancelDrawer}>
-              <span className="my-page-header-cancel">취소</span>
+        <div className="my-page-header-container">
+          <SafeAreaLayout flexDirection="column" safeAreaBackground="rgba(0,0,0,0)">
+            <div className="my-page-header-container">
+              <div className={`my-page-header ${isEditMode && 'active'}`}>
+                {isEditMode ? (
+                  <div onClick={openCancelDrawer}>
+                    <span className="my-page-header-cancel">취소</span>
+                  </div>
+                ) : (
+                  <img style={{ visibility: 'hidden' }} src={ellipsis} alt="ellipsis" />
+                )}
+                <span className="my-page-header-text">마이페이지</span>
+                {isEditMode ? (
+                  <div onClick={() => setIsEditMode(false)}>
+                    <span className="my-page-header-confirm">완료</span>
+                  </div>
+                ) : (
+                  <img
+                    src={ellipsis}
+                    alt="ellipsis"
+                    onClick={isMyPage ? openMyDrawer : openDrawer}
+                  />
+                )}
+              </div>
             </div>
-          ) : (
-            <img style={{ visibility: 'hidden' }} src={ellipsis} alt="ellipsis" />
-          )}
-          <span className="my-page-header-text">마이페이지</span>
-          {isEditMode ? (
-            <div onClick={() => setIsEditMode(false)}>
-              <span className="my-page-header-confirm">완료</span>
-            </div>
-          ) : (
-            <img src={ellipsis} alt="ellipsis" onClick={isMyPage ? openMyDrawer : openDrawer} />
-          )}
+          </SafeAreaLayout>
         </div>
 
         <div className="background-image">
@@ -176,14 +214,14 @@ const MyPage = () => {
               <span className="my-page-info-number">15</span>
               <span className="my-page-info-text">작업</span>
             </div>
-            <div className="my-page-info">
+            <button className="my-page-info" onClick={() => navigate('follow-list/follower')}>
               <span className="my-page-info-number">33</span>
               <span className="my-page-info-text">팔로워</span>
-            </div>
-            <div className="my-page-info">
+            </button>
+            <button className="my-page-info" onClick={() => navigate('follow-list/following')}>
               <span className="my-page-info-number">45</span>
               <span className="my-page-info-text">팔로잉</span>
-            </div>
+            </button>
           </div>
         )}
 
@@ -294,8 +332,105 @@ const MyPage = () => {
           onClose={closeBottomModal}
           icon="modal_eye_off"
         />
+
+        <MainBottomDrawer isOpen={isBlockModalOpen} onClose={closeBlockModal}>
+          <Text sx={{ color: '#fff', textAlign: 'center', fontWeight: 600 }}>차단</Text>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              marginTop: '28px',
+              padding: '0 16px',
+              paddingBottom: '40px',
+              height: '100%',
+            }}
+          >
+            <Box sx={{ border: '1px solid #fff', borderRadius: '999px' }}>
+              <Image
+                src={profileBackground}
+                alt="x"
+                sx={{ width: '74px', height: '74px', borderRadius: '999px' }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+                marginTop: '19px',
+              }}
+            >
+              <Box sx={{ textAlign: 'center' }}>
+                <Text
+                  sx={{ color: '#fff', fontSize: '22px', fontWeight: '600', lineHeight: '26.25px' }}
+                >
+                  김진우
+                </Text>
+                <Text
+                  sx={{ color: '#fff', fontSize: '22px', fontWeight: '600', lineHeight: '26.25px' }}
+                >
+                  님을 차단하시겠습니까?
+                </Text>
+              </Box>
+              <Box sx={{ textAlign: 'center' }}>
+                <Text
+                  sx={{
+                    fontSize: '14px',
+                    color: '#a6a6a6',
+                    whiteSpace: 'pre-line',
+                    lineHeight: '16.71px',
+                  }}
+                >
+                  차단 시 해당 사용자의 활동이 귀하에게{`\n`}
+                  표시되지 않으며, 상호작용이 제한됩니다.
+                </Text>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                background: '#ff6d6d',
+                marginTop: 'auto',
+                width: '100%',
+                padding: '16px 22px',
+                justifyContent: 'center',
+                borderRadius: '17px',
+              }}
+              onClick={closeBlockModal}
+            >
+              <Text sx={{ color: '#fff', fontSize: '14px', fontWeight: '600' }}>차단하기</Text>
+            </Box>
+          </Box>
+        </MainBottomDrawer>
+        <MainBottomDrawer isOpen={isReportModalOpen} onClose={closeReportModal}>
+          <Text sx={{ color: '#fff', textAlign: 'center', fontWeight: 600 }}>신고</Text>
+          <Box sx={{ display: 'flex', flexDirection: 'column', padding: '0 16px' }}>
+            <Box sx={{ display: 'flex', gap: '5px', flexDirection: 'column', marginTop: '32px' }}>
+              <Text sx={{ fontWeight: '600', lineHeight: '19.09px', color: '#fff' }}>
+                무엇을 신고하시나요?
+              </Text>
+              <Text
+                sx={{
+                  fontSize: '14px',
+                  fontWeight: '400',
+                  color: '#a6a6a6',
+                  lineHeight: '16.71px',
+                }}
+              >
+                커뮤니티의 안전과 질서를 위해 부적절한 행동을 신고해주세요.
+              </Text>
+            </Box>
+            <Box sx={{ borderTop: '1px solid #5f5f5f', marginTop: '22px' }} />
+            <Box sx={{ marginTop: '25px' }}>
+              <ReportCard text="특정 게시물" />
+              <ReportCard text="특정 댓글" />
+              <ReportCard text="계정의 활동" />
+            </Box>
+          </Box>
+        </MainBottomDrawer>
       </div>
-    </PageLayout>
+    </div>
   );
 };
 

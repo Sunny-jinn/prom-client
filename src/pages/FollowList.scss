@@ -1,0 +1,88 @@
+#FollowList {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  padding: 0 16px 150px 16px;
+  color: #fff;
+
+  .follow-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 0;
+
+    img {
+      filter: brightness(0) invert(100%);
+    }
+
+    span {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 19.09px;
+    }
+
+    .hidden {
+      opacity: 0;
+    }
+  }
+
+  .follow-list-title {
+    font-weight: 500;
+  }
+
+  .follow-list-search-bar {
+    display: flex;
+    align-items: center;
+    margin-top: 14px;
+    padding: 8px 13px;
+    font-size: 14px;
+    gap: 7px;
+    background-color: #292929;
+    border-radius: 15px;
+
+    input {
+      background: none;
+    }
+  }
+  .follow-list-divider {
+    margin-top: 24px;
+    height: 1px;
+    border-top: 1px solid #3e3e3e;
+  }
+
+  .follow-list-subtitle {
+    display: flex;
+    margin-top: 22px;
+    align-items: center;
+
+    &-text {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 21.48px;
+    }
+
+    .follow-list-sort {
+      display: flex;
+      margin-left: auto;
+      align-items: center;
+      gap: 4px;
+
+      img {
+        width: 16px;
+        height: 16px;
+      }
+      span {
+        font-size: 14px;
+        color: #47a5ac;
+      }
+    }
+  }
+
+  .follow-list-users {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 22px;
+  }
+}

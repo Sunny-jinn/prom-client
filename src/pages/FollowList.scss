@@ -29,22 +29,13 @@
 
   .follow-list-title {
     font-weight: 500;
-  }
+    opacity: 50%;
 
-  .follow-list-search-bar {
-    display: flex;
-    align-items: center;
-    margin-top: 14px;
-    padding: 8px 13px;
-    font-size: 14px;
-    gap: 7px;
-    background-color: #292929;
-    border-radius: 15px;
-
-    input {
-      background: none;
+    &.active {
+      opacity: 100%;
     }
   }
+
   .follow-list-divider {
     margin-top: 24px;
     height: 1px;

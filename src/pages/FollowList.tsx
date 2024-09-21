@@ -5,6 +5,7 @@ import icon_search from '@/assets/img/icon_search_square.svg';
 import icon_sort from '@/assets/img/icon_sort.png';
 import icon_left_arrow from '@/assets/img/left_arrow.png';
 import dummy_profile from '@/assets/img/profile_background.png';
+import CustomSearchInput from '@/components/CustomSearchInput';
 import FollowUserCard from '@/components/FollowUserCard';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import './FollowList.scss';
@@ -29,19 +30,16 @@ const FollowList = () => {
         <Tabs isFitted variant={'unstyled'} onChange={(index) => setTabIndex(index)}>
           <TabList>
             <Tab p={'14px'}>
-              <span className="follow-list-title">33 팔로워</span>
+              <span className={`follow-list-title ${tabIndex === 0 && 'active'}`}>33 팔로워</span>
             </Tab>
             <Tab>
-              <span className="follow-list-title">16 팔로잉</span>
+              <span className={`follow-list-title ${tabIndex === 1 && 'active'}`}>16 팔로잉</span>
             </Tab>
           </TabList>
           <TabIndicator height={'2px'} bg={'#7Bf7ff'} />
           <TabPanels>
             <TabPanel p={0}>
-              <div className="follow-list-search-bar">
-                <img src={icon_search} alt="" />
-                <input type="text" placeholder="검색" />
-              </div>
+              <CustomSearchInput placeholder="검색" />
               <div className="follow-list-divider" />
               <div className="follow-list-subtitle">
                 <span className="follow-list-subtitle-text">팔로워 리스트</span>

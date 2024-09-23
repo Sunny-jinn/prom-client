@@ -5,18 +5,18 @@ import ImageArticle2_1 from '@/assets/img/img_article2_1.png';
 import ImageArticle3 from '@/assets/img/img_article3.png';
 import ImageArticle3_1 from '@/assets/img/img_article3_1.png';
 
-type ImageContent = {
+export type ImageContent = {
   type: 'image'
   content: string;
   caption?: string;
 }
 
-type TextContent = {
+export type TextContent = {
   type: 'text';
   content: string;
 }
 
-type Article = {
+export type Article = {
   previewImage: string;
   backgroundImage: string;
   title: string;
@@ -67,7 +67,7 @@ export const ARTICLES: Array<Article> = [
       },
       {
         type   : 'image',
-        content: ImageArticle1_1,
+        content: ImageArticle2_1,
         caption: '이미지 출처 : 도서출판 비채',
       },
       {

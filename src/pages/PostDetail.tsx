@@ -11,7 +11,7 @@ import out from '@/assets/img/out.png';
 import test_image from '@/assets/img/profile_background.png';
 import bookmark from '@/assets/img/tabbar_bookmark.png';
 import CustomBottomDrawer from '@/components/CustomBottomDrawer';
-import CustomBottomModal from '@/components/CustomBottomModal';
+// import CustomBottomModal from '@/components/CustomBottomModal';
 import './PostDetail.scss';
 
 const PostDetail = () => {
@@ -27,14 +27,14 @@ const PostDetail = () => {
     onClose: closeDeleteDrawer,
   } = useDisclosure();
   const {
-    isOpen: isBottomModalOpen,
+    // isOpen: isBottomModalOpen,
     onOpen: openBottomModal,
-    onClose: closeBottomModal,
+    // onClose: closeBottomModal,
   } = useDisclosure();
   const {
-    isOpen: isDeleteModalOpen,
+    // isOpen: isDeleteModalOpen,
     onOpen: openDeleteModal,
-    onClose: closeDeleteModal,
+    // onClose: closeDeleteModal,
   } = useDisclosure();
 
   const clickHandler = () => {
@@ -163,19 +163,19 @@ const PostDetail = () => {
         onDelete={newDeleteClick}
       />
 
-      <CustomBottomModal
-        text="게시물이 보관함에 보관됨"
-        icon="modal_check"
-        isOpen={isBottomModalOpen}
-        onClose={closeBottomModal}
-      />
+      {/*<CustomBottomModal*/}
+      {/*  text="게시물이 보관함에 보관됨"*/}
+      {/*  icon="modal_check"*/}
+      {/*  isOpen={isBottomModalOpen}*/}
+      {/*  onClose={closeBottomModal}*/}
+      {/*/>*/}
 
-      <CustomBottomModal
-        text="게시물 삭제됨"
-        icon="modal_delete"
-        isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
-      />
+      {/*<CustomBottomModal*/}
+      {/*  text="게시물 삭제됨"*/}
+      {/*  icon="modal_delete"*/}
+      {/*  isOpen={isDeleteModalOpen}*/}
+      {/*  onClose={closeDeleteModal}*/}
+      {/*/>*/}
     </div>
   );
 };

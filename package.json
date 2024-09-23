@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite --force --host",
     "build": "tsc -b && vite build",
     "format:fix": "prettier --write --ignore-path .gitignore .",
     "https-preview": "serve dist",
@@ -17,7 +17,7 @@
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
-    "framer-motion": "^11.3.31",
+    "framer-motion": "^11.5.6",
     "ios-style-picker": "^0.0.6",
     "lodash": "^4.17.21",
     "lucide-react": "^0.436.0",

@@ -9,19 +9,23 @@ import { useDisclosure } from '@chakra-ui/react';
 import Upload from '@/pages/Upload';
 
 type NavigatorLayoutProps = {
-  children: ReactNode
+  children: ReactNode;
+  hasScrollArea: boolean
 }
 const NavigatorLayout = (props: NavigatorLayoutProps) => {
-  const { children } = props;
+  const { children, hasScrollArea } = props;
   const {isOpen, onOpen, onClose} = useDisclosure();
   return (
     <>
       {isOpen && <Upload isOpen={isOpen} onClose={onClose}/>}
       <div className='navigator-layout'>
         <div className='navigator-layout-content'>
-          <ScrollArea>
-            {children}
-          </ScrollArea>
+          {hasScrollArea &&
+            <ScrollArea>
+              {children}
+            </ScrollArea>
+          }
+          {!hasScrollArea && children}
         </div>
         <div className='navigator-layout-bar'>
           <div className='menu-container'>

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import more from '@/assets/img/more.png';
 import MUSIC from '@/assets/img/music.png';
-import profileBackground from '@/assets/img/profile_background.png';
+// import profileBackground from '@/assets/img/profile_background.png';
 import VISUAL from '@/assets/img/visual.png';
 import WRITING from '@/assets/img/writing.png';
 

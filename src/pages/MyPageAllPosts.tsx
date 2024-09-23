@@ -16,7 +16,7 @@ const MyPageAllPosts = () => {
   const [selectedPosts, setSelectedPosts] = useState<Omit<PostCardProp, 'onClick'>[]>([]);
   const [page, setPage] = useState(0);
   const [inputValue, setInputValue] = useState('');
-  const [representativeImage, setRepresentativeImage] = useState<string | null>(null);
+  const [representativeImage] = useState<string | null>(null);
   const [selectedBulletIndex, setSelectedBulletIndex] = useState<number>(0);
   const [temporaryImage, setTemporaryImage] = useState<string | null>(null);
 

@@ -10,9 +10,10 @@ export default defineConfig({
     port: 3000,
     proxy: {
       "/api": {
-        target: "http://52.78.81.43/",
+        target: "https://api.prom-art.store/",
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ""),
+        secure: false
       },
     },
   },

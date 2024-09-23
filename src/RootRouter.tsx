@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import SignIn from '@/pages/SignIn';
 import Splash from '@/pages/Splash';
-import { refreshAPI } from '@/feature/api/user.api';
+import { getMyInfoAPI, refreshAPI } from '@/feature/api/user.api';
 import Init from '@/pages/Init';
 import userStore from '@/store/User';
 import MyPage from './pages/MyPage';
@@ -12,6 +12,7 @@ import MyPageAllPosts from './pages/MyPageAllPosts';
 import PostDetail from './pages/PostDetail';
 import SignUp from './pages/SignUp';
 import Home from '@/pages/Home';
+import { addAccessTokenToServer } from '@/feature/api';
 
 const RootRouter = () => {
   return (
@@ -44,8 +45,11 @@ const AppRoute = () => {
   const { setUser } = userStore(state => state);
 
   const refresh = async () => {
+    addAccessTokenToServer('eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImNhdGVnb3J5IjoiYWNjZXNzIiwicm9sZSI6IkFSVElTVCIsImlhdCI6MTcyNzA5MTcwOCwiZXhwIjoxNzI3MTc4MTA4fQ.hZCZi6zvtFtPpcfuyahQ46DZDG0m56MCJEZH3edT31A')
+
     try {
-      const result = await refreshAPI();
+      const result = await getMyInfoAPI();
+      // const result = await refreshAPI();
       setUser(result);
       if(result.role === 'USER') {
         navigate('init');

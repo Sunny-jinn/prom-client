@@ -32,6 +32,7 @@ const RootRouter = () => {
           <Route path={'follow-list/:status'} element={<FollowList />} />
         </Route>
         <Route path="post/:post_id" element={<PostDetail />} />
+        <Route path="search" element={<Search />} />
       </Route>
     </Routes>
   );

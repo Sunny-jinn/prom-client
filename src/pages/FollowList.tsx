@@ -38,7 +38,7 @@ const FollowList = () => {
           </TabList>
           <TabIndicator height={'2px'} bg={'#7Bf7ff'} />
           <TabPanels>
-            <TabPanel p={0}>
+            <TabPanel p={'12px 0 0 0'}>
               <CustomSearchInput placeholder="검색" />
               <div className="follow-list-divider" />
               <div className="follow-list-subtitle">
@@ -54,11 +54,9 @@ const FollowList = () => {
                 ))}
               </div>
             </TabPanel>
-            <TabPanel p={0}>
-              <div className="follow-list-search-bar">
-                <img src={icon_search} alt="" />
-                <input type="text" placeholder="검색" />
-              </div>
+            <TabPanel p={'12px 0 0 0'}>
+              <CustomSearchInput placeholder="검색" />
+
               <div className="follow-list-divider" />
               <div className="follow-list-subtitle">
                 <span className="follow-list-subtitle-text">팔로잉 리스트</span>

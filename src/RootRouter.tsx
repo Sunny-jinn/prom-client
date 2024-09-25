@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet, Route, Routes } from 'react-router-dom';
-import { refreshAPI } from '@/feature/api/user.api';
+import { getMyInfoAPI, refreshAPI } from '@/feature/api/user.api';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import Home from '@/pages/Home';
 import Init from '@/pages/Init';
@@ -8,10 +8,12 @@ import OnBoarding from '@/pages/OnBoarding';
 import SignIn from '@/pages/SignIn';
 import Splash from '@/pages/Splash';
 import userStore from '@/store/User';
+import { addAccessTokenToServer } from './feature/api';
 import FollowList from './pages/FollowList';
 import MyPage from './pages/MyPage';
 import MyPageAllPosts from './pages/MyPageAllPosts';
 import PostDetail from './pages/PostDetail';
+import Search from './pages/Search';
 import SignUp from './pages/SignUp';
 
 const RootRouter = () => {
@@ -42,6 +44,9 @@ export default RootRouter;
 
 // '',app,''
 const AppRoute = () => {
+  addAccessTokenToServer(
+    'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyLCJjYXRlZ29yeSI6ImFjY2VzcyIsInJvbGUiOiJBUlRJU1QiLCJpYXQiOjE3MjcyMzU1OTAsImV4cCI6MTcyNzMyMTk5MH0.XHE3vkEsgHEcp1637Szbt-zbWc14u3kT5e1tUYuRscE',
+  );
   const navigate = useAppNavigate();
   const [appLoading, setAppLoading] = useState(true);
   const { setUser } = userStore((state) => state);
@@ -54,10 +59,10 @@ const AppRoute = () => {
         navigate('init');
         return;
       }
-      navigate('home');
+      navigate('my-page');
     } catch (e) {
-      // navigate('home');
       navigate('on-board');
+      // navigate('m');
     } finally {
       setAppLoading(false);
     }

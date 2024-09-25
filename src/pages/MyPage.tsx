@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -28,15 +28,59 @@ import MyPageTag from '@/components/MyPageTag';
 import PostCard from '@/components/PostCard';
 import ReportCard from '@/components/ReportCard';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
+import {
+  UserFeedsResponse,
+  UserTagsResponse,
+  getUserArtworks,
+  getUserFeeds,
+  getUserFollowers,
+  getUserFollowings,
+  getUserTags,
+} from '@/feature/api/mypage.api';
+import { UserResponse, getMyInfoAPI } from '@/feature/api/user.api';
 import './MyPage.scss';
 
 const MyPage = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [isMyPage, _] = useState<boolean>(false);
+  const [isMyPage, _] = useState<boolean>(true);
   const [showAll, setShowAll] = useState(false);
+
+  const [userInfo, setUserInfo] = useState<UserResponse | null>(null);
+  const [userTags, setUserTags] = useState<UserTagsResponse[]>([]);
+  const [followNumber, setFollowNumber] = useState({});
+  const [userFeeds, setUserFeeds] = useState<UserFeedsResponse[]>([]);
+
+  getUserArtworks();
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const user = await getMyInfoAPI();
+      const tags = await getUserTags();
+      const followerNumber = await getUserFollowers();
+      const followingNumber = await getUserFollowings();
+      const feeds = await getUserFeeds();
+
+      setFollowNumber({
+        follower: followerNumber.length,
+        following: followingNumber.length,
+      });
+
+      setUserInfo(user);
+      setUserTags(tags);
+      setUserFeeds(feeds);
+    };
+    fetchUserInfo();
+    console.log(userTags);
+  }, []);
 
   const handleToggle = () => {
     setShowAll(!showAll);
+  };
+
+  const handleTagUpdate = (tagId: number, newName: string) => {
+    setUserTags((prevTags) =>
+      prevTags.map((tag) => (tag.tagId === tagId ? { ...tag, name: newName } : tag)),
+    );
   };
 
   const navigate = useNavigate();
@@ -133,309 +177,337 @@ const MyPage = () => {
 
   return (
     <div>
-      <div id="MyPage">
-        <div className="my-page-header-container">
-          <SafeAreaLayout flexDirection="column" safeAreaBackground="rgba(0,0,0,0)">
-            <div className="my-page-header-container">
-              <div className={`my-page-header ${isEditMode && 'active'}`}>
-                {isEditMode ? (
-                  <div onClick={openCancelDrawer}>
-                    <span className="my-page-header-cancel">취소</span>
-                  </div>
-                ) : (
-                  <img style={{ visibility: 'hidden' }} src={ellipsis} alt="ellipsis" />
-                )}
-                <span className="my-page-header-text">마이페이지</span>
-                {isEditMode ? (
-                  <div onClick={() => setIsEditMode(false)}>
-                    <span className="my-page-header-confirm">완료</span>
-                  </div>
-                ) : (
-                  <img
-                    src={ellipsis}
-                    alt="ellipsis"
-                    onClick={isMyPage ? openMyDrawer : openDrawer}
-                  />
-                )}
-              </div>
-            </div>
-          </SafeAreaLayout>
-        </div>
-
-        <div className="background-image">
-          <div className="background-image-wrapper">
-            <img src={profileBackground} alt="background" />
-          </div>
-          <div className="my-page-profile">
-            <div className="my-page-profile-content">
-              <div className="my-page-profile-icon">
-                <img src={profileBackground} alt="" className="my-page-profile-image" />
-              </div>
-              <div className="my-page-profile-name">
-                {isEditMode && <img src={edit_icon} alt="edit" />}
-                <span className="my-page-nickname">김진우</span>
-                {isEditMode && <img src={edit_icon} alt="edit" />}
-              </div>
-              <div className="my-page-profile-tags">
-                {DUMMY_TAGS.slice(0, 2).map((tag, index) => (
-                  <div
-                    key={tag.id}
-                    className={`my-page-profile-tag ${index === 0 ? 'main-tag' : ''}`}
-                  >
-                    {tag.text}
-                  </div>
-                ))}
-
-                <div className="toggle-button" onClick={handleToggle}>
-                  {showAll ? (
-                    <img src={icon_up_arrow} alt="up" />
+      {userInfo && (
+        <div id="MyPage">
+          <div className="my-page-header-container">
+            <SafeAreaLayout flexDirection="column" safeAreaBackground="rgba(0,0,0,0)">
+              <div className="my-page-header-container">
+                <div className={`my-page-header ${isEditMode && 'active'}`}>
+                  {isEditMode ? (
+                    <div onClick={openCancelDrawer}>
+                      <span className="my-page-header-cancel">취소</span>
+                    </div>
                   ) : (
-                    <img src={icon_bottom_arrow} alt="up" />
+                    <img style={{ visibility: 'hidden' }} src={ellipsis} alt="ellipsis" />
+                  )}
+                  <span className="my-page-header-text">마이페이지</span>
+                  {isEditMode ? (
+                    <div onClick={() => setIsEditMode(false)}>
+                      <span className="my-page-header-confirm">완료</span>
+                    </div>
+                  ) : (
+                    <img
+                      src={ellipsis}
+                      alt="ellipsis"
+                      onClick={isMyPage ? openMyDrawer : openDrawer}
+                    />
                   )}
                 </div>
               </div>
+            </SafeAreaLayout>
+          </div>
 
-              {showAll && (
+          <div className="background-image">
+            <div className="background-image-wrapper">
+              <img src={profileBackground} alt="background" />
+            </div>
+            <div className="my-page-profile">
+              <div className="my-page-profile-content">
+                <div className="my-page-profile-icon">
+                  <img src={profileBackground} alt="" className="my-page-profile-image" />
+                </div>
+                <div className="my-page-profile-name">
+                  {isEditMode && <img src={edit_icon} alt="edit" />}
+                  <span className="my-page-nickname">{userInfo.username}</span>
+                  {isEditMode && <img src={edit_icon} alt="edit" />}
+                </div>
                 <div className="my-page-profile-tags">
-                  {DUMMY_TAGS.slice(2).map((tag) => (
-                    <div key={tag.id} className="my-page-profile-tag">
-                      {tag.text}
+                  {userTags.slice(0, 2).map((tag, index) => (
+                    <div
+                      key={tag.tagId}
+                      className={`my-page-profile-tag ${index === 0 ? 'main-tag' : ''}`}
+                    >
+                      {tag.name}
                     </div>
                   ))}
+
+                  {userTags.length > 1 && (
+                    <div className="toggle-button" onClick={handleToggle}>
+                      {showAll ? (
+                        <img src={icon_up_arrow} alt="up" />
+                      ) : (
+                        <img src={icon_bottom_arrow} alt="up" />
+                      )}
+                    </div>
+                  )}
                 </div>
+
+                {showAll && (
+                  <div className="my-page-profile-tags">
+                    {DUMMY_TAGS.slice(2).map((tag) => (
+                      <div key={tag.id} className="my-page-profile-tag">
+                        {tag.text}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {!isEditMode && (
+            <div className="my-page-info-container">
+              <div className="my-page-info">
+                <span className="my-page-info-number">15</span>
+                <span className="my-page-info-text">작업</span>
+              </div>
+              <button className="my-page-info" onClick={() => navigate('follow-list/follower')}>
+                <span className="my-page-info-number">{followNumber.follower}</span>
+                <span className="my-page-info-text">팔로워</span>
+              </button>
+              <button className="my-page-info" onClick={() => navigate('follow-list/following')}>
+                <span className="my-page-info-number">{followNumber.following}</span>
+                <span className="my-page-info-text">팔로잉</span>
+              </button>
+            </div>
+          )}
+
+          <div className="my-page-intro">
+            <div className="my-page-intro-title">
+              <span>소개</span>
+              {isEditMode && (
+                <button>
+                  <img src={edit_icon} alt="edit" />
+                </button>
               )}
             </div>
+            <div className="my-page-intro-content">{userInfo.description}</div>
           </div>
-        </div>
 
-        {!isEditMode && (
-          <div className="my-page-info-container">
-            <div className="my-page-info">
-              <span className="my-page-info-number">15</span>
-              <span className="my-page-info-text">작업</span>
-            </div>
-            <button className="my-page-info" onClick={() => navigate('follow-list/follower')}>
-              <span className="my-page-info-number">33</span>
-              <span className="my-page-info-text">팔로워</span>
-            </button>
-            <button className="my-page-info" onClick={() => navigate('follow-list/following')}>
-              <span className="my-page-info-number">45</span>
-              <span className="my-page-info-text">팔로잉</span>
-            </button>
-          </div>
-        )}
+          {!isEditMode && (
+            <>
+              <div className="my-page-artworks">
+                <MyPageArtwork text="자연" image={profileBackground} />
+                <MyPageArtwork text="자동차" image={profileBackground} />
+                <div className="my-page-artwork artwork-add" onClick={() => navigate('all-posts')}>
+                  +
+                </div>
+              </div>
 
-        <div className="my-page-intro">
-          <div className="my-page-intro-title">
-            <span>소개</span>
-            {isEditMode && (
-              <button>
-                <img src={edit_icon} alt="edit" />
-              </button>
-            )}
-          </div>
-          <div className="my-page-intro-content">{DUMMY}</div>
-        </div>
-
-        {!isEditMode && (
-          <>
-            <div className="my-page-artworks">
-              <MyPageArtwork text="자연" image={profileBackground} />
-              <MyPageArtwork text="자동차" image={profileBackground} />
-              <div className="my-page-artwork artwork-add" onClick={() => navigate('all-posts')}>
-                +
+              <Tabs isFitted variant={'unstyled'}>
+                <TabList>
+                  <Tab>
+                    <div className="my-page-tabbar-icon active">
+                      <img src={tabbar_all} alt="tab" />
+                    </div>
+                  </Tab>
+                  <Tab>
+                    <div className="my-page-tabbar-icon">
+                      <img src={tabbar_shorts} alt="tab" />
+                    </div>
+                  </Tab>
+                </TabList>
+                <TabIndicator height={'2px'} bg={'#7Bf7ff'} />
+                <TabPanels>
+                  <TabPanel p={0}>
+                    <Box
+                      sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)', // 3개의 열
+                        gap: '9px', // 아이템 간의 간격
+                        marginTop: '12px',
+                      }}
+                    >
+                      {userFeeds.map((item) => (
+                        <PostCard
+                          id={item.feedId}
+                          image={item.images[0]}
+                          type={item.type}
+                          onClick={() => navigate(`/app/post/${item.feedId}`)}
+                        />
+                      ))}
+                    </Box>
+                  </TabPanel>
+                  <TabPanel>dd</TabPanel>
+                </TabPanels>
+              </Tabs>
+            </>
+          )}
+          {isEditMode && (
+            <div className="my-page-update-tag-wrapper">
+              <div className="my-page-update-main-tag">
+                <span className="my-page-update-main-tag-text">메인 태그</span>
+                <MyPageTag
+                  text={userTags[0].name}
+                  main
+                  onUpdateTag={(newText) => handleTagUpdate(tag.tagId, newText)}
+                />
+              </div>
+              <div className="my-page-update-tag">
+                <span className="my-page-update-main-tag-text">보조 태그</span>
+                <div className="my-page-update-tag-list">
+                  {userTags.length === 1 && [0, 1, 2, 3].map((item) => <MyPageTag key={item} />)}
+                  {userTags.slice(1).map((tag) => (
+                    <MyPageTag
+                      key={tag.tagId}
+                      text={tag.name}
+                      onUpdateTag={(newText) => handleTagUpdate(tag.tagId, newText)}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
+          )}
+          {isMyPage && (
+            <CustomBottomDrawer
+              options={MyPageModalOptions}
+              cancel
+              onClose={closeMyDrawer}
+              isOpen={isMyDrawerOpen}
+            />
+          )}
+          {!isMyPage && (
+            <CustomBottomDrawer
+              options={NotMyPageModalOptions}
+              cancel
+              onClose={closeDrawer}
+              isOpen={isDrawerOpen}
+            />
+          )}
 
-            <Tabs isFitted variant={'unstyled'}>
-              <TabList>
-                <Tab>
-                  <div className="my-page-tabbar-icon active">
-                    <img src={tabbar_all} alt="tab" />
-                  </div>
-                </Tab>
-                <Tab>
-                  <div className="my-page-tabbar-icon">
-                    <img src={tabbar_shorts} alt="tab" />
-                  </div>
-                </Tab>
-              </TabList>
-              <TabIndicator height={'2px'} bg={'#7Bf7ff'} />
-              <TabPanels>
-                <TabPanel p={0}>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: '12px', gap: '9px' }}>
-                    {DUMMY_DATA.map((item) => (
-                      <PostCard
-                        id={item.id}
-                        image={item.image}
-                        onClick={() => navigate(`/app/post/${item.id}`)}
-                      />
-                    ))}
-                  </Box>
-                </TabPanel>
-                <TabPanel>dd</TabPanel>
-              </TabPanels>
-            </Tabs>
-          </>
-        )}
-        {isEditMode && (
-          <div className="my-page-update-tag-wrapper">
-            <div className="my-page-update-main-tag">
-              <span className="my-page-update-main-tag-text">메인 태그</span>
-              <MyPageTag text={DUMMY_TAGS[0].text} main />
-            </div>
-            <div className="my-page-update-tag">
-              <span className="my-page-update-main-tag-text">보조 태그</span>
-              <div className="my-page-update-tag-list">
-                {DUMMY_TAGS.slice(1).map((tag) => (
-                  <MyPageTag key={tag.id} text={tag.text} />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-        {isMyPage && (
           <CustomBottomDrawer
-            options={MyPageModalOptions}
+            isDelete
+            deleteTitle="변경 내용을 삭제하시겠습니까?"
+            deleteContent="지금 돌아가면 변경 내용이 삭제됩니다."
+            deleteConfirmText="변경 내용 삭제"
             cancel
-            onClose={closeMyDrawer}
-            isOpen={isMyDrawerOpen}
+            onClose={closeCancelDrawer}
+            isOpen={isCancelDrawerOpen}
+            onDelete={deleteClickHandler}
           />
-        )}
-        {!isMyPage && (
-          <CustomBottomDrawer
-            options={NotMyPageModalOptions}
-            cancel
-            onClose={closeDrawer}
-            isOpen={isDrawerOpen}
+
+          {/**
+           * !TODO: 관심없음에 성공했을 시 홈 화면으로 이동
+           */}
+          <CustomBottomModal
+            text="아티스트 관심없음"
+            content="이와 비슷한 아티스트가 덜 표시됩니다."
+            isOpen={isBottomModalOpen}
+            onClose={closeBottomModal}
+            icon="modal_eye_off"
           />
-        )}
 
-        <CustomBottomDrawer
-          isDelete
-          deleteTitle="변경 내용을 삭제하시겠습니까?"
-          deleteContent="지금 돌아가면 변경 내용이 삭제됩니다."
-          deleteConfirmText="변경 내용 삭제"
-          cancel
-          onClose={closeCancelDrawer}
-          isOpen={isCancelDrawerOpen}
-          onDelete={deleteClickHandler}
-        />
-
-        {/**
-         * !TODO: 관심없음에 성공했을 시 홈 화면으로 이동
-         */}
-        <CustomBottomModal
-          text="아티스트 관심없음"
-          content="이와 비슷한 아티스트가 덜 표시됩니다."
-          isOpen={isBottomModalOpen}
-          onClose={closeBottomModal}
-          icon="modal_eye_off"
-        />
-
-        <MainBottomDrawer isOpen={isBlockModalOpen} onClose={closeBlockModal}>
-          <Text sx={{ color: '#fff', textAlign: 'center', fontWeight: 600 }}>차단</Text>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              marginTop: '28px',
-              padding: '0 16px',
-              paddingBottom: '40px',
-              height: '100%',
-            }}
-          >
-            <Box sx={{ border: '1px solid #fff', borderRadius: '999px' }}>
-              <Image
-                src={profileBackground}
-                alt="x"
-                sx={{ width: '74px', height: '74px', borderRadius: '999px' }}
-              />
-            </Box>
+          <MainBottomDrawer isOpen={isBlockModalOpen} onClose={closeBlockModal}>
+            <Text sx={{ color: '#fff', textAlign: 'center', fontWeight: 600 }}>차단</Text>
             <Box
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '10px',
-                marginTop: '19px',
+                alignItems: 'center',
+                marginTop: '28px',
+                padding: '0 16px',
+                paddingBottom: '40px',
+                height: '100%',
               }}
             >
-              <Box sx={{ textAlign: 'center' }}>
-                <Text
-                  sx={{ color: '#fff', fontSize: '22px', fontWeight: '600', lineHeight: '26.25px' }}
-                >
-                  김진우
-                </Text>
-                <Text
-                  sx={{ color: '#fff', fontSize: '22px', fontWeight: '600', lineHeight: '26.25px' }}
-                >
-                  님을 차단하시겠습니까?
-                </Text>
+              <Box sx={{ border: '1px solid #fff', borderRadius: '999px' }}>
+                <Image
+                  src={profileBackground}
+                  alt="x"
+                  sx={{ width: '74px', height: '74px', borderRadius: '999px' }}
+                />
               </Box>
-              <Box sx={{ textAlign: 'center' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  marginTop: '19px',
+                }}
+              >
+                <Box sx={{ textAlign: 'center' }}>
+                  <Text
+                    sx={{
+                      color: '#fff',
+                      fontSize: '22px',
+                      fontWeight: '600',
+                      lineHeight: '26.25px',
+                    }}
+                  >
+                    김진우
+                  </Text>
+                  <Text
+                    sx={{
+                      color: '#fff',
+                      fontSize: '22px',
+                      fontWeight: '600',
+                      lineHeight: '26.25px',
+                    }}
+                  >
+                    님을 차단하시겠습니까?
+                  </Text>
+                </Box>
+                <Box sx={{ textAlign: 'center' }}>
+                  <Text
+                    sx={{
+                      fontSize: '14px',
+                      color: '#a6a6a6',
+                      whiteSpace: 'pre-line',
+                      lineHeight: '16.71px',
+                    }}
+                  >
+                    차단 시 해당 사용자의 활동이 귀하에게{`\n`}
+                    표시되지 않으며, 상호작용이 제한됩니다.
+                  </Text>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  background: '#ff6d6d',
+                  marginTop: 'auto',
+                  width: '100%',
+                  padding: '16px 22px',
+                  justifyContent: 'center',
+                  borderRadius: '17px',
+                }}
+                onClick={closeBlockModal}
+              >
+                <Text sx={{ color: '#fff', fontSize: '14px', fontWeight: '600' }}>차단하기</Text>
+              </Box>
+            </Box>
+          </MainBottomDrawer>
+          <MainBottomDrawer isOpen={isReportModalOpen} onClose={closeReportModal}>
+            <Text sx={{ color: '#fff', textAlign: 'center', fontWeight: 600 }}>신고</Text>
+            <Box sx={{ display: 'flex', flexDirection: 'column', padding: '0 16px' }}>
+              <Box sx={{ display: 'flex', gap: '5px', flexDirection: 'column', marginTop: '32px' }}>
+                <Text sx={{ fontWeight: '600', lineHeight: '19.09px', color: '#fff' }}>
+                  무엇을 신고하시나요?
+                </Text>
                 <Text
                   sx={{
-                    fontSize: '14px',
+                    fontSize: '1ㅅ4px',
+                    fontWeight: '400',
                     color: '#a6a6a6',
-                    whiteSpace: 'pre-line',
                     lineHeight: '16.71px',
                   }}
                 >
-                  차단 시 해당 사용자의 활동이 귀하에게{`\n`}
-                  표시되지 않으며, 상호작용이 제한됩니다.
+                  커뮤니티의 안전과 질서를 위해 부적절한 행동을 신고해주세요.
                 </Text>
               </Box>
+              <Box sx={{ borderTop: '1px solid #5f5f5f', marginTop: '22px' }} />
+              <Box sx={{ marginTop: '25px' }}>
+                <ReportCard text="특정 게시물" />
+                <ReportCard text="특정 댓글" />
+                <ReportCard text="계정의 활동" />
+              </Box>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                background: '#ff6d6d',
-                marginTop: 'auto',
-                width: '100%',
-                padding: '16px 22px',
-                justifyContent: 'center',
-                borderRadius: '17px',
-              }}
-              onClick={closeBlockModal}
-            >
-              <Text sx={{ color: '#fff', fontSize: '14px', fontWeight: '600' }}>차단하기</Text>
-            </Box>
-          </Box>
-        </MainBottomDrawer>
-        <MainBottomDrawer isOpen={isReportModalOpen} onClose={closeReportModal}>
-          <Text sx={{ color: '#fff', textAlign: 'center', fontWeight: 600 }}>신고</Text>
-          <Box sx={{ display: 'flex', flexDirection: 'column', padding: '0 16px' }}>
-            <Box sx={{ display: 'flex', gap: '5px', flexDirection: 'column', marginTop: '32px' }}>
-              <Text sx={{ fontWeight: '600', lineHeight: '19.09px', color: '#fff' }}>
-                무엇을 신고하시나요?
-              </Text>
-              <Text
-                sx={{
-                  fontSize: '14px',
-                  fontWeight: '400',
-                  color: '#a6a6a6',
-                  lineHeight: '16.71px',
-                }}
-              >
-                커뮤니티의 안전과 질서를 위해 부적절한 행동을 신고해주세요.
-              </Text>
-            </Box>
-            <Box sx={{ borderTop: '1px solid #5f5f5f', marginTop: '22px' }} />
-            <Box sx={{ marginTop: '25px' }}>
-              <ReportCard text="특정 게시물" />
-              <ReportCard text="특정 댓글" />
-              <ReportCard text="계정의 활동" />
-            </Box>
-          </Box>
-        </MainBottomDrawer>
-      </div>
+          </MainBottomDrawer>
+        </div>
+      )}
     </div>
   );
 };
-
-const DUMMY =
-  '제 작업은 아르누보 양식의 유려한 곡선, 식물적 모티브, 그리고 장식적인 디테일을 특징으로 합니다. 자연에서 영감을 받은 곡선미와 복잡한 패턴을 활용해 유기적이고 생동감 있는 디자인을 창조합니다.';
 
 export const DUMMY_DATA = [
   {

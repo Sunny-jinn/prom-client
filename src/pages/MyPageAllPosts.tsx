@@ -98,6 +98,7 @@ const MyPageAllPosts = () => {
                       <PostCard
                         id={item.id}
                         image={item.image}
+                        type={item.type}
                         isSelected={selectedPosts.some((post) => post.id === item.id)}
                         onClick={() => handleSelectPost(item)}
                         select

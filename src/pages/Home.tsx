@@ -4,13 +4,14 @@ import NavigatorLayout from '@/components/NavigatorLayout';
 import Logo from '@/assets/img/img_logo.svg?react';
 import Arrow from '@/assets/img/icon_arrow.svg?react';
 import Alarm from '@/assets/img/icon_alarm.svg?react';
+import Tropy from '@/assets/img/icon_union.svg?react';
 import ArticleLogo from '@/assets/img/icon_article.svg?react';
 import { useEffect, useState } from 'react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Article, ARTICLES, TextContent } from '@/constants/articles.data';
+import { Article, ARTICLES } from '@/constants/articles.data';
 import dayjs from 'dayjs';
 import userStore from '@/store/User';
 import { POST_CATEGORY_DATA, PostCategoryData } from '@/constants/init.data';
@@ -20,6 +21,8 @@ import DefaultSwiperBullets from '@/components/DefaultSwiperBullets';
 import cn from 'classnames';
 import { Drawer, DrawerContent, DrawerProps, useDisclosure } from '@chakra-ui/react';
 import { ScrollArea } from '@/components/ScrollArea';
+import { getUserInfoAPI } from '@/feature/api/user.api';
+import { User } from '@/feature/types';
 
 dayjs.extend(relativeTime);
 
@@ -31,18 +34,19 @@ const Home = () => {
   return (
     <SafeAreaLayout flexDirection={'column'}>
       <NavigatorLayout hasScrollArea={true}>
-        <div className='home'>
-          <div className='home-header'>
-            <Logo width={70} />
-            <div className='home-alarm'>
-              {alarms.length > 0 &&
-                <div className='home-alarm-badge'>
-                  <span>{alarms.length}</span>
-                </div>
-              }
-              <Alarm width={19} height={19} />
-            </div>
+        <div className='home-header'>
+          <Logo width={70} />
+          <div className='home-alarm'>
+            {alarms.length > 0 &&
+              <div className='home-alarm-badge'>
+                <span>{alarms.length}</span>
+              </div>
+            }
+            <Alarm width={19} height={19} />
           </div>
+        </div>
+        <div className='home'>
+          <GrowthOfTheMonth />
           <Articles />
           <div className='home-posts'>
             {POST_CATEGORY_DATA.map(el => <PostPreview category={el} />)}
@@ -50,6 +54,39 @@ const Home = () => {
         </div>
       </NavigatorLayout>
     </SafeAreaLayout>
+  );
+};
+
+const GrowthOfTheMonth = () => {
+  const [growthUser, setGrowthUser] = useState<User.User | null>(null);
+
+  const getGrowthUser = async () => {
+    try {
+      const result = await getUserInfoAPI(13);
+      setGrowthUser(result);
+    } catch (e) {
+      console.log(e);
+    }
+
+  };
+  useEffect(() => {
+    getGrowthUser();
+  }, []);
+  if(!growthUser) return <></>
+  return (
+    <div className='growth'>
+      <div className='growth-text'>
+        <div className='growth-title'>
+          <Tropy/>
+          <span>이달의 성장</span>
+        </div>
+        <span className='growth-description'>총 팔로워, 좋아요 수가 늘어난 아티스트 </span>
+      </div>
+      <div className='growth-user'>
+        <img src={growthUser.profileImage} alt='user' />
+        <span>{growthUser.username}님</span>
+      </div>
+    </div>
   );
 };
 
@@ -208,20 +245,20 @@ const ArticleDetail = (props: ArticleDetailProps) => {
         <ScrollArea>
           <div className='article-background-wrapper'>
             <img src={article.backgroundImage} alt='background' />
-            <div className='background-gradient'/>
+            <div className='background-gradient' />
             <div className='article-detail-header'>
-              <Arrow onClick={() => onClose()} width={30} height={30}/>
+              <Arrow onClick={() => onClose()} width={30} height={30} />
               <span>새로운 소식</span>
-              <div style={{width: 30}}/>
+              <div style={{ width: 30 }} />
             </div>
           </div>
           <div className='article-detail-content'>
             <div className='article-detail-content-top'>
               <span className='article-detail-title'>{article.title}</span>
               <div className='article-detail-info'>
-                <span className='article-detail-created-at'>{dayjs(article.createdAt).format("YYYY년 M월 D일")}</span>
+                <span className='article-detail-created-at'>{dayjs(article.createdAt).format('YYYY년 M월 D일')}</span>
                 <span className='article-detail-writer'>
-                {"Editor "}
+                {'Editor '}
                   <strong>PROM</strong>
               </span>
               </div>
@@ -229,20 +266,20 @@ const ArticleDetail = (props: ArticleDetailProps) => {
 
             <div className='article-content-list'>
               {article.contents.map(el => {
-                if(el.type === 'text'){
+                if(el.type === 'text') {
                   return (
                     <span className='article-content-text'>{el.content}</span>
-                  )
+                  );
                 }
                 return (
                   <div className='article-image-wrapper'>
                     <img src={el.content} alt='image' />
                     <span>{el.caption}</span>
                   </div>
-                )
+                );
               })}
             </div>
-            <Logo width={94} opacity={0.5}/>
+            <Logo width={94} opacity={0.5} />
           </div>
         </ScrollArea>
       </DrawerContent>

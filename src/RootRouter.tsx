@@ -45,8 +45,7 @@ const AppRoute = () => {
   const { setUser } = userStore(state => state);
 
   const refresh = async () => {
-    addAccessTokenToServer('eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImNhdGVnb3J5IjoiYWNjZXNzIiwicm9sZSI6IkFSVElTVCIsImlhdCI6MTcyNzA5MTcwOCwiZXhwIjoxNzI3MTc4MTA4fQ.hZCZi6zvtFtPpcfuyahQ46DZDG0m56MCJEZH3edT31A')
-
+    addAccessTokenToServer('eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImNhdGVnb3J5IjoiYWNjZXNzIiwicm9sZSI6IkFSVElTVCIsImlhdCI6MTcyNzI3MzE0MSwiZXhwIjoxNzI3MzU5NTQxfQ.rpo4rp52XZ-kCGxND39io9bSkP6X4yrDLC-CmBhuOL0')
     try {
       const result = await getMyInfoAPI();
       // const result = await refreshAPI();

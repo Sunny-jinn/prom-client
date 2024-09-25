@@ -67,6 +67,10 @@ export const reset = css`
   *::after {
     box-sizing: border-box;
   }
+  
+  *::-webkit-scrollbar{
+    display: none;
+  }
 
   img,
   video {

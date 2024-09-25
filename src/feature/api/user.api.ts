@@ -57,6 +57,12 @@ const getMyInfoAPI = async (): Promise<User.User> => {
   return data;
 };
 
+const getUserInfoAPI = async (userId: number): Promise<User.User> => {
+  const result = await Server.get(`users/${userId}`);
+  const { data } = result.data;
+  return data;
+};
+
 export {
   refreshAPI,
   joinAPI,
@@ -65,4 +71,5 @@ export {
   updateUserInfoAPI,
   updateUserInterestAPI,
   getMyInfoAPI,
+  getUserInfoAPI
 };

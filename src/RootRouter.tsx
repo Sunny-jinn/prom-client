@@ -13,6 +13,7 @@ import PostDetail from './pages/PostDetail';
 import SignUp from './pages/SignUp';
 import Home from '@/pages/Home';
 import { addAccessTokenToServer } from '@/feature/api';
+import Picks from '@/pages/Picks';
 
 const RootRouter = () => {
   return (
@@ -24,13 +25,14 @@ const RootRouter = () => {
         <Route path='sign-up' element={<SignUp />} />
         <Route element={<Auth />}>
           <Route path='init' element={<Init />} />
-          <Route path='home' element={<Home/>} />
+          <Route path='home' element={<Home />} />
+          <Route path='my-page/*'>
+            <Route index element={<MyPage />} />
+            <Route path={'all-posts'} element={<MyPageAllPosts />} />
+          </Route>
+          <Route path='post/:post_id' element={<PostDetail />} />
+          <Route path='pick/*' element={<Picks />} />
         </Route>
-        <Route path="my-page/*">
-          <Route index element={<MyPage />} />
-          <Route path={'all-posts'} element={<MyPageAllPosts />} />
-        </Route>
-        <Route path="post/:post_id" element={<PostDetail />} />
       </Route>
     </Routes>
   );
@@ -45,7 +47,7 @@ const AppRoute = () => {
   const { setUser } = userStore(state => state);
 
   const refresh = async () => {
-    addAccessTokenToServer('eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImNhdGVnb3J5IjoiYWNjZXNzIiwicm9sZSI6IkFSVElTVCIsImlhdCI6MTcyNzI3MzE0MSwiZXhwIjoxNzI3MzU5NTQxfQ.rpo4rp52XZ-kCGxND39io9bSkP6X4yrDLC-CmBhuOL0')
+    addAccessTokenToServer('eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImNhdGVnb3J5IjoiYWNjZXNzIiwicm9sZSI6IkFSVElTVCIsImlhdCI6MTcyNzM1OTU3MSwiZXhwIjoxNzI3NDQ1OTcxfQ.zVLTaVcmCpOW7xByOYiVIqmS__dbkp-7dVLeNqbgNng');
     try {
       const result = await getMyInfoAPI();
       // const result = await refreshAPI();
@@ -54,7 +56,7 @@ const AppRoute = () => {
         navigate('init');
         return;
       }
-      navigate('home');
+      navigate('pick?index=3');
     } catch (e) {
       // navigate('home');
       navigate('on-board');

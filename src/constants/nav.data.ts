@@ -27,7 +27,7 @@ export const NAV_DATA: Record<string, Array<NavData>> = {
     {
       icon : Shorts,
       label: '쇼츠',
-      root: 'shorts'
+      root: 'pick'
     },
     {
       icon : MyPage,

@@ -19,11 +19,11 @@ const getFeedByIdAPI = async (postId: number) => {
   return data;
 };
 
-const getPickByIdAPI = async (postId: number) => {
-  const result = await Server.get(`posts/short-forms/${postId}`);
+const getPickByIdAPI = async(pickId: number): Promise<Post.PostPick> => {
+  const result = await Server.get(`posts/short-forms/${pickId}`);
   const { data } = result.data;
   return data;
-};
+}
 
 type getRecentFeedAPIRequest = {
   page?: number;
@@ -50,11 +50,12 @@ const getFeedsAPI = async (request: getRecentFeedAPIRequest): Promise<getFeedsRe
   return data;
 };
 
-const getShortFormsAPI = async () => {
+const getPicksAPI = async () => {
   const result = await Server.get(`posts/short-forms`);
   const { data } = result.data;
   return data;
 };
+
 
 
 export {
@@ -63,5 +64,5 @@ export {
   getFeedByIdAPI,
   getPickByIdAPI,
   getFeedsAPI,
-  getShortFormsAPI,
+  getPicksAPI,
 };

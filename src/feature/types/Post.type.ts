@@ -12,4 +12,15 @@ type PostFeed = {
   user: User.User
 }
 
-export type { PostType, PostCategory, PostFeed };
+type PostPick = {
+  shortFormId: number;
+  thumbnailUrl: string;
+  videoUrl: string;
+  type: string;
+  title: string;
+  likeCounts: number;
+  description: string;
+  commentCounts: number;
+}
+
+export type { PostType, PostCategory, PostFeed, PostPick };

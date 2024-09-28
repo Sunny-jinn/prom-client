@@ -28,7 +28,7 @@ const IconBox = styled.button`
 `;
 
 type FollowUserCard = {
-  profile: any;
+  profile: string;
   name: string;
   onClick?: () => void;
 };

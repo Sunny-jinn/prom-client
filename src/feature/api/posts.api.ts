@@ -1,4 +1,4 @@
-import { Server, addAccessTokenToServer, makeQuery } from '@/feature/api/index';
+import { Server } from '@/feature/api/index';
 
 const getPosts = async () => {
   const result = await Server.get('posts');

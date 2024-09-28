@@ -35,7 +35,7 @@ const IconBox = styled.div`
 type SearchResultCardProps = {
   isRecent?: boolean;
   text: string;
-  profile?: any;
+  profile?: string;
 };
 
 const SearchResultCard = ({ isRecent, text, profile }: SearchResultCardProps) => {

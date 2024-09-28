@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import more from '@/assets/img/more.png';
 import MUSIC from '@/assets/img/music.png';
-import profileBackground from '@/assets/img/profile_background.png';
 import VISUAL from '@/assets/img/visual.png';
 import WRITING from '@/assets/img/writing.png';
 
@@ -14,6 +13,7 @@ const images: { [key: string]: string } = {
 const Wrapper = styled.div`
   width: 113px;
   border-radius: 15px;
+  flex-shrink: 0;
 `;
 
 const TopImage = styled.div<{ all: boolean }>`
@@ -63,7 +63,7 @@ const BottomText = styled.div`
 
 type MyPageArtworkProp = {
   id?: number;
-  image?: any;
+  image?: string;
   type?: 'MUSIC' | 'VISUAL' | 'WRITING';
   text?: string;
   all?: boolean;

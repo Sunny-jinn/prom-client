@@ -39,7 +39,7 @@ const TagText = styled.input<{ main: boolean }>`
 `;
 
 type MyPageTagProps = {
-  text: string;
+  text?: string;
   main?: boolean;
   onUpdateTag: (newText: string) => void; // 콜백으로 부모 컴포넌트로 데이터 전달
 };

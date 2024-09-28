@@ -22,7 +22,7 @@ import './PostDetail.scss';
 const PostDetail = () => {
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [isClicked] = useState<boolean>(false);
-  const [feedInfo, setFeedInfo] = useState<UserFeedsResponse | null>({});
+  const [feedInfo, setFeedInfo] = useState<UserFeedsResponse | null>(null);
 
   const navigate = useNavigate();
 
@@ -30,8 +30,10 @@ const PostDetail = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const feed = await getPostsDetail(params.post_id);
-      setFeedInfo(feed);
+      if (params.post_id) {
+        const feed = await getPostsDetail(params.post_id);
+        setFeedInfo(feed);
+      }
     };
     fetchUserInfo();
   }, []);

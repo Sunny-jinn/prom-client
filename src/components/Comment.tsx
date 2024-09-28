@@ -52,7 +52,7 @@ const CommentDate = styled.span`
 `;
 
 type CommentProps = {
-  profile: any;
+  profile: string;
   nickname: string;
   date: string;
   content: string;

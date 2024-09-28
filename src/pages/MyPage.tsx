@@ -16,7 +16,6 @@ import edit_icon from '@/assets/img/edit.png';
 import ellipsis from '@/assets/img/ellipsis.png';
 import icon_bottom_arrow from '@/assets/img/icon_bottom_arrow.png';
 import icon_up_arrow from '@/assets/img/icon_up_arrow.png';
-import icon_right_arrow from '@/assets/img/icon_up_arrow.png';
 import profileBackground from '@/assets/img/profile_background.png';
 import tabbar_all from '@/assets/img/tabbar_all.png';
 import tabbar_shorts from '@/assets/img/tabbar_shorts.png';
@@ -29,12 +28,12 @@ import PostCard from '@/components/PostCard';
 import ReportCard from '@/components/ReportCard';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import {
+  UserArtworksResponse,
   UserFeedsResponse,
   UserTagsResponse,
   getUserArtworks,
-  getUserFeeds,
-  getUserFollowers,
-  getUserFollowings,
+  getUserFeeds, // getUserFollowers,
+  // getUserFollowings,
   getUserTags,
 } from '@/feature/api/mypage.api';
 import { UserResponse, getMyInfoAPI } from '@/feature/api/user.api';
@@ -42,32 +41,32 @@ import './MyPage.scss';
 
 const MyPage = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [isMyPage, _] = useState<boolean>(true);
+  const [isMyPage] = useState<boolean>(true);
   const [showAll, setShowAll] = useState(false);
 
   const [userInfo, setUserInfo] = useState<UserResponse | null>(null);
   const [userTags, setUserTags] = useState<UserTagsResponse[]>([]);
-  const [followNumber, setFollowNumber] = useState({});
+  // const [followNumber, setFollowNumber] = useState({});
   const [userFeeds, setUserFeeds] = useState<UserFeedsResponse[]>([]);
-
-  getUserArtworks();
+  const [userArtworks, setUserArtworks] = useState<UserArtworksResponse[]>([]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       const user = await getMyInfoAPI();
       const tags = await getUserTags();
-      const followerNumber = await getUserFollowers();
-      const followingNumber = await getUserFollowings();
+      // const followerNumber = await getUserFollowers();
+      // const followingNumber = await getUserFollowings();
       const feeds = await getUserFeeds();
+      const artworks = await getUserArtworks();
 
-      setFollowNumber({
-        follower: followerNumber.length,
-        following: followingNumber.length,
-      });
-
+      // setFollowNumber({
+      //   follower: followerNumber.length,
+      //   following: followingNumber.length,
+      // });
       setUserInfo(user);
       setUserTags(tags);
       setUserFeeds(feeds);
+      setUserArtworks(artworks);
     };
     fetchUserInfo();
     console.log(userTags);
@@ -262,11 +261,11 @@ const MyPage = () => {
                 <span className="my-page-info-text">작업</span>
               </div>
               <button className="my-page-info" onClick={() => navigate('follow-list/follower')}>
-                <span className="my-page-info-number">{followNumber.follower}</span>
+                {/* <span className="my-page-info-number">{followNumber.follower}</span> */}
                 <span className="my-page-info-text">팔로워</span>
               </button>
               <button className="my-page-info" onClick={() => navigate('follow-list/following')}>
-                <span className="my-page-info-number">{followNumber.following}</span>
+                {/* <span className="my-page-info-number">{followNumber.following}</span> */}
                 <span className="my-page-info-text">팔로잉</span>
               </button>
             </div>
@@ -287,8 +286,9 @@ const MyPage = () => {
           {!isEditMode && (
             <>
               <div className="my-page-artworks">
-                <MyPageArtwork text="자연" image={profileBackground} />
-                <MyPageArtwork text="자동차" image={profileBackground} />
+                {userArtworks.map((item) => (
+                  <MyPageArtwork key={item.id} text={item.name} image={item.imageUrl} />
+                ))}
                 <div className="my-page-artwork artwork-add" onClick={() => navigate('all-posts')}>
                   +
                 </div>
@@ -340,13 +340,16 @@ const MyPage = () => {
                 <MyPageTag
                   text={userTags[0].name}
                   main
-                  onUpdateTag={(newText) => handleTagUpdate(tag.tagId, newText)}
+                  onUpdateTag={(newText) => handleTagUpdate(0, newText)}
                 />
               </div>
               <div className="my-page-update-tag">
                 <span className="my-page-update-main-tag-text">보조 태그</span>
                 <div className="my-page-update-tag-list">
-                  {userTags.length === 1 && [0, 1, 2, 3].map((item) => <MyPageTag key={item} />)}
+                  {userTags.length === 1 &&
+                    [0, 1, 2, 3].map((item) => (
+                      <MyPageTag key={item} onUpdateTag={() => console.log('hi')} />
+                    ))}
                   {userTags.slice(1).map((tag) => (
                     <MyPageTag
                       key={tag.tagId}

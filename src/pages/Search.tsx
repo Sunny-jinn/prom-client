@@ -7,7 +7,7 @@ import test_img from '@/assets/img/profile_background.png';
 import CustomSearchInput from '@/components/CustomSearchInput';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import SearchResultCard from '@/components/SearchResultCard';
-import { getPosts, getShortForms } from '@/feature/api/posts.api';
+import { getPosts } from '@/feature/api/posts.api';
 import './Search.scss';
 
 const Search = () => {
@@ -190,33 +190,5 @@ const Search = () => {
     </SafeAreaLayout>
   );
 };
-
-const DUMMY_POST = [
-  {
-    id: 0,
-    img: test_img,
-    type: 'posts',
-  },
-  {
-    id: 1,
-    img: test_img,
-    type: 'posts',
-  },
-  {
-    id: 2,
-    img: test_img,
-    type: 'posts',
-  },
-  {
-    id: 3,
-    img: test_img,
-    type: 'posts',
-  },
-  {
-    id: 4,
-    img: test_img,
-    type: 'shorts',
-  },
-];
 
 export default Search;

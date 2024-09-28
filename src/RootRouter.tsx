@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet, Route, Routes } from 'react-router-dom';
-import { getMyInfoAPI, refreshAPI } from '@/feature/api/user.api';
+import { refreshAPI } from '@/feature/api/user.api';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import Home from '@/pages/Home';
 import Init from '@/pages/Init';

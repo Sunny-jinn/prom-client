@@ -215,13 +215,17 @@
   }
 
   .my-page-artworks {
+    width: 100%;
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
     margin-top: 12px;
+    overflow-x: auto;
+    white-space: nowrap;
 
     .my-page-artwork {
       width: 113px;
       border-radius: 15px;
+      flex-shrink: 0;
 
       &-top-image {
         height: 145px;

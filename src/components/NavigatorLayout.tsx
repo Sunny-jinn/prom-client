@@ -31,8 +31,8 @@ const NavigatorLayout = (props: NavigatorLayoutProps) => {
               <Menu root={el.root} icon={el.icon} label={el.label} />
             ))}
           </div>
-          {/*<button className="upload-content" onClick={() => aiGeneratorOpen()}>*/}
-          <button className="upload-content" onClick={() => uploadOpen()}>
+          <button className="upload-content" onClick={() => aiGeneratorOpen()}>
+          {/*<button className="upload-content" onClick={() => uploadOpen()}>*/}
             <Plus color={'#1B1B1B'} strokeLinecap={'square'} strokeWidth={3} />
           </button>
           <div className="menu-container">

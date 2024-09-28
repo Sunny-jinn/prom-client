@@ -51,11 +51,10 @@ const AppRoute = () => {
   const { setUser } = userStore((state) => state);
 
   const refresh = async () => {
-    addAccessTokenToServer("eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImNhdGVnb3J5IjoiYWNjZXNzIiwicm9sZSI6IkFSVElTVCIsImlhdCI6MTcyNzU0MDUwNywiZXhwIjoxNzI3NjI2OTA3fQ.kuTtKssDNk-yhKtuQwj7EXPr7VtsOeUgN0W5pVZiO2E")
     try {
-      // const result = await refreshAPI();
-      const result = await getMyInfoAPI();
-      setUser(result);
+      const result = await refreshAPI();
+      const myInfo = await getMyInfoAPI();
+      setUser(myInfo);
       if(result.role === 'USER') {
         navigate('init');
         return;

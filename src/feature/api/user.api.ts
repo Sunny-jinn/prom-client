@@ -5,7 +5,9 @@ const refreshAPI = async () => {
   const result = await Server.post('reissue', {}, {
     withCredentials: true,
   });
-  console.log(result);
+  const { data } = result.data;
+  const {accessToken} = data;
+  addAccessTokenToServer(accessToken);
   return result.data;
 };
 

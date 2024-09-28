@@ -1,16 +1,9 @@
 import { create } from 'zustand';
-
-//TODO: 위치 변경될수도
-export type User = {
-  email: string;
-  username: string;
-  profileImage: string;
-  role: 'USER' | 'ARTIST' | 'ARTTY';
-}
+import { User } from '@/feature/types';
 
 interface IUserStore {
-  user: User | null;
-  setUser: (user: User) => void;
+  user: User.User | null;
+  setUser: (user: User.User) => void;
 }
 
 const userStore = create<IUserStore>((set) => ({

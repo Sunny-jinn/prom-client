@@ -13,7 +13,6 @@ import 'swiper/css/effect-fade';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Article, ARTICLES } from '@/constants/articles.data';
 import dayjs from 'dayjs';
-import userStore from '@/store/User';
 import { POST_CATEGORY_DATA, PostCategoryData } from '@/constants/init.data';
 import { getFeedsAPI } from '@/feature/api/post.api';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -27,15 +26,16 @@ import { Post, User } from '@/feature/types';
 dayjs.extend(relativeTime);
 
 const Home = () => {
-  const { user } = userStore(state => state);
-  console.log(user);
   const [alarms] = useState([{ title: 1 }, { title: 2 }]);
 
   return (
     <SafeAreaLayout flexDirection={'column'}>
-      <NavigatorLayout>
+      <NavigatorLayout hasScrollArea={true}>
         <div className='home-header'>
           <Logo width={70} />
+          <div style={{color: '#ffffff'}}>
+            로그아웃
+          </div>
           <div className='home-alarm'>
             {alarms.length > 0 &&
               <div className='home-alarm-badge'>
@@ -43,6 +43,7 @@ const Home = () => {
               </div>
             }
             <Alarm width={19} height={19} />
+
           </div>
         </div>
         <div className='home'>

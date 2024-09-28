@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { User } from '@/feature/types';
 
 interface IUserStore {
-  user: User.User | null;
-  setUser: (user: User.User) => void;
+  user: User.BaseUser | null;
+  setUser: (user: User.BaseUser) => void;
 }
 
 const userStore = create<IUserStore>((set) => ({

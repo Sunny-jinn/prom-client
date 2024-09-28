@@ -15,7 +15,6 @@ import PostDetail from './pages/PostDetail';
 import Search from './pages/Search';
 import SignUp from './pages/SignUp';
 import Picks from '@/pages/Picks';
-import { addAccessTokenToServer } from '@/feature/api';
 
 const RootRouter = () => {
   return (

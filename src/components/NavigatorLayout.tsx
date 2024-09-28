@@ -12,9 +12,10 @@ import AIGenerator from '@/pages/AIGenerator';
 
 type NavigatorLayoutProps = {
   children: ReactNode;
+  hasScrollArea: boolean
 };
 const NavigatorLayout = (props: NavigatorLayoutProps) => {
-  const { children } = props;
+  const { children, hasScrollArea } = props;
   const { isOpen: isUploadOpen, onOpen: uploadOpen, onClose: uploadClose } = useDisclosure();
   const { isOpen: isAIGeneratorOpen, onOpen: aiGeneratorOpen, onClose: aiGeneratorClose } = useDisclosure();
   return (
@@ -23,7 +24,12 @@ const NavigatorLayout = (props: NavigatorLayoutProps) => {
       {isAIGeneratorOpen && <AIGenerator isOpen={isAIGeneratorOpen} onClose={aiGeneratorClose} />}
       <div className="navigator-layout">
         <div className="navigator-layout-content">
-          <ScrollArea>{children}</ScrollArea>
+          {hasScrollArea &&
+            <ScrollArea>
+              {children}
+            </ScrollArea>
+          }
+          {!hasScrollArea && children}
         </div>
         <div className="navigator-layout-bar">
           <div className="menu-container">

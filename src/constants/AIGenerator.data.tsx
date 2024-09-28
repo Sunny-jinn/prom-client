@@ -1,6 +1,4 @@
 import { Post } from '@/feature/types';
-import { Dispatch, SetStateAction } from 'react';
-
 
 type AIGeneratorGridView = {
   type: 'GRID';
@@ -9,10 +7,10 @@ type AIGeneratorGridView = {
   data: {label: string, value: string, description?: string}[]
 }
 
-type AIGeneratorCustomViewProps<T extends string> = {
-  state: Record<string, string>;
-  setState: Dispatch<SetStateAction<Record<T, string>>>;
-}
+// type AIGeneratorCustomViewProps<T extends string> = {
+//   state: Record<string, string>;
+//   setState: Dispatch<SetStateAction<Record<T, string>>>;
+// }
 
 type AIGeneratorCustomView = {
   type: 'CUSTOM';

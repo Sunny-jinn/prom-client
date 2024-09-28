@@ -7,6 +7,7 @@ import cn from 'classnames';
 import './NavigatorLayout.scss';
 import { useDisclosure } from '@chakra-ui/react';
 import Upload from '@/pages/Upload';
+import AIGenerator from '@/pages/AIGenerator';
 
 type NavigatorLayoutProps = {
   children: ReactNode;
@@ -14,10 +15,12 @@ type NavigatorLayoutProps = {
 }
 const NavigatorLayout = (props: NavigatorLayoutProps) => {
   const { children, hasScrollArea } = props;
-  const {isOpen, onOpen, onClose} = useDisclosure();
+  const {isOpen: isUploadOpen, onOpen: uploadOpen, onClose: uploadClose} = useDisclosure();
+  const {isOpen: isAIGeneratorOpen, onOpen: aiGeneratorOpen, onClose: aiGeneratorClose} = useDisclosure();
   return (
     <>
-      {isOpen && <Upload isOpen={isOpen} onClose={onClose}/>}
+      {isUploadOpen && <Upload isOpen={isUploadOpen} onClose={uploadClose}/>}
+      {isAIGeneratorOpen && <AIGenerator isOpen={isAIGeneratorOpen} onClose={aiGeneratorClose}/>}
       <div className='navigator-layout'>
         <div className='navigator-layout-content'>
           {hasScrollArea &&
@@ -31,7 +34,7 @@ const NavigatorLayout = (props: NavigatorLayoutProps) => {
           <div className='menu-container'>
             {NAV_DATA.left.map(el => <Menu root={el.root} icon={el.icon} label={el.label} />)}
           </div>
-          <button className='upload-content' onClick={() => onOpen()}>
+          <button className='upload-content' onClick={() => aiGeneratorOpen()}>
             <Plus color={'#1B1B1B'} strokeLinecap={'square'} strokeWidth={3} />
           </button>
           <div className='menu-container'>

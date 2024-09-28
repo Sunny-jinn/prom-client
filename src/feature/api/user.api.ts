@@ -63,6 +63,26 @@ const getUserInfoAPI = async (userId: number): Promise<User.User> => {
   return data;
 };
 
+const getMyFollowingsAPI = async (): Promise<User.Followings> => {
+  const result = await Server.get(`users/my/followings`);
+  const { data } = result.data;
+  return data;
+};
+
+const followUserAPI = async (userId: number): Promise<string> => {
+  const result = await Server.post(`users/follows`, {
+    followUserId: userId
+  });
+  const { data } = result.data;
+  return data;
+};
+
+const unFollowUserAPI = async (userId: number): Promise<string> => {
+  const result = await Server.delete(`users/follows/${userId}`);
+  const { data } = result.data;
+  return data;
+};
+
 export {
   refreshAPI,
   joinAPI,
@@ -71,5 +91,8 @@ export {
   updateUserInfoAPI,
   updateUserInterestAPI,
   getMyInfoAPI,
-  getUserInfoAPI
+  getUserInfoAPI,
+  getMyFollowingsAPI,
+  followUserAPI,
+  unFollowUserAPI
 };

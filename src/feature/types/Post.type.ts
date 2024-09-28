@@ -21,6 +21,7 @@ type PostPick = {
   likeCounts: number;
   description: string;
   commentCounts: number;
+  user: User.User
 }
 
 export type { PostType, PostCategory, PostFeed, PostPick };

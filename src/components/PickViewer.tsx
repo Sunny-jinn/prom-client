@@ -1,6 +1,6 @@
 import '@/components/PickViewer.scss';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, FunctionComponent, SVGProps, useEffect, useMemo, useRef, useState } from 'react';
 import { getPickByIdAPI } from '@/feature/api/post.api';
 import { Post } from '@/feature/types';
 import { PuffLoader } from 'react-spinners';
@@ -10,8 +10,14 @@ import { BaseReactPlayerProps } from 'react-player/types/base';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import PickIcon from '@/assets/img/img_pick_icon.png';
 import { POST_CATEGORY_DATA, PostCategoryData } from '@/constants/init.data';
-import { PostCategory } from '@/feature/types/Post.type';
 import { Volume2, VolumeX } from 'lucide-react';
+import Comment from '@/assets/img/icon_comment.svg?react';
+import Likes from '@/assets/img/icon_like.svg?react';
+import More from '@/assets/img/icon_more.svg?react';
+import temp from '@/assets/img/music.png'
+import cn from 'classnames';
+import { getMyFollowingsAPI } from '@/feature/api/user.api';
+
 
 type PickViewerProps = {
   pickIds: number[];
@@ -49,7 +55,10 @@ export default PickViewer;
 const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeIndex: number, index: number }) => {
   const [loading, setLoading] = useState(true);
   const [pick, setPick] = useState<Post.PostPick | null>(null);
+  const [isFollow, setIsFollow] = useState(false);
+  const [isContentOpen, setIsContentOpen] = useState(false)
 
+  // player state
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true); // 기본 음소거, 자동 재생
   const playerRef = useRef<BaseReactPlayer<BaseReactPlayerProps>>(null); // ReactPlayer의 ref 속성에 삽입해 메소드 제어 (변경된 재생 시간에 따른 실제 영상 재생 위치)
@@ -60,6 +69,11 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
     try {
       const result = await getPickByIdAPI(pickId);
       setPick(result);
+      const followings = await getMyFollowingsAPI();
+      //TODO: result에 있는 userID 팔로잉 중인지 확인
+      if(followings.find(el => el.id === 13)) {
+        setIsFollow(true);
+      }
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -72,6 +86,13 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
     playerRef.current.seekTo(parseFloat(e.target.value));
   };
 
+  //TODO: Unfollow 수정, User객체 추가 되면 추가
+  // const followHandler = async() => {
+  //   if(!isFollow){
+  //
+  //   }
+  // }
+
   useEffect(() => {
     if(pickId && (activeIndex === index)) {
       getPick();
@@ -83,8 +104,6 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
       setPlaying((activeIndex === index));
     }
   }, [ready, activeIndex, index]);
-
-  console.log(pick);
 
   if(!loading && pick) {
     return (
@@ -112,10 +131,33 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
                     <img src={PickIcon} alt='pick' />
                     <PickType type={pick.type as Post.PostCategory} />
                   </div>
-                  {muted ? <VolumeX onClick={() => setMuted(false)} color={'#ffffff'} /> :
+                  {muted ?
+                    <VolumeX onClick={() => setMuted(false)} color={'#ffffff'} /> :
                     <Volume2 onClick={() => setMuted(true)} color={'#ffffff'} />}
                 </div>
-                <div>asd</div>
+                <div className='pick-features-main'>
+                  <div className='pick-features-info'>
+                    <div className='pick-features-user-wrapper'>
+                      <div className='pick-features-user'>
+                        <img src={temp} alt='profile' />
+                        <span>{'Siena'}</span>
+                      </div>
+                      <button className={cn('pick-follow-button', {isFollow: isFollow})}>
+                        {isFollow ? '팔로잉' : '팔로우'}
+                      </button>
+                    </div>
+                    <div onClick={() => setIsContentOpen(prev => !prev)} className={cn('pick-features-content', {isOpen: isContentOpen})}>
+                      <span className='pick-title'>{pick.title}</span>
+                      <br/>
+                      <span className='pick-description'>{pick.description}</span>
+                    </div>
+                  </div>
+                  <div className='pick-features-interaction'>
+                    <PickFeature icon={Likes} onClick={() => {}} value={pick.likeCounts}/>
+                    <PickFeature icon={Comment} onClick={() => {}} value={pick.commentCounts}/>
+                    <PickFeature icon={More} onClick={() => {}}/>
+                  </div>
+                </div>
               </div>
             </SafeAreaLayout>
           </div>
@@ -155,3 +197,19 @@ const PickType = ({ type }: { type: Post.PostCategory }) => {
     </div>
   );
 };
+
+type PickFeatureProps = {
+  icon: FunctionComponent<SVGProps<SVGSVGElement>>;
+  value?: number;
+  onClick: () => void;
+}
+const PickFeature = (props: PickFeatureProps) => {
+  const {icon, value, onClick} = props;
+  const Icon = icon;
+  return (
+    <div className='pick-feature-element'>
+      <Icon onClick={() => onClick()}/>
+      {!isNaN(Number(value)) && <span>{value}</span>}
+    </div>
+  )
+}

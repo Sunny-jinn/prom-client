@@ -10,6 +10,18 @@ type User = {
   socialType: number | null
 }
 
-export type {
-  User
+type FollowResponse = {
+  id: number;
+  nickname: string;
+  profileImageUrl: string;
+  createdAt: string;
 }
+
+type Follows = FollowResponse[];
+type Followings = FollowResponse[];
+
+export type {
+  User,
+  Follows,
+  Followings
+};

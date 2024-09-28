@@ -67,6 +67,10 @@ export const reset = css`
   *::after {
     box-sizing: border-box;
   }
+  
+  *::-webkit-scrollbar{
+    display: none;
+  }
 
   img,
   video {
@@ -99,9 +103,9 @@ export const reset = css`
   }
   html {
     width: 100%;
-    height: 100dvh;
+    height: 100vh;
     //padding-top: env(safe-area-inset-top);
-    //overscroll-behavior: none;
+    overscroll-behavior: none;
 
     @media all and (display-mode: standalone) {
       height: 100vh;

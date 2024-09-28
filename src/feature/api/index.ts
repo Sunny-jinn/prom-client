@@ -2,7 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 
 const Server = axios.create({
-  // baseURL: 'http://52.78.81.43/',
+  // baseURL: 'https://api.prom-art.store/',
   baseURL: '/api/',
 });
 

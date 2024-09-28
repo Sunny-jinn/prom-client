@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Outlet, Route, Routes } from 'react-router-dom';
-import { refreshAPI } from '@/feature/api/user.api';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import Home from '@/pages/Home';
-import Init from '@/pages/Init';
 import OnBoarding from '@/pages/OnBoarding';
 import SignIn from '@/pages/SignIn';
 import Splash from '@/pages/Splash';
+import { getMyInfoAPI, refreshAPI } from '@/feature/api/user.api';
+import Init from '@/pages/Init';
 import userStore from '@/store/User';
 import { addAccessTokenToServer } from './feature/api';
 import FollowList from './pages/FollowList';
@@ -15,6 +15,7 @@ import MyPageAllPosts from './pages/MyPageAllPosts';
 import PostDetail from './pages/PostDetail';
 import Search from './pages/Search';
 import SignUp from './pages/SignUp';
+import Picks from '@/pages/Picks';
 
 const RootRouter = () => {
   return (
@@ -25,8 +26,8 @@ const RootRouter = () => {
         <Route path="sign-in" element={<SignIn />} />
         <Route path="sign-up" element={<SignUp />} />
         <Route element={<Auth />}>
-          <Route path="init" element={<Init />} />
-          <Route path="home" element={<Home />} />
+          <Route path='init' element={<Init />} />
+          <Route path='home' element={<Home/>} />
         </Route>
         <Route path="my-page/*">
           <Route index element={<MyPage />} />
@@ -35,6 +36,7 @@ const RootRouter = () => {
         </Route>
         <Route path="post/:post_id" element={<PostDetail />} />
         <Route path="search" element={<Search />} />
+        <Route path='pick/*' element={<Picks />} />
       </Route>
     </Routes>
   );
@@ -53,16 +55,16 @@ const AppRoute = () => {
 
   const refresh = async () => {
     try {
-      const result = await refreshAPI();
+      const result = await getMyInfoAPI();
+      // const result = await refreshAPI();
       setUser(result);
-      if (result.role === 'USER') {
+      if(result.role === 'USER') {
         navigate('init');
         return;
       }
-      navigate('my-page');
+      navigate('home');
     } catch (e) {
       navigate('on-board');
-      // navigate('m');
     } finally {
       setAppLoading(false);
     }

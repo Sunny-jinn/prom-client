@@ -11,7 +11,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { INIT_STEP_2, INIT_STEP_3, INIT_STEP_HEADER_TEXT } from '@/constants/init.data';
+import { POST_CATEGORY_DATA, INIT_STEP_3, INIT_STEP_HEADER_TEXT } from '@/constants/init.data';
 import Check from '@/assets/img/icon_check.svg?react';
 import Button from '@/components/atom/Button';
 import { Plus } from 'lucide-react';
@@ -241,7 +241,7 @@ const InitStep2 = (props: InitStepProps) => {
   return (
     <div className='init-step-2'>
       <div className='init-step-2-interest-list'>
-        {INIT_STEP_2.map(el => {
+        {POST_CATEGORY_DATA.map(el => {
           const Icon = el.icon;
           return (
             <div onClick={() => onSelectInterest(el.name as Interest)}

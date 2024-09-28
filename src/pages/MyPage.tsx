@@ -36,15 +36,16 @@ import {
   // getUserFollowings,
   getUserTags,
 } from '@/feature/api/mypage.api';
-import { UserResponse, getMyInfoAPI } from '@/feature/api/user.api';
+import { getMyInfoAPI } from '@/feature/api/user.api';
 import './MyPage.scss';
+import { User } from '@/feature/types';
 
 const MyPage = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isMyPage] = useState<boolean>(true);
   const [showAll, setShowAll] = useState(false);
 
-  const [userInfo, setUserInfo] = useState<UserResponse | null>(null);
+  const [userInfo, setUserInfo] = useState<User.User | null>(null);
   const [userTags, setUserTags] = useState<UserTagsResponse[]>([]);
   // const [followNumber, setFollowNumber] = useState({});
   const [userFeeds, setUserFeeds] = useState<UserFeedsResponse[]>([]);

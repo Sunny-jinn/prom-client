@@ -1,6 +1,8 @@
 import MusicIcon from '@/assets/img/icon_Music.svg?react';
 import VisualIcon from '@/assets/img/icon_Visual.svg?react';
 import WritingIcon from '@/assets/img/icon_Writing.svg?react';
+import { Post } from '@/feature/types';
+import { FunctionComponent, SVGProps } from 'react';
 
 const INIT_STEP_HEADER_TEXT = [
   {
@@ -17,28 +19,14 @@ const INIT_STEP_HEADER_TEXT = [
   },
 ];
 
-const INIT_STEP_1 = [
-  {
-    id: 'ARTIST',
-    label      : {
-      emoji  : '🖌️',
-      name   : '아티스트',
-      subName: 'Artist',
-    },
-    description: '나의 작품들을 홍보하고, 공유하고 싶어요.',
-  },
-  {
-    id: 'ARTTY',
-    label      : {
-      emoji  : '🙆️',
-      name   : '아티',
-      subName: 'Artty',
-    },
-    description: '내 취향에 맞는 아티스트를 찾고, 간직하고 싶어요.',
-  },
-];
+export type PostCategoryData = {
+  icon: FunctionComponent<SVGProps<SVGSVGElement>>;
+  name: Post.PostCategory
+  color: string;
+  description: string;
+}
 
-const INIT_STEP_2 = [
+const POST_CATEGORY_DATA: PostCategoryData[] = [
   {
     icon       : MusicIcon,
     name       : 'MUSIC',
@@ -121,7 +109,6 @@ const INIT_STEP_3 = {
 
 export {
   INIT_STEP_HEADER_TEXT,
-  INIT_STEP_1,
-  INIT_STEP_2,
+  POST_CATEGORY_DATA,
   INIT_STEP_3,
 };

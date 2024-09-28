@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import inactive_all_posts_icon from '@/assets/img/all_post.png';
@@ -7,19 +7,28 @@ import gallery from '@/assets/img/tabbar_all.png';
 import shorts_image from '@/assets/img/tabbar_shorts.png';
 import MyPageArtwork from '@/components/MyPageArtwork';
 import { MyPageHeader } from '@/components/MyPageHeader';
-import PostCard, { PostCardProp } from '@/components/PostCard';
+import PostCard from '@/components/PostCard';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
-import { DUMMY_DATA } from './MyPage';
+import { FeedImagesResponse, getFeedsImages, postArtwork } from '@/feature/api/artworks.api';
 import './MyPageAllPosts.scss';
 
 const MyPageAllPosts = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
-  const [selectedPosts, setSelectedPosts] = useState<Omit<PostCardProp, 'onClick'>[]>([]);
+  const [selectedPosts, setSelectedPosts] = useState<FeedImagesResponse[]>([]);
   const [page, setPage] = useState(0);
   const [inputValue, setInputValue] = useState('');
   const [representativeImage] = useState<string | null>(null);
   const [selectedBulletIndex, setSelectedBulletIndex] = useState<number>(0);
   const [temporaryImage, setTemporaryImage] = useState<string | null>(null);
+  const [userFeedImages, setUserFeedImages] = useState<FeedImagesResponse[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const feeds = await getFeedsImages();
+      setUserFeedImages(feeds);
+    };
+    fetchData();
+  }, []);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -35,10 +44,10 @@ const MyPageAllPosts = () => {
 
   const navigate = useNavigate();
 
-  const handleSelectPost = (post: Omit<PostCardProp, 'onClick'>) => {
+  const handleSelectPost = (post: FeedImagesResponse) => {
     setSelectedPosts((prev) =>
-      prev.find((selectedPost) => selectedPost.id === post.id)
-        ? prev.filter((selectedPost) => selectedPost.id !== post.id)
+      prev.find((selectedPost) => selectedPost.feedImageId === post.feedImageId)
+        ? prev.filter((selectedPost) => selectedPost.feedImageId !== post.feedImageId)
         : [...prev, post],
     );
   };
@@ -51,12 +60,24 @@ const MyPageAllPosts = () => {
   const handleSelect = () => {
     if (temporaryImage) {
       setSelectedPosts((prevPosts) => {
-        const updatedPosts = prevPosts.filter((post) => post.image !== temporaryImage);
-        return [prevPosts.find((post) => post.image === temporaryImage)!, ...updatedPosts];
+        const updatedPosts = prevPosts.filter((post) => post.imageUrl !== temporaryImage);
+        return [prevPosts.find((post) => post.imageUrl === temporaryImage)!, ...updatedPosts];
       });
       setTemporaryImage(null);
       setPage(1);
     }
+  };
+
+  const handlePostArtwork = async () => {
+    const feedImageIds = selectedPosts.map((post) => post.feedImageId);
+    await postArtwork({
+      name: inputValue,
+      shortFormIdList: [],
+      feedImageIdList: feedImageIds,
+      imageUrl: selectedPosts[0].imageUrl,
+    }).then(() => {
+      navigate(-1);
+    });
   };
 
   return (
@@ -94,12 +115,13 @@ const MyPageAllPosts = () => {
               <TabPanels>
                 <TabPanel p={0}>
                   <div className="my-page-all-posts-content">
-                    {DUMMY_DATA.map((item) => (
+                    {userFeedImages.map((item) => (
                       <PostCard
-                        id={item.id}
-                        image={item.image}
-                        type={item.type}
-                        isSelected={selectedPosts.some((post) => post.id === item.id)}
+                        id={item.feedImageId}
+                        image={item.imageUrl}
+                        isSelected={selectedPosts.some(
+                          (post) => post.feedImageId === item.feedImageId,
+                        )}
                         onClick={() => handleSelectPost(item)}
                         select
                       />
@@ -124,14 +146,14 @@ const MyPageAllPosts = () => {
             <MyPageHeader
               leftText="취소"
               leftOnClick={() => setPage(0)}
-              rightOnClick={() => setPage(1)}
+              rightOnClick={handlePostArtwork}
               rightText="완료"
               title="아트워크 추가"
               disabled={inputValue.length === 0}
             />
             <div className="my-page-artwork-add">
               <div className="my-page-artwork-thumbnail">
-                <MyPageArtwork all image={selectedPosts[0]?.image || ''} />
+                <MyPageArtwork all image={selectedPosts[0]?.imageUrl || ''} />
               </div>
               <button onClick={() => setPage(2)}>
                 <span>커버 수정</span>
@@ -161,7 +183,7 @@ const MyPageAllPosts = () => {
             <div className="my-page-artwork-thumbnail-update">
               <div className="my-page-artwork-thumbnail">
                 <img
-                  src={representativeImage || selectedPosts[0]?.image}
+                  src={representativeImage || selectedPosts[0]?.imageUrl}
                   alt="thumbnail"
                   className="my-page-artwork-thumbnail-image"
                 />
@@ -171,7 +193,7 @@ const MyPageAllPosts = () => {
                   <div
                     key={index}
                     className={`my-page-artwork-thumbnail-bullet ${index === selectedBulletIndex ? 'active' : ''}`}
-                    onClick={() => handleThumbnailClick(selectedPosts[index].image, index)}
+                    onClick={() => handleThumbnailClick(selectedPosts[index].imageUrl, index)}
                   />
                 ))}
               </div>
@@ -187,13 +209,13 @@ const MyPageAllPosts = () => {
 
                 {selectedPosts.map((item, index) => (
                   <div
-                    key={item.id}
+                    key={item.feedImageId}
                     className={`my-page-artwork-thumbnail-card ${index !== selectedBulletIndex ? 'inactive' : ''}`}
-                    onClick={() => handleThumbnailClick(item.image, index)}
+                    onClick={() => handleThumbnailClick(item.imageUrl, index)}
                   >
                     <img
                       className="my-page-artwork-thumbnail-card-img"
-                      src={item.image}
+                      src={item.imageUrl}
                       alt="img"
                     />
                   </div>

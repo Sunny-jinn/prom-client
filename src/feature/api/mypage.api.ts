@@ -22,6 +22,15 @@ export type UserFeedsResponse = {
   type: 'VISUAL' | 'MUSIC' | 'WRITING';
 };
 
+export type UserArtworksResponse = {
+  id: number;
+  userId: number;
+  name: string;
+  imageUrl: string;
+  feedImageList: string[];
+  shortFormList: string[];
+};
+
 const getUserTags = async () => {
   const result = await Server.get(`users/tags`);
   const data: UserTagsResponse[] = result.data.data;
@@ -47,9 +56,9 @@ const getUserFollowings = async () => {
 
 const getUserArtworks = async () => {
   const result = await Server.get('artworks/my');
-  console.log(result);
+  const data: UserArtworksResponse[] = result.data.data;
 
-  return result;
+  return data;
 };
 
 const getUserFeeds = async () => {
@@ -60,7 +69,7 @@ const getUserFeeds = async () => {
   return data;
 };
 
-const getPostsDetail = async (feedId: number) => {
+const getPostsDetail = async (feedId: string) => {
   const result = await Server.get(`posts/feeds/${feedId}`);
   const data: UserFeedsResponse = result.data.data;
   console.log(data);

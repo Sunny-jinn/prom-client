@@ -8,7 +8,6 @@ import Splash from '@/pages/Splash';
 import { getMyInfoAPI, refreshAPI } from '@/feature/api/user.api';
 import Init from '@/pages/Init';
 import userStore from '@/store/User';
-import { addAccessTokenToServer } from './feature/api';
 import FollowList from './pages/FollowList';
 import MyPage from './pages/MyPage';
 import MyPageAllPosts from './pages/MyPageAllPosts';
@@ -16,6 +15,7 @@ import PostDetail from './pages/PostDetail';
 import Search from './pages/Search';
 import SignUp from './pages/SignUp';
 import Picks from '@/pages/Picks';
+import { addAccessTokenToServer } from '@/feature/api';
 
 const RootRouter = () => {
   return (
@@ -46,17 +46,15 @@ export default RootRouter;
 
 // '',app,''
 const AppRoute = () => {
-  addAccessTokenToServer(
-    'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyLCJjYXRlZ29yeSI6ImFjY2VzcyIsInJvbGUiOiJBUlRJU1QiLCJpYXQiOjE3MjcyMzU1OTAsImV4cCI6MTcyNzMyMTk5MH0.XHE3vkEsgHEcp1637Szbt-zbWc14u3kT5e1tUYuRscE',
-  );
   const navigate = useAppNavigate();
   const [appLoading, setAppLoading] = useState(true);
   const { setUser } = userStore((state) => state);
 
   const refresh = async () => {
+    addAccessTokenToServer("eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImNhdGVnb3J5IjoiYWNjZXNzIiwicm9sZSI6IkFSVElTVCIsImlhdCI6MTcyNzU0MDUwNywiZXhwIjoxNzI3NjI2OTA3fQ.kuTtKssDNk-yhKtuQwj7EXPr7VtsOeUgN0W5pVZiO2E")
     try {
-      const result = await getMyInfoAPI();
       // const result = await refreshAPI();
+      const result = await getMyInfoAPI();
       setUser(result);
       if(result.role === 'USER') {
         navigate('init');

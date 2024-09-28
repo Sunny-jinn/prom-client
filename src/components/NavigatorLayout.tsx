@@ -1,5 +1,5 @@
 import { ReactNode, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useDisclosure } from '@chakra-ui/react';
 import cn from 'classnames';
 import { Plus } from 'lucide-react';
@@ -7,16 +7,20 @@ import { ScrollArea } from '@/components/ScrollArea';
 import { NAV_DATA, NavData } from '@/constants/nav.data';
 import Upload from '@/pages/Upload';
 import './NavigatorLayout.scss';
+import useAppNavigate from '@/hooks/useAppNavigate';
+import AIGenerator from '@/pages/AIGenerator';
 
 type NavigatorLayoutProps = {
   children: ReactNode;
 };
 const NavigatorLayout = (props: NavigatorLayoutProps) => {
   const { children } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isUploadOpen, onOpen: uploadOpen, onClose: uploadClose } = useDisclosure();
+  const { isOpen: isAIGeneratorOpen, onOpen: aiGeneratorOpen, onClose: aiGeneratorClose } = useDisclosure();
   return (
     <>
-      {isOpen && <Upload isOpen={isOpen} onClose={onClose} />}
+      {isUploadOpen && <Upload isOpen={isUploadOpen} onClose={uploadClose} />}
+      {isAIGeneratorOpen && <AIGenerator isOpen={isAIGeneratorOpen} onClose={aiGeneratorClose} />}
       <div className="navigator-layout">
         <div className="navigator-layout-content">
           <ScrollArea>{children}</ScrollArea>
@@ -27,7 +31,8 @@ const NavigatorLayout = (props: NavigatorLayoutProps) => {
               <Menu root={el.root} icon={el.icon} label={el.label} />
             ))}
           </div>
-          <button className="upload-content" onClick={() => onOpen()}>
+          {/*<button className="upload-content" onClick={() => aiGeneratorOpen()}>*/}
+          <button className="upload-content" onClick={() => uploadOpen()}>
             <Plus color={'#1B1B1B'} strokeLinecap={'square'} strokeWidth={3} />
           </button>
           <div className="menu-container">
@@ -43,7 +48,7 @@ const NavigatorLayout = (props: NavigatorLayoutProps) => {
 
 const Menu = ({ icon, label, root }: NavData) => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useAppNavigate();
   const Icon = icon;
 
   const isSelected = useMemo(() => {
@@ -54,7 +59,7 @@ const Menu = ({ icon, label, root }: NavData) => {
   return (
     <div
       className="menu"
-      onClick={label === '탐색' ? () => navigate('/app/search') : () => navigate('/app/my-page')}
+      onClick={() => navigate(`${root}`)}
     >
       <Icon fill={isSelected ? '#7bf7ff' : '#515151'} />
       <span className={cn('menu-label', { selected: isSelected })}>{label}</span>

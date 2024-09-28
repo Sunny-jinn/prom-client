@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
-import icon_search from '@/assets/img/icon_search_square.svg';
 import icon_sort from '@/assets/img/icon_sort.png';
 import icon_left_arrow from '@/assets/img/left_arrow.png';
 import dummy_profile from '@/assets/img/profile_background.png';

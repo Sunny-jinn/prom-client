@@ -15,14 +15,14 @@ import { Article, ARTICLES } from '@/constants/articles.data';
 import dayjs from 'dayjs';
 import userStore from '@/store/User';
 import { POST_CATEGORY_DATA, PostCategoryData } from '@/constants/init.data';
-import { FeedResponse, getFeedsAPI } from '@/feature/api/post.api';
+import { getFeedsAPI } from '@/feature/api/post.api';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import DefaultSwiperBullets from '@/components/DefaultSwiperBullets';
 import cn from 'classnames';
 import { Drawer, DrawerContent, DrawerProps, useDisclosure } from '@chakra-ui/react';
 import { ScrollArea } from '@/components/ScrollArea';
 import { getUserInfoAPI } from '@/feature/api/user.api';
-import { User } from '@/feature/types';
+import { Post, User } from '@/feature/types';
 
 dayjs.extend(relativeTime);
 
@@ -33,7 +33,7 @@ const Home = () => {
 
   return (
     <SafeAreaLayout flexDirection={'column'}>
-      <NavigatorLayout hasScrollArea={true}>
+      <NavigatorLayout>
         <div className='home-header'>
           <Logo width={70} />
           <div className='home-alarm'>
@@ -157,7 +157,7 @@ const PostPreview = (props: PostPreviewProps) => {
   const { category } = props;
   const { name, icon } = category;
   const Icon = icon;
-  const [post, setPost] = useState<FeedResponse | null>(null);
+  const [post, setPost] = useState<Post.PostFeed | null>(null);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
 

@@ -1,5 +1,5 @@
 import { makeQuery, Server } from '@/feature/api/index';
-import { Post, User } from '@/feature/types';
+import { Post } from '@/feature/types';
 
 const createFeedAPI = async (formData: FormData) => {
   const result = await Server.post('posts/feeds', formData);
@@ -19,33 +19,26 @@ const getFeedByIdAPI = async (postId: number) => {
   return data;
 };
 
-const getPickByIdAPI = async(pickId: number): Promise<Post.PostPick> => {
+const getPickByIdAPI = async (pickId: number): Promise<Post.PostPick> => {
   const result = await Server.get(`posts/short-forms/${pickId}`);
   const { data } = result.data;
   return data;
-}
+};
 
-type getRecentFeedAPIRequest = {
-  page?: number;
-  size?: number;
-  orderBy?: string;
-  type?: Post.PostCategory
-}
-
-export type FeedResponse = {
-  postId: number
-  type: Post.PostCategory
-  title: string
-  commentCounts: number;
-  likesCount: number;
-  url: string[];
-  user: User.User
-}
-
-type getFeedsResponse = FeedResponse[];
-
-const getFeedsAPI = async (request: getRecentFeedAPIRequest): Promise<getFeedsResponse> => {
-  const result = await Server.get(`posts${makeQuery(request)}`);
+const getFeedsAPI = async (
+  {
+    page,
+    size,
+    orderBy,
+    type,
+  }: {
+    page?: number;
+    size?: number;
+    orderBy?: string;
+    type?: Post.PostCategory
+  },
+): Promise<Post.PostFeed[]> => {
+  const result = await Server.get(`posts${makeQuery({ page, size, orderBy, type })}`);
   const { data } = result.data;
   return data;
 };
@@ -55,7 +48,6 @@ const getPicksAPI = async () => {
   const { data } = result.data;
   return data;
 };
-
 
 
 export {

@@ -7,8 +7,8 @@ import test_img from '@/assets/img/profile_background.png';
 import CustomSearchInput from '@/components/CustomSearchInput';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import SearchResultCard from '@/components/SearchResultCard';
-import { getPosts } from '@/feature/api/posts.api';
 import './Search.scss';
+import { getFeedsAPI } from '@/feature/api/post.api';
 
 const Search = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
@@ -28,7 +28,8 @@ const Search = () => {
       inputRef.current.blur();
     }
   };
-  getPosts();
+  //TODO: 진우야 여기 필요한 query 넣으면됨, useEffect 안에 넣어놓고 쓰는게 나을듯 query 많아서?
+  getFeedsAPI({});
   //   getShortForms();
 
   return (

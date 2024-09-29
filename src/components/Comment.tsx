@@ -54,7 +54,7 @@ const CommentDate = styled.span`
 type CommentProps = {
   profile: string;
   nickname: string;
-  date: string;
+  date?: string;
   content: string;
   isArtist?: boolean;
 };

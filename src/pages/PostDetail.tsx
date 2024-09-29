@@ -17,26 +17,49 @@ import CustomBottomModal from '@/components/CustomBottomModal';
 import MainBottomDrawer from '@/components/MainBottomDrawer';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import { UserFeedsResponse, getPostsDetail } from '@/feature/api/mypage.api';
+import { createCommentAPI, getCommentAPI } from '@/feature/api/post.api';
+import { FeedComment } from '@/feature/types/Post.type';
+import { timeAgo } from '@/utils/date.utils';
 import './PostDetail.scss';
 
 const PostDetail = () => {
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [isClicked] = useState<boolean>(false);
   const [feedInfo, setFeedInfo] = useState<UserFeedsResponse | null>(null);
+  const [feedComments, setFeedComments] = useState<FeedComment[]>([]);
+  const [newComment, setNewComment] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
-  const params = useParams();
+  const { post_id } = useParams();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      if (params.post_id) {
-        const feed = await getPostsDetail(params.post_id);
+      if (post_id) {
+        const feed = await getPostsDetail(post_id);
+        const comments = await getCommentAPI(post_id);
         setFeedInfo(feed);
+        setFeedComments(comments);
       }
     };
     fetchUserInfo();
   }, []);
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewComment(e.target.value);
+  };
+
+  const handleCommentUpload = async () => {
+    try {
+      if (post_id && newComment) {
+        await createCommentAPI(post_id, {
+          content: newComment,
+        });
+      }
+    } catch {
+      console.log('error');
+    }
+  };
 
   const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
   const {
@@ -109,7 +132,7 @@ const PostDetail = () => {
               <img src={left_arrow} alt="" />
             </div>
             <div className="post-detail-user">
-              <span className="post-detail-user-name">김진우 님의</span>
+              <span className="post-detail-user-name">{feedInfo.user.username} 님의</span>
               <span>게시물</span>
             </div>
             <div className="post-detail-ellipsis-btn" onClick={openDrawer}>
@@ -128,14 +151,7 @@ const PostDetail = () => {
                   <img src={item} alt="test" />
                 </SwiperSlide>
               ))}
-              {/* <SwiperSlide>
-                <img src={test_image} alt="test" />
-              </SwiperSlide>
-              <SwiperSlide>
-                <img src={test_image} alt="test" />
-              </SwiperSlide> */}
             </Swiper>
-            {/**!TODO: 사진 개수 반영 */}
             <div className="swiper-bullets">
               {feedInfo.images.map((item, index) => (
                 <div
@@ -153,7 +169,7 @@ const PostDetail = () => {
             </div>
             <button className="post-detail-menu" onClick={openCommentDrawer}>
               <img src={comment} alt="comment" />
-              <span>{feedInfo.commentCounts}</span>
+              <span>{feedComments.length}</span>
             </button>
             <div className="post-detail-menu">
               <img src={out} alt="out" />
@@ -164,8 +180,8 @@ const PostDetail = () => {
           </div>
 
           <div className="post-detail-author">
-            <img src={test_image} alt="profile" />
-            <span>김진우</span>
+            <img src={feedInfo.user.profileImage} alt="profile" />
+            <span>{feedInfo.user.username}</span>
           </div>
 
           <div className="post-detail-intro">
@@ -210,14 +226,14 @@ const PostDetail = () => {
               <Box sx={{ textAlign: 'center', marginBottom: '15px' }}>
                 <Text sx={{ color: '#fff', fontWeight: '600' }}>댓글</Text>
               </Box>
-              {DUMMY_COMMENTS.map((item) => (
+              {feedComments.map((item) => (
                 <Comment
-                  profile={item.profile}
-                  key={item.id}
-                  nickname={item.nickname}
-                  content={item.content}
-                  date={item.date}
-                  isArtist={item.id === 1}
+                  profile={item.profileImage}
+                  key={item.commentId}
+                  nickname={item.userName}
+                  content={item.comment}
+                  date={timeAgo(item.createdAt)}
+                  isArtist={item.userId === 12}
                 />
               ))}
               <Box
@@ -250,6 +266,8 @@ const PostDetail = () => {
                       position: 'relative',
                     }}
                     placeholder={`김진우 님의 게시물에 댓글달기`}
+                    value={newComment || ''}
+                    onChange={handleCommentChange}
                   />
                   <Box
                     sx={{
@@ -266,6 +284,7 @@ const PostDetail = () => {
                         background: '#000000',
                       },
                     }}
+                    onClick={handleCommentUpload}
                   >
                     <Image
                       src={icon_comment_upload}
@@ -282,37 +301,5 @@ const PostDetail = () => {
     </SafeAreaLayout>
   );
 };
-
-const DUMMY_COMMENTS = [
-  {
-    id: 0,
-    profile: test_image,
-    nickname: '정의왕',
-    date: '3분',
-    content: '조이 흐웨이 하고싶어요',
-  },
-  {
-    id: 1,
-    profile: test_image,
-    nickname: '정의왕',
-    date: '3분',
-    content: '조이 흐웨이 하고싶어요',
-  },
-  {
-    id: 2,
-    profile: test_image,
-    nickname: '정의왕',
-    date: '23분',
-    content:
-      '조이 흐웨이 좋아요조이 흐웨이 좋아요조이 흐웨이 좋아요조이 흐웨이 좋아요조이 흐웨이 좋아요조이 흐웨이 좋아요조이 흐웨이 좋아요',
-  },
-  {
-    id: 3,
-    profile: test_image,
-    nickname: '정의왕',
-    date: '23분',
-    content: '조이 흐웨이 하고싶어요',
-  },
-];
 
 export default PostDetail;

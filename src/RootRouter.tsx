@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Outlet, Route, Routes } from 'react-router-dom';
+import { getMyInfoAPI, refreshAPI } from '@/feature/api/user.api';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import Home from '@/pages/Home';
+import Init from '@/pages/Init';
 import OnBoarding from '@/pages/OnBoarding';
+import Picks from '@/pages/Picks';
 import SignIn from '@/pages/SignIn';
 import Splash from '@/pages/Splash';
-import { getMyInfoAPI, refreshAPI } from '@/feature/api/user.api';
-import Init from '@/pages/Init';
 import userStore from '@/store/User';
+import ArtworkDetailPage from './pages/ArtworkDetailPage';
 import FollowList from './pages/FollowList';
 import MyPage from './pages/MyPage';
 import MyPageAllPosts from './pages/MyPageAllPosts';
 import PostDetail from './pages/PostDetail';
 import Search from './pages/Search';
 import SignUp from './pages/SignUp';
-import Picks from '@/pages/Picks';
 
 const RootRouter = () => {
   return (
@@ -25,8 +26,8 @@ const RootRouter = () => {
         <Route path="sign-in" element={<SignIn />} />
         <Route path="sign-up" element={<SignUp />} />
         <Route element={<Auth />}>
-          <Route path='init' element={<Init />} />
-          <Route path='home' element={<Home/>} />
+          <Route path="init" element={<Init />} />
+          <Route path="home" element={<Home />} />
         </Route>
         <Route path="my-page/*">
           <Route index element={<MyPage />} />
@@ -34,8 +35,9 @@ const RootRouter = () => {
           <Route path={'follow-list/:status'} element={<FollowList />} />
         </Route>
         <Route path="post/:post_id" element={<PostDetail />} />
+        <Route path="artwork/:artwork_id" element={<ArtworkDetailPage />} />
         <Route path="search" element={<Search />} />
-        <Route path='pick/*' element={<Picks />} />
+        <Route path="pick/*" element={<Picks />} />
       </Route>
     </Routes>
   );
@@ -54,7 +56,7 @@ const AppRoute = () => {
       const result = await refreshAPI();
       const myInfo = await getMyInfoAPI();
       setUser(myInfo);
-      if(result.role === 'USER') {
+      if (result.role === 'USER') {
         navigate('init');
         return;
       }

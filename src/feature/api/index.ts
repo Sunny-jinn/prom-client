@@ -10,6 +10,10 @@ const addAccessTokenToServer = (access: string) => {
   Server.defaults.headers.common.Authorization = `Bearer ${access}`;
 };
 
+const removeAccessTokenToServer = () => {
+  delete Server.defaults.headers.common.Authorization
+};
+
 const makeQuery = (query: object) => qs.stringify(query, { addQueryPrefix: true });
 
-export { Server, addAccessTokenToServer, makeQuery };
+export { Server, addAccessTokenToServer, removeAccessTokenToServer, makeQuery };

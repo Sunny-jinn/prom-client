@@ -1,4 +1,4 @@
-import { addAccessTokenToServer, makeQuery, Server } from '@/feature/api/index';
+import { addAccessTokenToServer, makeQuery, removeAccessTokenToServer, Server } from '@/feature/api/index';
 import { User } from '@/feature/types';
 
 const refreshAPI = async () => {
@@ -20,6 +20,12 @@ const joinAPI = async ({ email, password }: { email: string, password: string })
   return data
 };
 
+const signInGoogleAPI = async () => {
+  const result = await Server.get('oauth2/authorization/google');
+  const { data } = result.data;
+  return data
+};
+
 const loginAPI = async ({ email, password }: { email: string, password: string }) => {
   const result = await Server.post('login', {
     email,
@@ -28,6 +34,12 @@ const loginAPI = async ({ email, password }: { email: string, password: string }
   const { data } = result.data;
   const {accessToken} = data;
   addAccessTokenToServer(accessToken);
+  return result.data;
+};
+
+const logoutAPI = async () => {
+  const result = await Server.post('logout');
+  removeAccessTokenToServer()
   return result.data;
 };
 
@@ -88,7 +100,9 @@ const unFollowUserAPI = async (userId: number): Promise<string> => {
 export {
   refreshAPI,
   joinAPI,
+  signInGoogleAPI,
   loginAPI,
+  logoutAPI,
   checkNicknameAPI,
   updateUserInfoAPI,
   updateUserInterestAPI,

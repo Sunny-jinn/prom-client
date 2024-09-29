@@ -20,20 +20,33 @@ import DefaultSwiperBullets from '@/components/DefaultSwiperBullets';
 import cn from 'classnames';
 import { Drawer, DrawerContent, DrawerProps, useDisclosure } from '@chakra-ui/react';
 import { ScrollArea } from '@/components/ScrollArea';
-import { getUserInfoAPI } from '@/feature/api/user.api';
+import { getUserInfoAPI, logoutAPI } from '@/feature/api/user.api';
 import { Post, User } from '@/feature/types';
+import userStore from '@/store/User';
+import useAppNavigate from '@/hooks/useAppNavigate';
 
 dayjs.extend(relativeTime);
 
 const Home = () => {
+  const navigate = useAppNavigate();
   const [alarms] = useState([{ title: 1 }, { title: 2 }]);
+  const {removeUser} = userStore(state => state)
+  const logout = async() => {
+    try{
+      await logoutAPI();
+      removeUser();
+      navigate('on-board')
+    }catch (e) {
+      console.log(e);
+    }
+  }
 
   return (
     <SafeAreaLayout flexDirection={'column'}>
       <NavigatorLayout hasScrollArea={true}>
         <div className='home-header'>
           <Logo width={70} />
-          <div style={{color: '#ffffff'}}>
+          <div onClick={() => logout()} style={{color: '#ffffff'}}>
             로그아웃
           </div>
           <div className='home-alarm'>
@@ -43,7 +56,6 @@ const Home = () => {
               </div>
             }
             <Alarm width={19} height={19} />
-
           </div>
         </div>
         <div className='home'>

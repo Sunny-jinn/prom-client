@@ -20,6 +20,7 @@ import useIsAble from '@/hooks/useIsAble';
 import { ScrollArea } from '@/components/ScrollArea';
 import CheckWave from '@/components/atom/CheckWave';
 import { checkNicknameAPI, updateUserInfoAPI, updateUserInterestAPI } from '@/feature/api/user.api';
+import StepProgress from '@/components/StepProgress';
 
 type Interest = 'MUSIC' | 'VISUAL' | 'WRITING';
 
@@ -58,7 +59,7 @@ const Init = () => {
       {step !== 3 &&
         <div id={'Init'}>
           <CustomHeader leftOnClick={() => navigate(-1)}>
-            <progress value={(step + 1) / 3} className='init-progress' />
+            <StepProgress value={(step + 1) / 3} color={'#7bf7ff'}/>
           </CustomHeader>
           <div className='init-header'>
           <span className='init-header-title'>

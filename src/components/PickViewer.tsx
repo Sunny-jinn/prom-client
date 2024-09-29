@@ -106,6 +106,8 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
   }, [ready, activeIndex, index]);
 
   if(!loading && pick) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return (
       <div className='pick-content'>
         <div className='pick-video-wrapper'>

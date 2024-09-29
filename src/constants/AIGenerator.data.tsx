@@ -1,9 +1,10 @@
 import { Post } from '@/feature/types';
 
-type AIGeneratorGridView = {
+export type AIGeneratorGridViewType = {
   type: 'GRID';
   column: number;
   label: string;
+  key: string;
   data: {label: string, value: string, description?: string}[]
 }
 
@@ -12,13 +13,13 @@ type AIGeneratorGridView = {
 //   setState: Dispatch<SetStateAction<Record<T, string>>>;
 // }
 
-type AIGeneratorCustomView = {
+type AIGeneratorCustomViewType = {
   type: 'CUSTOM';
 }
 
 type AIGeneratorData = {
   state: Record<string, string>;
-  views: Array<AIGeneratorCustomView | AIGeneratorGridView>;
+  views: Array<AIGeneratorCustomViewType | AIGeneratorGridViewType>;
   detailViewComment: string;
   processingComment: string;
 }
@@ -37,6 +38,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
         type: 'GRID',
         column: 3,
         label: '곡 분위기',
+        key: 'mood',
         data: [
           {label: '편안한', value: 'COMFORTABLE'},
           {label: '신나는', value: 'EXCITING'},
@@ -49,6 +51,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
         type: 'GRID',
         label: '장르',
         column: 3,
+        key: 'genre',
         data: [
           {label: '팝', value: 'POP', description: "팝 음악은 대중적이고 친숙한 멜로디와 경쾌한 리듬이 특징인 음악 장르입니다. 다양한 악기와 전자음향을 활용해 쉽게 따라 부를 수 있는 멜로디를 강조하며, 중독성 있는 후렴구가 자주 포함됩니다."},
           {label: '힙합', value: 'HIPHOP', description: "리듬과 비트를 중시하는 음악으로, 랩과 강한 리듬감이 특징입니다. 자유로운 표현과 강렬한 에너지가 돋보이며, 감정과 이야기를 풀어내기 좋은 장르입니다."},
@@ -61,6 +64,8 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
         type: 'GRID',
         label: '음역대',
         column: 3,
+        key: 'vocalRange',
+
         data: [
           {label: '저음', value: 'LOW', description: "저음은 낮고 깊은 소리로, 드럼과 베이스 같은 악기에서 주로 들을 수 있습니다. 강력하고 풍부한 느낌을 주며, 곡에 깊이와 리듬감을 추가합니다."},
           {label: '중음', value: 'MIDDLE', description: "중음은 대부분의 보컬과 주요 악기에서 들을 수 있는 소리입니다. 곡의 멜로디와 하모니를 형성하며, 음악의 중심이 되는 부분입니다."},
@@ -87,6 +92,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
         type: 'GRID',
         label: '주제',
         column: 3,
+        key: 'subject',
         data: [
           {label: '자연', value: 'NATURE'},
           {label: '도시', value: 'CITY'},
@@ -97,6 +103,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
       {
         type: 'GRID',
         label: '스타일',
+        key: 'style',
         column: 3,
         data: [
           {label: '추상적', value: 'ABSTRACT', description: "감정과 상상을 자유롭게 표현할 수 있는 카테고리입니다. 복잡한 형태와 색상을 활용하여 독창적인 작품을 만들어 보세요."},
@@ -108,6 +115,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
       {
         type: 'GRID',
         label: '색상',
+        key: 'color',
         column: 3,
         data: [
           {label: '밝은', value: 'BRIGHT'},
@@ -119,6 +127,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
       {
         type: 'GRID',
         label: '분위기',
+        key: 'mood',
         column: 3,
         data: [
           {label: '밝은', value: 'BRIGHT'},
@@ -149,6 +158,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
         type: 'GRID',
         label: '카테고리',
         column: 3,
+        key: 'type',
         data: [
           {label: '소설', value: 'NOVEL'},
           {label: '시', value: 'POEM'},
@@ -157,6 +167,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
       {
         type: 'GRID',
         label: '주제',
+        key: 'subject',
         column: 3,
         data: [
           {label: '판타지', value: 'FANTASY', description: "초자연적 요소와 상상 속 세계를 배경으로 한 이야기입니다."},
@@ -169,6 +180,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
       {
         type: 'GRID',
         label: '문체 스타일',
+        key: 'style',
         column: 2,
         data: [
           {label: '간결하고 직설적인', value: 'COMPACT', description: "군더더기 없이 명확하게 전달하는 문체입니다. \n예) \"그는 문을 열고 나갔다.\""},
@@ -180,6 +192,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
       {
         type: 'GRID',
         label: '특별한 요소',
+        key: 'specialElement',
         column: 2,
         data: [
           {label: '다중 시점', value: 'MULTIPLE_PERSPECTIVE', description: "여러 캐릭터의 관점에서 이야기가 전개되는 구조입니다."},
@@ -195,6 +208,7 @@ export const AI_GENERATOR_DATA: Record<Post.PostCategory, AIGeneratorData> = {
         type: 'GRID',
         label: '결말',
         column: 3,
+        key: 'ending',
         data: [
           {label: '해피엔딩', value: 'HAPPY'},
           {label: '베드엔딩', value: 'BAD'},

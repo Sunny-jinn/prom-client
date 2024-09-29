@@ -9,7 +9,7 @@ import 'swiper/css/effect-fade';
 import Logo from '@/assets/img/img_logo.svg?react';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import { useState } from 'react';
-import { getMyInfoAPI, loginAPI } from '@/feature/api/user.api';
+import { getMyInfoAPI, loginAPI, signInGoogleAPI } from '@/feature/api/user.api';
 import userStore from '@/store/User';
 
 const SignIn = () => {
@@ -40,6 +40,10 @@ const SignIn = () => {
       console.log(e);
     }
   };
+
+  const googleSignIn = async() => {
+    window.location.href = 'https://api.prom-art.store/oauth2/authorization/google'
+  }
 
   return (
     <SafeAreaLayout flexDirection={'column'}>
@@ -73,7 +77,7 @@ const SignIn = () => {
           {/**
            * !FIX: icon component화. icon 조금 깨짐 수정 바람
            */}
-          <button>
+          <button onClick={() => googleSignIn()}>
             <img src={google_auth_icon} alt='google login' />
           </button>
         </div>

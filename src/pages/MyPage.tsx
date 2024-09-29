@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -15,12 +15,14 @@ import {
 import edit_icon from '@/assets/img/edit.png';
 import ellipsis from '@/assets/img/ellipsis.png';
 import icon_bottom_arrow from '@/assets/img/icon_bottom_arrow.png';
+import icon_setting from '@/assets/img/icon_setting.svg';
 import icon_up_arrow from '@/assets/img/icon_up_arrow.png';
 import profileBackground from '@/assets/img/profile_background.png';
 import tabbar_all from '@/assets/img/tabbar_all.png';
 import tabbar_shorts from '@/assets/img/tabbar_shorts.png';
 import CustomBottomDrawer from '@/components/CustomBottomDrawer';
 import CustomBottomModal from '@/components/CustomBottomModal';
+import CustomTempModal from '@/components/CustomTempModal';
 import MainBottomDrawer from '@/components/MainBottomDrawer';
 import MyPageArtwork from '@/components/MyPageArtwork';
 import MyPageTag from '@/components/MyPageTag';
@@ -32,13 +34,20 @@ import {
   UserFeedsResponse,
   UserTagsResponse,
   getUserArtworks,
-  getUserFeeds, // getUserFollowers,
-  // getUserFollowings,
+  getUserFeeds,
+  getUserFollowers,
+  getUserFollowings,
   getUserTags,
 } from '@/feature/api/mypage.api';
-import { getMyInfoAPI } from '@/feature/api/user.api';
-import './MyPage.scss';
+import { getMyInfoAPI, updateUserInfoAPI } from '@/feature/api/user.api';
 import { User } from '@/feature/types';
+import followerStore from '@/store/Follow';
+import './MyPage.scss';
+
+type FollowsType = {
+  follower: number;
+  following: number;
+};
 
 const MyPage = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -47,40 +56,125 @@ const MyPage = () => {
 
   const [userInfo, setUserInfo] = useState<User.User | null>(null);
   const [userTags, setUserTags] = useState<UserTagsResponse[]>([]);
-  // const [followNumber, setFollowNumber] = useState({});
+  const [followNumber, setFollowNumber] = useState<FollowsType>({
+    follower: 0,
+    following: 0,
+  });
   const [userFeeds, setUserFeeds] = useState<UserFeedsResponse[]>([]);
   const [userArtworks, setUserArtworks] = useState<UserArtworksResponse[]>([]);
+
+  const [newNickname, setNewNickname] = useState<string | null>('');
+  const [newDescription, setNewDescription] = useState<string | null>('');
+  const [tempProfileImage, setTempProfileImage] = useState<string>('');
+  const [tempBackgroundImage, setTempBackgroundImage] = useState<string>('');
+
+  const { setFollower, setFollowing } = followerStore((state) => ({
+    setFollower: state.setFollower,
+    setFollowing: state.setFollowing,
+  }));
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       const user = await getMyInfoAPI();
       const tags = await getUserTags();
-      // const followerNumber = await getUserFollowers();
-      // const followingNumber = await getUserFollowings();
+      const followerNumber = await getUserFollowers();
+      const followingNumber = await getUserFollowings();
       const feeds = await getUserFeeds();
       const artworks = await getUserArtworks();
 
-      // setFollowNumber({
-      //   follower: followerNumber.length,
-      //   following: followingNumber.length,
-      // });
+      setFollower(followerNumber);
+      setFollowing(followingNumber);
+      setFollowNumber({
+        follower: followerNumber.length,
+        following: followingNumber.length,
+      });
       setUserInfo(user);
       setUserTags(tags);
       setUserFeeds(feeds);
       setUserArtworks(artworks);
+      setNewNickname(user.username);
+      setNewDescription(user.description);
+      setTempProfileImage(user.profileImage);
+      setTempBackgroundImage(user.profileImage);
     };
     fetchUserInfo();
-    console.log(userTags);
   }, []);
+
+  const profileRef = useRef<HTMLInputElement>(null);
+  const backgroundRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [newDescription]);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewNickname(event.target.value);
+  };
 
   const handleToggle = () => {
     setShowAll(!showAll);
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewDescription(event.target.value);
+  };
+
+  const handleUpdateProfileClick = () => {
+    if (profileRef.current) {
+      profileRef.current.click();
+    }
+  };
+
+  const handleUpdateProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setTempProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUpdateBackground = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setTempBackgroundImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleTagUpdate = (tagId: number, newName: string) => {
     setUserTags((prevTags) =>
       prevTags.map((tag) => (tag.tagId === tagId ? { ...tag, name: newName } : tag)),
     );
+  };
+
+  const handleEditComplete = async () => {
+    try {
+      const formdata = new FormData();
+      formdata.append('description', newDescription || '');
+      formdata.append('profileImage', tempProfileImage);
+      formdata.append('birthDate', '1999-01-01');
+      formdata.append('phoneNumber', '112');
+      formdata.append('nickname', newNickname || '');
+      formdata.append('backgroundImage', tempProfileImage);
+      formdata.append('role', 'ROLE_ARTTY');
+
+      const data = await updateUserInfoAPI(formdata);
+      console.log('업데이트 결과 : ', data);
+      setIsEditMode(false);
+    } catch {
+      console.log('err');
+    }
   };
 
   const navigate = useNavigate();
@@ -110,6 +204,12 @@ const MyPage = () => {
     onClose: closeReportModal,
   } = useDisclosure();
 
+  const {
+    isOpen: isCenterModalOpen,
+    onOpen: openCenterModal,
+    onClose: closeCenterModal,
+  } = useDisclosure();
+
   const editClickHandler = () => {
     setIsEditMode(true);
     closeMyDrawer();
@@ -135,6 +235,11 @@ const MyPage = () => {
     openReportModal();
   };
 
+  const logoutClickHandler = () => {
+    closeMyDrawer();
+    openCenterModal();
+  };
+
   const MyPageModalOptions = [
     {
       id: 0,
@@ -153,6 +258,12 @@ const MyPage = () => {
     {
       id: 3,
       text: '인사이트',
+    },
+    {
+      id: 4,
+      text: '로그아웃',
+      delete: true,
+      onClick: logoutClickHandler,
     },
   ];
 
@@ -192,7 +303,7 @@ const MyPage = () => {
                   )}
                   <span className="my-page-header-text">마이페이지</span>
                   {isEditMode ? (
-                    <div onClick={() => setIsEditMode(false)}>
+                    <div onClick={handleEditComplete}>
                       <span className="my-page-header-confirm">완료</span>
                     </div>
                   ) : (
@@ -208,17 +319,46 @@ const MyPage = () => {
           </div>
 
           <div className="background-image">
-            <div className="background-image-wrapper">
-              <img src={profileBackground} alt="background" />
+            <div
+              className="background-image-wrapper"
+              onClick={() => backgroundRef.current?.click()}
+            >
+              <input
+                ref={backgroundRef}
+                type="file"
+                className="my-page-update-profile"
+                onChange={handleUpdateBackground}
+              />
+              <img src={!isEditMode ? profileBackground : tempBackgroundImage} alt="background" />
             </div>
             <div className="my-page-profile">
               <div className="my-page-profile-content">
                 <div className="my-page-profile-icon">
-                  <img src={profileBackground} alt="" className="my-page-profile-image" />
+                  <img
+                    src={!isEditMode ? userInfo.profileImage : tempProfileImage}
+                    alt=""
+                    className="my-page-profile-image"
+                  />
+                  <input
+                    ref={profileRef}
+                    type="file"
+                    className="my-page-update-profile"
+                    onChange={handleUpdateProfile}
+                  />
+                  {isEditMode && (
+                    <button className="my-page-edit-profile" onClick={handleUpdateProfileClick}>
+                      <img src={icon_setting} alt="x" />
+                    </button>
+                  )}
                 </div>
                 <div className="my-page-profile-name">
                   {isEditMode && <img src={edit_icon} alt="edit" />}
-                  <span className="my-page-nickname">{userInfo.username}</span>
+                  <input
+                    className="my-page-nickname"
+                    value={newNickname || ''}
+                    readOnly={!isEditMode}
+                    onChange={handleInputChange}
+                  />
                   {isEditMode && <img src={edit_icon} alt="edit" />}
                 </div>
                 <div className="my-page-profile-tags">
@@ -244,9 +384,9 @@ const MyPage = () => {
 
                 {showAll && (
                   <div className="my-page-profile-tags">
-                    {DUMMY_TAGS.slice(2).map((tag) => (
-                      <div key={tag.id} className="my-page-profile-tag">
-                        {tag.text}
+                    {userTags.slice(2).map((tag) => (
+                      <div key={tag.tagId} className="my-page-profile-tag">
+                        {tag.name}
                       </div>
                     ))}
                   </div>
@@ -258,15 +398,15 @@ const MyPage = () => {
           {!isEditMode && (
             <div className="my-page-info-container">
               <div className="my-page-info">
-                <span className="my-page-info-number">15</span>
+                <span className="my-page-info-number">{userFeeds.length}</span>
                 <span className="my-page-info-text">작업</span>
               </div>
               <button className="my-page-info" onClick={() => navigate('follow-list/follower')}>
-                {/* <span className="my-page-info-number">{followNumber.follower}</span> */}
+                <span className="my-page-info-number">{followNumber.follower}</span>
                 <span className="my-page-info-text">팔로워</span>
               </button>
               <button className="my-page-info" onClick={() => navigate('follow-list/following')}>
-                {/* <span className="my-page-info-number">{followNumber.following}</span> */}
+                <span className="my-page-info-number">{followNumber.following}</span>
                 <span className="my-page-info-text">팔로잉</span>
               </button>
             </div>
@@ -281,14 +421,25 @@ const MyPage = () => {
                 </button>
               )}
             </div>
-            <div className="my-page-intro-content">{userInfo.description}</div>
+            <textarea
+              ref={textareaRef}
+              className={`my-page-intro-content ${!isEditMode ? 'readonly' : ''}`}
+              value={newDescription || ''}
+              readOnly={!isEditMode}
+              onChange={handleChange}
+            />
           </div>
 
           {!isEditMode && (
             <>
               <div className="my-page-artworks">
                 {userArtworks.map((item) => (
-                  <MyPageArtwork key={item.id} text={item.name} image={item.imageUrl} />
+                  <MyPageArtwork
+                    key={item.id}
+                    text={item.name}
+                    image={item.imageUrl}
+                    onClick={() => navigate(`/app/artwork/${item.id}`)}
+                  />
                 ))}
                 <div className="my-page-artwork artwork-add" onClick={() => navigate('all-posts')}>
                   +
@@ -314,8 +465,8 @@ const MyPage = () => {
                     <Box
                       sx={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(3, 1fr)', // 3개의 열
-                        gap: '9px', // 아이템 간의 간격
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: '9px',
                         marginTop: '12px',
                       }}
                     >
@@ -400,6 +551,8 @@ const MyPage = () => {
             onClose={closeBottomModal}
             icon="modal_eye_off"
           />
+
+          <CustomTempModal isOpen={isCenterModalOpen} onClose={closeCenterModal} logout />
 
           <MainBottomDrawer isOpen={isBlockModalOpen} onClose={closeBlockModal}>
             <Text sx={{ color: '#fff', textAlign: 'center', fontWeight: 600 }}>차단</Text>
@@ -512,59 +665,5 @@ const MyPage = () => {
     </div>
   );
 };
-
-export const DUMMY_DATA = [
-  {
-    id: 0,
-    image: profileBackground,
-  },
-  {
-    id: 1,
-    image: tabbar_shorts,
-  },
-  {
-    id: 2,
-    image: profileBackground,
-  },
-  {
-    id: 3,
-    image: profileBackground,
-  },
-  {
-    id: 4,
-    image: profileBackground,
-  },
-  {
-    id: 5,
-    image: profileBackground,
-  },
-  {
-    id: 6,
-    image: profileBackground,
-  },
-];
-
-const DUMMY_TAGS = [
-  {
-    id: 0,
-    text: '그래픽 아티스트',
-  },
-  {
-    id: 1,
-    text: '추상표현 주의',
-  },
-  {
-    id: 2,
-    text: '일러스트레이터',
-  },
-  {
-    id: 3,
-    text: '자유로운',
-  },
-  {
-    id: 4,
-    text: '아르누보',
-  },
-];
 
 export default MyPage;

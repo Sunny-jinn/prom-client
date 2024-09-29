@@ -1,4 +1,5 @@
 import { Server } from '@/feature/api/index';
+import { BaseUser, User } from '../types/User.type';
 
 export type UserTagsResponse = {
   tagId: number;
@@ -41,7 +42,6 @@ const getUserTags = async () => {
 const getUserFollowers = async () => {
   const result = await Server.get(`users/my/follows`);
   const data: UserFollowInfoResponse[] = result.data.data;
-  console.log('팔로워: ', result.data.data);
 
   return data;
 };
@@ -49,7 +49,6 @@ const getUserFollowers = async () => {
 const getUserFollowings = async () => {
   const result = await Server.get('users/my/followings');
   const data: UserFollowInfoResponse[] = result.data.data;
-  console.log('팔로잉: ', result.data.data);
 
   return data;
 };
@@ -64,7 +63,6 @@ const getUserArtworks = async () => {
 const getUserFeeds = async () => {
   const result = await Server.get('posts/feeds/my');
   const data: UserFeedsResponse[] = result.data.data;
-  console.log(data);
 
   return data;
 };
@@ -77,6 +75,31 @@ const getPostsDetail = async (feedId: string) => {
   return data;
 };
 
+export type UpdateUser = Omit<User, 'socialType' | 'id'> &
+  Omit<BaseUser, 'email'> & { backgroundImage: string };
+
+const updateUserInfo = async ({
+  description,
+  profileImage,
+  birth,
+  phoneNumber,
+  username,
+  backgroundImage,
+  role,
+}: UpdateUser) => {
+  const result = await Server.put(`users/my`, {
+    description,
+    profileImage,
+    birthDate: birth,
+    phoneNumber,
+    nickname: username,
+    backgroundImage,
+    role,
+  });
+
+  return result;
+};
+
 export {
   getUserTags,
   getUserFollowers,
@@ -84,4 +107,5 @@ export {
   getUserArtworks,
   getUserFeeds,
   getPostsDetail,
+  updateUserInfo,
 };

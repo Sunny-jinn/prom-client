@@ -132,7 +132,8 @@ const PostDetail = () => {
               <img src={left_arrow} alt="" />
             </div>
             <div className="post-detail-user">
-              <span className="post-detail-user-name">{feedInfo.user.username} 님의</span>
+              {/*TODO: 진우야 여기 주석 풀고 해*/}
+              {/*<span className="post-detail-user-name">{feedInfo.user.username} 님의</span>*/}
               <span>게시물</span>
             </div>
             <div className="post-detail-ellipsis-btn" onClick={openDrawer}>
@@ -153,7 +154,7 @@ const PostDetail = () => {
               ))}
             </Swiper>
             <div className="swiper-bullets">
-              {feedInfo.images.map((item, index) => (
+              {feedInfo.images.map((_, index) => (
                 <div
                   key={index}
                   className={`bullet ${activeSlideIndex === index ? 'active' : ''}`}
@@ -180,8 +181,9 @@ const PostDetail = () => {
           </div>
 
           <div className="post-detail-author">
-            <img src={feedInfo.user.profileImage} alt="profile" />
-            <span>{feedInfo.user.username}</span>
+            {/*TODO: 진우야 이거 주석 풀고 해*/}
+            {/*<img src={feedInfo.user.profileImage} alt="profile" />*/}
+            {/*<span>{feedInfo.user.username}</span>*/}
           </div>
 
           <div className="post-detail-intro">

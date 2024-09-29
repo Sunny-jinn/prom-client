@@ -17,7 +17,7 @@ type NavigatorLayoutProps = {
 const NavigatorLayout = (props: NavigatorLayoutProps) => {
   const { children, hasScrollArea } = props;
   const { isOpen: isUploadOpen, onOpen: uploadOpen, onClose: uploadClose } = useDisclosure();
-  const { isOpen: isAIGeneratorOpen, onOpen: aiGeneratorOpen, onClose: aiGeneratorClose } = useDisclosure();
+  const { isOpen: isAIGeneratorOpen, onClose: aiGeneratorClose } = useDisclosure();
   return (
     <>
       {isUploadOpen && <Upload isOpen={isUploadOpen} onClose={uploadClose} />}
@@ -37,8 +37,8 @@ const NavigatorLayout = (props: NavigatorLayoutProps) => {
               <Menu root={el.root} icon={el.icon} label={el.label} />
             ))}
           </div>
-          <button className="upload-content" onClick={() => aiGeneratorOpen()}>
-          {/*<button className="upload-content" onClick={() => uploadOpen()}>*/}
+          {/*<button className="upload-content" onClick={() => aiGeneratorOpen()}>*/}
+          <button className="upload-content" onClick={() => uploadOpen()}>
             <Plus color={'#1B1B1B'} strokeLinecap={'square'} strokeWidth={3} />
           </button>
           <div className="menu-container">

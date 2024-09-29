@@ -9,7 +9,7 @@ import 'swiper/css/effect-fade';
 import Logo from '@/assets/img/img_logo.svg?react';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import { useState } from 'react';
-import { getMyInfoAPI, loginAPI, signInGoogleAPI } from '@/feature/api/user.api';
+import { getMyInfoAPI, loginAPI } from '@/feature/api/user.api';
 import userStore from '@/store/User';
 
 const SignIn = () => {

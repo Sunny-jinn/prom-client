@@ -106,8 +106,6 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
   }, [ready, activeIndex, index]);
 
   if(!loading && pick) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     return (
       <div className='pick-content'>
         <div className='pick-video-wrapper'>
@@ -172,7 +170,7 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
           step='any'
           value={playTime}
           disabled={!ready}
-          style={{ '--progress': `${playTime * 100}%` }}
+          style={{ background: `linear-gradient(to right, #7bf7ff ${playTime * 100}%, #554F4F 0)` }}
           onChange={(e) => progressHandler(e)}
         />
       </div>

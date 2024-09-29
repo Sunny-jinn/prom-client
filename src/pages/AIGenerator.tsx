@@ -246,6 +246,7 @@ const AIMusicTempoAndEnergyPrompt = (
   const [tempoSliderValue, setTempoSliderValue] = useState(0);
   const [energySliderValue, setEnergySliderValue] = useState(0);
 
+  console.log(category);
 
   const viewData = useMemo(() => [
     {
@@ -363,6 +364,7 @@ const AIVisualSizeRatioPrompt = (
   }) => {
   console.log(category);
   console.log(prompt);
+  console.log(setPrompt);
   return (
     <div>
       AIMusicTempoAndEnergyPrompt

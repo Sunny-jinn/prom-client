@@ -30,6 +30,7 @@ const SignIn = () => {
         username: myInfo.username ?? '',
         profileImage: myInfo.profileImage ?? '',
         role: myInfo.role,
+        description: myInfo.description ?? ''
       });
       if(myInfo.role === 'USER') {
         navigate('init');

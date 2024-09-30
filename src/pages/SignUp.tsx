@@ -61,6 +61,7 @@ const SignUp = () => {
         username: result.username ?? '',
         profileImage: result.profileImage ?? '',
         role: result.role,
+        description: result.description ?? ''
       });
       setStep((step) => step + 1);
     }catch (e) {

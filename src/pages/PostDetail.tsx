@@ -181,9 +181,8 @@ const PostDetail = () => {
           </div>
 
           <div className="post-detail-author">
-            {/*TODO: 진우야 이거 주석 풀고 해*/}
-            {/*<img src={feedInfo.user.profileImage} alt="profile" />*/}
-            {/*<span>{feedInfo.user.username}</span>*/}
+            <img src={feedInfo.user.profileImage} alt="profile" />
+            <span>{feedInfo.user.username}</span>
           </div>
 
           <div className="post-detail-intro">

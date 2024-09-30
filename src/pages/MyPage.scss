@@ -243,18 +243,12 @@
       background: none;
       font-size: 14px;
       border: 0;
-      // outline: none;
-      // border: none;
+      resize: none;
 
       &.readonly {
         outline: none;
         border: none;
       }
-    }
-
-    .my-page-intro-content.readonly {
-      outline: none;
-      border: none;
     }
   }
 

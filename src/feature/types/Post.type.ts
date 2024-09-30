@@ -5,11 +5,13 @@ type PostCategory = 'MUSIC' | 'VISUAL' | 'WRITING';
 type PostFeed = {
   postId: number;
   type: Post.PostCategory;
+  description: string;
   title: string;
   commentCounts: number;
   likesCount: number;
   url: string[];
   user: User.User;
+  createdAt: string
 };
 
 type PostPick = {
@@ -34,4 +36,14 @@ type FeedComment = {
   parentCommentId: number;
 };
 
-export type { PostType, PostCategory, PostFeed, PostPick, FeedComment };
+type PickComment = {
+  commentId: number;
+  comment: string;
+  userId: number;
+  userName: string;
+  profileImage: string;
+  createdAt: string;
+  parentCommentId: number;
+};
+
+export type { PostType, PostCategory, PostFeed, PostPick, FeedComment, PickComment };

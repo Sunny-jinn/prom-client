@@ -1,13 +1,13 @@
 type BaseUser = {
   role: 'USER' | 'ARTIST' | 'ARTTY';
-  username: string | null,
+  username: string;
   profileImage: string;
-  email: string | null,
+  email: string;
+  description: string;
 }
 
 type User = BaseUser & {
   id: number;
-  description: string | null,
   birth: string | null,
   phoneNumber: string | null,
   socialType: number | null

@@ -9,7 +9,7 @@ import 'swiper/css/effect-fade';
 import Logo from '@/assets/img/img_logo.svg?react';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import { useState } from 'react';
-import { getMyInfoAPI, loginAPI } from '@/feature/api/user.api';
+import { getMyInfoAPI, loginAPI, refreshAPI } from '@/feature/api/user.api';
 import userStore from '@/store/User';
 
 const SignIn = () => {
@@ -41,8 +41,36 @@ const SignIn = () => {
     }
   };
 
+  const detectChildWindow = async function (
+    childWindow: WindowProxy,
+    closeCallback: (window: WindowProxy) => void,
+  ) {
+    const interval = window.setInterval(function () {
+      try {
+        if (childWindow == null || childWindow.closed) {
+          window.clearInterval(interval);
+          closeCallback(childWindow);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }, 1000);
+    return childWindow;
+  };
+
   const googleSignIn = async() => {
-    window.location.href = 'https://api.prom-art.store/oauth2/authorization/google'
+    const authPopup = window.open('https://api.prom-art.store/oauth2/authorization/google', '_blank', 'width=600,height=600');
+    if(!authPopup) return;
+    await detectChildWindow(authPopup, async () => {
+      await refreshAPI();
+      const myInfo = await getMyInfoAPI();
+      setUser(myInfo);
+      if(myInfo.role === 'USER') {
+        navigate('init');
+        return;
+      }
+      navigate('home');
+    });
   }
 
   return (

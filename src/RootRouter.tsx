@@ -25,7 +25,7 @@ const RootRouter = () => {
         <Route path='on-board' element={<OnBoarding />} />
         <Route path='sign-in' element={<SignIn />} />
         <Route path='sign-up' element={<SignUp />} />
-        <Route path='redirect' element={<></>} />
+        <Route path='redirect' element={<Redirect/>} />
         <Route path='init' element={<Init />} />
         <Route element={<Auth />}>
           <Route path='home' element={<Home />} />
@@ -61,7 +61,7 @@ const AppRoute = () => {
         navigate('init');
         return;
       }
-      navigate('home');
+      // navigate('home');
     } catch (e) {
       navigate('on-board');
     } finally {
@@ -88,3 +88,11 @@ const Auth = () => {
   // const {user} = userStore(state => state)
   return <Outlet />;
 };
+
+const Redirect = () => {
+  console.log(111111);
+  useEffect(() => {
+    window.close();
+  }, [])
+  return <></>
+}

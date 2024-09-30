@@ -14,41 +14,28 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Article, ARTICLES } from '@/constants/articles.data';
 import dayjs from 'dayjs';
 import { POST_CATEGORY_DATA, PostCategoryData } from '@/constants/init.data';
-import { getFeedsAPI } from '@/feature/api/post.api';
+import { getFeedsAPI, getFeedLikesCheckAPI } from '@/feature/api/post.api';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import DefaultSwiperBullets from '@/components/DefaultSwiperBullets';
 import cn from 'classnames';
 import { Drawer, DrawerContent, DrawerProps, useDisclosure } from '@chakra-ui/react';
 import { ScrollArea } from '@/components/ScrollArea';
-import { getUserInfoAPI, logoutAPI } from '@/feature/api/user.api';
+import { getUserInfoAPI } from '@/feature/api/user.api';
 import { Post, User } from '@/feature/types';
-import userStore from '@/store/User';
+import Like from '@/assets/img/icon_like_feed.svg?react'
+import Comment from '@/assets/img/icon_comment_feed.svg?react'
 import useAppNavigate from '@/hooks/useAppNavigate';
 
 dayjs.extend(relativeTime);
 
 const Home = () => {
-  const navigate = useAppNavigate();
   const [alarms] = useState([{ title: 1 }, { title: 2 }]);
-  const {removeUser} = userStore(state => state)
-  const logout = async() => {
-    try{
-      await logoutAPI();
-      removeUser();
-      navigate('on-board')
-    }catch (e) {
-      console.log(e);
-    }
-  }
 
   return (
     <SafeAreaLayout flexDirection={'column'}>
       <NavigatorLayout hasScrollArea={true}>
         <div className='home-header'>
           <Logo width={70} />
-          <div onClick={() => logout()} style={{color: '#ffffff'}}>
-            로그아웃
-          </div>
           <div className='home-alarm'>
             {alarms.length > 0 &&
               <div className='home-alarm-badge'>
@@ -170,18 +157,28 @@ const PostPreview = (props: PostPreviewProps) => {
   const { category } = props;
   const { name, icon } = category;
   const Icon = icon;
+  const navigate = useAppNavigate();
   const [post, setPost] = useState<Post.PostFeed | null>(null);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
+  const [isUserLikes, setIsUserLikes] = useState(false)
 
   const getRecentPost = async () => {
     try {
       const result = await getFeedsAPI({ size: 1, type: name, orderBy: 'asc' });
-      setPost(result[0]);
+      const post = result[0]
+      setPost(post);
+      const likesCheck = await getFeedLikesCheckAPI(post.postId)
+      setIsUserLikes(likesCheck)
     } catch (e) {
       console.log(e);
     }
   };
+
+  const navigateToPost = () => {
+    if(!post) return;
+    navigate(`post/${post.postId}`)
+  }
 
   useEffect(() => {
     getRecentPost();
@@ -237,8 +234,18 @@ const PostPreview = (props: PostPreviewProps) => {
           <span className='post-preview-content-title'>{post.title}</span>
           <div className='post-preview-content-description-wrapper'>
             <span
-              className={cn('post-preview-content-description', { open: descriptionOpen })}>{'xptmxmxptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm11xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1xptmxm1'}</span>
+              className={cn('post-preview-content-description', { open: descriptionOpen })}>{post.description}</span>
             {!descriptionOpen && <button onClick={() => setDescriptionOpen(true)}>더보기</button>}
+          </div>
+          <div className='post-preview-interaction-wrapper'>
+            <div className='post-preview-interaction' onClick={() => navigateToPost()}>
+              <Like fill={isUserLikes ? '#7bf7ff' : '#B8B8B8'}/>
+              <span style={{color: isUserLikes ? '#7bf7ff' : '#ffffff'}}>{post.likesCount}</span>
+            </div>
+            <div className='post-preview-interaction' onClick={() => navigateToPost()}>
+              <Comment fill={'#B8B8B8'}/>
+              <span>{post.commentCounts}</span>
+            </div>
           </div>
         </div>
       </div>

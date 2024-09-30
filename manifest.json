@@ -6,6 +6,7 @@
   "background_color": "#121212",
   "start_url": "/app/",
   "display": "standalone",
+  "capture_links": "existing-client-navigate",
   "icons": [
     {
       "src": "pwa-192x192.png",

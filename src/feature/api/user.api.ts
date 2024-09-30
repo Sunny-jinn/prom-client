@@ -92,7 +92,7 @@ const followUserAPI = async (userId: number): Promise<string> => {
 };
 
 const unFollowUserAPI = async (userId: number): Promise<string> => {
-  const result = await Server.delete(`users/follows/${userId}`);
+  const result = await Server.delete(`users/${userId}/follow`);
   const { data } = result.data;
   return data;
 };

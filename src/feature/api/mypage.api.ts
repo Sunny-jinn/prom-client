@@ -18,6 +18,7 @@ export type UserFeedsResponse = {
   feedId: number;
   commentCounts: number;
   description: string;
+  createdAt: string;
   images: string[];
   likeCounts: number;
   title: string;

@@ -7,19 +7,18 @@ import comment from '@/assets/img/comment.png';
 import ellipsis from '@/assets/img/ellipsis.png';
 import icon_comment_upload from '@/assets/img/icon_comment_upload.png';
 import left_arrow from '@/assets/img/left_arrow.png';
-import like from '@/assets/img/like.png';
-import out from '@/assets/img/out.png';
-import bookmark from '@/assets/img/tabbar_bookmark.png';
 import Comment from '@/components/Comment';
 import CustomBottomDrawer from '@/components/CustomBottomDrawer';
 import CustomBottomModal from '@/components/CustomBottomModal';
 import MainBottomDrawer from '@/components/MainBottomDrawer';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import { UserFeedsResponse, getPostsDetail } from '@/feature/api/mypage.api';
-import { createCommentAPI, getCommentAPI } from '@/feature/api/post.api';
+import { createCommentAPI, getCommentAPI, getFeedLikesCheckAPI, feedMarkLikeAPI, feedMarkUnLikeAPI } from '@/feature/api/post.api';
 import { FeedComment } from '@/feature/types/Post.type';
 import { timeAgo } from '@/utils/date.utils';
 import './PostDetail.scss';
+import Like from '@/assets/img/icon_like_feed.svg?react'
+import dayjs from 'dayjs';
 
 const PostDetail = () => {
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
@@ -27,6 +26,7 @@ const PostDetail = () => {
   const [feedInfo, setFeedInfo] = useState<UserFeedsResponse | null>(null);
   const [feedComments, setFeedComments] = useState<FeedComment[]>([]);
   const [newComment, setNewComment] = useState<string | null>(null);
+  const [isUserLike, setIsUserLike] = useState(false)
 
   const navigate = useNavigate();
 
@@ -34,11 +34,13 @@ const PostDetail = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      if (post_id) {
+      if(post_id) {
         const feed = await getPostsDetail(post_id);
         const comments = await getCommentAPI(post_id);
+        const isLike = await getFeedLikesCheckAPI(feed.feedId);
         setFeedInfo(feed);
         setFeedComments(comments);
+        setIsUserLike(isLike)
         console.log(feed);
       }
     };
@@ -51,7 +53,7 @@ const PostDetail = () => {
 
   const handleCommentUpload = async () => {
     try {
-      if (post_id && newComment) {
+      if(post_id && newComment) {
         await createCommentAPI(post_id, {
           content: newComment,
         });
@@ -66,26 +68,26 @@ const PostDetail = () => {
 
   const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
   const {
-    isOpen: isCommentOpen,
-    onOpen: openCommentDrawer,
-    onClose: closeCommentDrawer,
-  } = useDisclosure();
+          isOpen : isCommentOpen,
+          onOpen : openCommentDrawer,
+          onClose: closeCommentDrawer,
+        } = useDisclosure();
 
   const {
-    isOpen: isDeleteDrawerOpen,
-    onOpen: openDeleteDrawer,
-    onClose: closeDeleteDrawer,
-  } = useDisclosure();
+          isOpen : isDeleteDrawerOpen,
+          onOpen : openDeleteDrawer,
+          onClose: closeDeleteDrawer,
+        } = useDisclosure();
   const {
-    isOpen: isBottomModalOpen,
-    onOpen: openBottomModal,
-    onClose: closeBottomModal,
-  } = useDisclosure();
+          isOpen : isBottomModalOpen,
+          onOpen : openBottomModal,
+          onClose: closeBottomModal,
+        } = useDisclosure();
   const {
-    isOpen: isDeleteModalOpen,
-    onOpen: openDeleteModal,
-    onClose: closeDeleteModal,
-  } = useDisclosure();
+          isOpen : isDeleteModalOpen,
+          onOpen : openDeleteModal,
+          onClose: closeDeleteModal,
+        } = useDisclosure();
 
   const clickHandler = () => {
     closeDrawer();
@@ -104,21 +106,21 @@ const PostDetail = () => {
 
   const PostDetailModal = [
     {
-      id: 0,
-      text: '수정',
+      id     : 0,
+      text   : '수정',
       onClick: () => console.log('최신순'),
-      update: true,
+      update : true,
     },
     {
-      id: 1,
-      text: '보관',
+      id     : 1,
+      text   : '보관',
       onClick: clickHandler,
     },
     {
-      id: 2,
-      text: '삭제',
+      id     : 2,
+      text   : '삭제',
       onClick: deleteClick,
-      delete: true,
+      delete : true,
     },
   ];
 
@@ -126,23 +128,47 @@ const PostDetail = () => {
     setActiveSlideIndex(swiper.activeIndex);
   };
 
+  const onClickLike = async () => {
+    if(!feedInfo) return;
+    if(!post_id) return;
+    if(!isUserLike){
+      try {
+        await feedMarkLikeAPI(feedInfo.feedId);
+        const feed = await getPostsDetail(post_id);
+        setFeedInfo(feed)
+        setIsUserLike(true)
+      } catch (e) {
+        console.log(e);
+      }
+      return;
+    }
+    try {
+      await feedMarkUnLikeAPI(feedInfo.feedId);
+      const feed = await getPostsDetail(post_id);
+      setFeedInfo(feed)
+      setIsUserLike(false)
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
-    <SafeAreaLayout flexDirection="column">
+    <SafeAreaLayout flexDirection='column'>
       {feedInfo && (
-        <div id="PostDetail">
-          <div className="post-detail-header">
-            <div className="post-detail-back-btn" onClick={() => navigate(-1)}>
-              <img src={left_arrow} alt="" />
+        <div id='PostDetail'>
+          <div className='post-detail-header'>
+            <div className='post-detail-back-btn' onClick={() => navigate(-1)}>
+              <img src={left_arrow} alt='' />
             </div>
-            <div className="post-detail-user">
-              <span className="post-detail-user-name">{feedInfo.user.username} 님의</span>
+            <div className='post-detail-user'>
+              <span className='post-detail-user-name'>{feedInfo.user.username} 님의</span>
               <span>게시물</span>
             </div>
-            <div className="post-detail-ellipsis-btn" onClick={openDrawer}>
-              <img src={ellipsis} alt="" />
+            <div className='post-detail-ellipsis-btn' onClick={openDrawer}>
+              <img src={ellipsis} alt='' />
             </div>
           </div>
-          <div className="post-detail-carousel">
+          <div className='post-detail-carousel'>
             <Swiper
               spaceBetween={10}
               slidesPerView={1}
@@ -151,11 +177,11 @@ const PostDetail = () => {
             >
               {feedInfo.images.map((item) => (
                 <SwiperSlide key={item}>
-                  <img src={item} alt="test" />
+                  <img src={item} alt='test' />
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className="swiper-bullets">
+            <div className='swiper-bullets'>
               {feedInfo.images.map((_, index) => (
                 <div
                   key={index}
@@ -165,34 +191,34 @@ const PostDetail = () => {
             </div>
           </div>
 
-          <div className="post-detail-menus">
+          <div className='post-detail-menus'>
             <div className={`post-detail-menu ${isClicked && 'clicked'}`}>
-              <img src={like} alt="like" />
-              <span>{feedInfo.likeCounts}</span>
+              <Like fill={isUserLike ? '#7bf7ff' : '#ffffff'} onClick={() => onClickLike()}/>
+              <span style={{color: isUserLike ? '#7bf7ff' : '#ffffff'}}>{feedInfo.likeCounts}</span>
             </div>
-            <button className="post-detail-menu" onClick={openCommentDrawer}>
-              <img src={comment} alt="comment" />
+            <button className='post-detail-menu' onClick={openCommentDrawer}>
+              <img src={comment} alt='comment' />
               <span>{feedComments.length}</span>
             </button>
-            <div className="post-detail-menu">
-              <img src={out} alt="out" />
-            </div>
-            <div className="post-detail-menu right">
-              <img src={bookmark} alt="out" />
-            </div>
+            {/*<div className='post-detail-menu'>*/}
+            {/*  <img src={out} alt='out' />*/}
+            {/*</div>*/}
+            {/*<div className='post-detail-menu right'>*/}
+            {/*  <img src={bookmark} alt='out' />*/}
+            {/*</div>*/}
           </div>
 
-          <div className="post-detail-author">
-            <img src={feedInfo.user.profileImage} alt="profile" />
+          <div className='post-detail-author'>
+            <img src={feedInfo.user.profileImage} alt='profile' />
             <span>{feedInfo.user.username}</span>
           </div>
 
-          <div className="post-detail-intro">
-            <div className="post-detail-intro-title">
-              <span className="post-detail-intro-title-text">작품소개</span>
-              <span className="post-detail-intro-title-date">8월 12일</span>
+          <div className='post-detail-intro'>
+            <div className='post-detail-intro-title'>
+              <span className='post-detail-intro-title-text'>{feedInfo.title}</span>
+              <span className='post-detail-intro-title-date'>{dayjs(feedInfo.createdAt).format('M월 D일')}</span>
             </div>
-            <div className="post-detail-intro-content">{feedInfo.description}</div>
+            <div className='post-detail-intro-content'>{feedInfo.description}</div>
           </div>
 
           <CustomBottomDrawer
@@ -211,15 +237,15 @@ const PostDetail = () => {
           />
 
           <CustomBottomModal
-            text="게시물이 보관함에 보관됨"
-            icon="modal_check"
+            text='게시물이 보관함에 보관됨'
+            icon='modal_check'
             isOpen={isBottomModalOpen}
             onClose={closeBottomModal}
           />
 
           <CustomBottomModal
-            text="게시물 삭제됨"
-            icon="modal_delete"
+            text='게시물 삭제됨'
+            icon='modal_delete'
             isOpen={isDeleteModalOpen}
             onClose={closeDeleteModal}
           />
@@ -241,30 +267,30 @@ const PostDetail = () => {
               ))}
               <Box
                 sx={{
-                  display: 'flex',
+                  display   : 'flex',
                   alignItems: 'center',
-                  position: 'absolute',
-                  bottom: '40px',
-                  width: 'calc(100% - 32px)',
-                  margin: '0 16px',
-                  gap: '8px',
+                  position  : 'absolute',
+                  bottom    : '40px',
+                  width     : 'calc(100% - 32px)',
+                  margin    : '0 16px',
+                  gap       : '8px',
                 }}
               >
                 <Box sx={{ border: '1px solid #fff', borderRadius: '999' }}>
                   <Image
                     src={feedInfo.user.profileImage}
-                    alt="profile"
+                    alt='profile'
                     sx={{ width: '43px', height: '43px', borderRadius: 999 }}
                   />
                 </Box>
                 <Box sx={{ flex: 1 }}>
                   <Input
-                    bg="#353535"
-                    border="0"
-                    borderRadius="15px"
-                    padding="13px 16px"
-                    color="#fff"
-                    fontSize="14px"
+                    bg='#353535'
+                    border='0'
+                    borderRadius='15px'
+                    padding='13px 16px'
+                    color='#fff'
+                    fontSize='14px'
                     _focus={{
                       boxShadow: 'none',
                     }}
@@ -274,16 +300,16 @@ const PostDetail = () => {
                   />
                   <Box
                     sx={{
-                      position: 'absolute',
-                      right: '5px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: '#1d1d1d',
+                      position    : 'absolute',
+                      right       : '5px',
+                      top         : '50%',
+                      transform   : 'translateY(-50%)',
+                      background  : '#1d1d1d',
                       borderRadius: '9px',
-                      padding: '3px 6px',
-                      zIndex: '1',
-                      transition: '0.2s ease-in-out',
-                      '&:active': {
+                      padding     : '3px 6px',
+                      zIndex      : '1',
+                      transition  : '0.2s ease-in-out',
+                      '&:active'  : {
                         background: '#000000',
                       },
                     }}
@@ -291,7 +317,7 @@ const PostDetail = () => {
                   >
                     <Image
                       src={icon_comment_upload}
-                      alt="upload"
+                      alt='upload'
                       sx={{ width: '25px', height: '25px' }}
                     />
                   </Box>

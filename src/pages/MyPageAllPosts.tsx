@@ -10,22 +10,28 @@ import { MyPageHeader } from '@/components/MyPageHeader';
 import PostCard from '@/components/PostCard';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import { FeedImagesResponse, getFeedsImages, postArtwork } from '@/feature/api/artworks.api';
+import { getUserPicks } from '@/feature/api/mypage.api';
+import { PostPick } from '@/feature/types/Post.type';
 import './MyPageAllPosts.scss';
 
 const MyPageAllPosts = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [selectedPosts, setSelectedPosts] = useState<FeedImagesResponse[]>([]);
+  const [selectedPicks, setSelectedPicks] = useState<PostPick[]>([]);
   const [page, setPage] = useState(0);
   const [inputValue, setInputValue] = useState('');
   const [representativeImage] = useState<string | null>(null);
   const [selectedBulletIndex, setSelectedBulletIndex] = useState<number>(0);
   const [temporaryImage, setTemporaryImage] = useState<string | null>(null);
   const [userFeedImages, setUserFeedImages] = useState<FeedImagesResponse[]>([]);
+  const [userPicks, setUserPicks] = useState<PostPick[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const feeds = await getFeedsImages();
+      const picks = await getUserPicks();
       setUserFeedImages(feeds);
+      setUserPicks(picks);
     };
     fetchData();
   }, []);
@@ -52,6 +58,14 @@ const MyPageAllPosts = () => {
     );
   };
 
+  const handleSelectPick = (pick: PostPick) => {
+    setSelectedPicks((prev) =>
+      prev.find((selectedPost) => selectedPost.shortFormId === pick.shortFormId)
+        ? prev.filter((selectedPost) => selectedPost.shortFormId !== pick.shortFormId)
+        : [...prev, pick],
+    );
+  };
+
   const handleThumbnailClick = (image: string, index: number) => {
     setTemporaryImage(image);
     setSelectedBulletIndex(index);
@@ -70,9 +84,10 @@ const MyPageAllPosts = () => {
 
   const handlePostArtwork = async () => {
     const feedImageIds = selectedPosts.map((post) => post.feedImageId);
+    const pickIds = selectedPicks.map((pick) => pick.shortFormId);
     await postArtwork({
       name: inputValue,
-      shortFormIdList: [],
+      shortFormIdList: pickIds,
       feedImageIdList: feedImageIds,
       imageUrl: selectedPosts[0].imageUrl,
     }).then(() => {
@@ -130,10 +145,17 @@ const MyPageAllPosts = () => {
                 </TabPanel>
                 <TabPanel p={0}>
                   <div className="my-page-all-posts-content">
-                    <MyPageArtwork all />
-                    <MyPageArtwork all />
-                    <MyPageArtwork all />
-                    <MyPageArtwork all />
+                    {userPicks.map((item) => (
+                      <MyPageArtwork
+                        all
+                        image={item.thumbnailUrl}
+                        onClick={() => handleSelectPick(item)}
+                        isSelected={selectedPicks.some(
+                          (pick) => pick.shortFormId === item.shortFormId,
+                        )}
+                        select
+                      />
+                    ))}
                   </div>
                 </TabPanel>
               </TabPanels>
@@ -152,7 +174,7 @@ const MyPageAllPosts = () => {
               disabled={inputValue.length === 0}
             />
             <div className="my-page-artwork-add">
-              <div className="my-page-artwork-thumbnail">
+              <div className="my-page-artwork-thumbnail represent">
                 <MyPageArtwork all image={selectedPosts[0]?.imageUrl || ''} />
               </div>
               <button onClick={() => setPage(2)}>

@@ -9,7 +9,6 @@ import icon_comment_upload from '@/assets/img/icon_comment_upload.png';
 import left_arrow from '@/assets/img/left_arrow.png';
 import like from '@/assets/img/like.png';
 import out from '@/assets/img/out.png';
-import test_image from '@/assets/img/profile_background.png';
 import bookmark from '@/assets/img/tabbar_bookmark.png';
 import Comment from '@/components/Comment';
 import CustomBottomDrawer from '@/components/CustomBottomDrawer';
@@ -40,6 +39,7 @@ const PostDetail = () => {
         const comments = await getCommentAPI(post_id);
         setFeedInfo(feed);
         setFeedComments(comments);
+        console.log(feed);
       }
     };
     fetchUserInfo();
@@ -55,6 +55,9 @@ const PostDetail = () => {
         await createCommentAPI(post_id, {
           content: newComment,
         });
+        const updatedComments = await getCommentAPI(post_id); // 새로운 댓글 목록을 불러오기
+        setFeedComments(updatedComments);
+        setNewComment('');
       }
     } catch {
       console.log('error');
@@ -132,8 +135,7 @@ const PostDetail = () => {
               <img src={left_arrow} alt="" />
             </div>
             <div className="post-detail-user">
-              {/*TODO: 진우야 여기 주석 풀고 해*/}
-              {/*<span className="post-detail-user-name">{feedInfo.user.username} 님의</span>*/}
+              <span className="post-detail-user-name">{feedInfo.user.username} 님의</span>
               <span>게시물</span>
             </div>
             <div className="post-detail-ellipsis-btn" onClick={openDrawer}>
@@ -250,23 +252,23 @@ const PostDetail = () => {
               >
                 <Box sx={{ border: '1px solid #fff', borderRadius: '999' }}>
                   <Image
-                    src={test_image}
+                    src={feedInfo.user.profileImage}
                     alt="profile"
                     sx={{ width: '43px', height: '43px', borderRadius: 999 }}
                   />
                 </Box>
                 <Box sx={{ flex: 1 }}>
                   <Input
-                    sx={{
-                      border: 'none',
-                      background: '#353535',
-                      borderRadius: '15px',
-                      padding: '13px 16px',
-                      color: '#fff',
-                      fontSize: '14px',
-                      position: 'relative',
+                    bg="#353535"
+                    border="0"
+                    borderRadius="15px"
+                    padding="13px 16px"
+                    color="#fff"
+                    fontSize="14px"
+                    _focus={{
+                      boxShadow: 'none',
                     }}
-                    placeholder={`김진우 님의 게시물에 댓글달기`}
+                    placeholder={`${feedInfo.user.username} 님의 게시물에 댓글달기`}
                     value={newComment || ''}
                     onChange={handleCommentChange}
                   />

@@ -61,6 +61,10 @@
     border: 1px solid $main-color;
     border-radius: 15px;
 
+    &.represent {
+      width: 193px;
+    }
+
     &-image {
       width: 281px;
       height: 479px;

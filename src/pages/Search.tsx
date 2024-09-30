@@ -5,10 +5,11 @@ import icon_visual from '@/assets/img/icon_Visual.svg';
 import icon_writing from '@/assets/img/icon_Writing.svg';
 import test_img from '@/assets/img/profile_background.png';
 import CustomSearchInput from '@/components/CustomSearchInput';
+import NavigatorLayout from '@/components/NavigatorLayout';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import SearchResultCard from '@/components/SearchResultCard';
-import './Search.scss';
 import { getFeedsAPI } from '@/feature/api/post.api';
+import './Search.scss';
 
 const Search = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
@@ -34,160 +35,162 @@ const Search = () => {
 
   return (
     <SafeAreaLayout flexDirection="column">
-      <div id="Search">
-        <div className="search-input-container">
-          <CustomSearchInput
-            placeholder="검색어를 입력해주세요."
-            style={{ fontSize: '16px' }}
-            ref={inputRef}
-            onChange={handleInputChange}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-          />
-          <button onClick={handleCancelClick}>
-            <span>취소</span>
-          </button>
-        </div>
-        {!isFocused && inputValue === '' && (
-          <div className="search-post-list-container">
-            <div className="search-post-list-cards">
-              <div className="search-post-list-card">
-                <img src={test_img} alt="x" />
-              </div>
-              <div className="search-post-list-card">
-                <img src={test_img} alt="x" />
-              </div>
-              <div className="search-post-list-card">
-                <img src={test_img} alt="x" />
-              </div>
-              <div className="search-post-list-card">
-                <img src={test_img} alt="x" />
-              </div>
-            </div>
-            <div className="search-post-list-shorts">
-              <div className="search-post-list-shorts-card">
-                <img src={test_img} alt="x" />
-              </div>
-            </div>
-            <div className="search-post-list-shorts">
-              <div className="search-post-list-shorts-card">
-                <img src={test_img} alt="x" />
-              </div>
-            </div>
-            <div className="search-post-list-cards">
-              <div className="search-post-list-card">
-                <img src={test_img} alt="x" />
-              </div>
-              <div className="search-post-list-card">
-                <img src={test_img} alt="x" />
-              </div>
-              <div className="search-post-list-card">
-                <img src={test_img} alt="x" />
-              </div>
-              <div className="search-post-list-card">
-                <img src={test_img} alt="x" />
-              </div>
-            </div>
+      <NavigatorLayout hasScrollArea>
+        <div id="Search">
+          <div className="search-input-container">
+            <CustomSearchInput
+              placeholder="검색어를 입력해주세요."
+              style={{ fontSize: '16px' }}
+              ref={inputRef}
+              onChange={handleInputChange}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+            <button onClick={handleCancelClick}>
+              <span>취소</span>
+            </button>
           </div>
-        )}
-
-        {isFocused && inputValue === '' && (
-          <>
-            <div className="search-post-recent">
-              <span>최근 검색</span>
-              <button>
-                <span>모두 지우기</span>
-              </button>
+          {!isFocused && inputValue === '' && (
+            <div className="search-post-list-container">
+              <div className="search-post-list-cards">
+                <div className="search-post-list-card">
+                  <img src={test_img} alt="x" />
+                </div>
+                <div className="search-post-list-card">
+                  <img src={test_img} alt="x" />
+                </div>
+                <div className="search-post-list-card">
+                  <img src={test_img} alt="x" />
+                </div>
+                <div className="search-post-list-card">
+                  <img src={test_img} alt="x" />
+                </div>
+              </div>
+              <div className="search-post-list-shorts">
+                <div className="search-post-list-shorts-card">
+                  <img src={test_img} alt="x" />
+                </div>
+              </div>
+              <div className="search-post-list-shorts">
+                <div className="search-post-list-shorts-card">
+                  <img src={test_img} alt="x" />
+                </div>
+              </div>
+              <div className="search-post-list-cards">
+                <div className="search-post-list-card">
+                  <img src={test_img} alt="x" />
+                </div>
+                <div className="search-post-list-card">
+                  <img src={test_img} alt="x" />
+                </div>
+                <div className="search-post-list-card">
+                  <img src={test_img} alt="x" />
+                </div>
+                <div className="search-post-list-card">
+                  <img src={test_img} alt="x" />
+                </div>
+              </div>
             </div>
-            <div className="divider" />
-            <div className="search-post-recent-lists">
-              <SearchResultCard isRecent text="감성 글" />
-              <SearchResultCard isRecent text="LandofPeace" />
-              <SearchResultCard isRecent text="지소쿠리클럽" />
-            </div>
-          </>
-        )}
-        {inputValue !== '' && (
-          <>
-            <div className="search-post-tags">
-              <button>
-                <div className="search-post-tag active">
-                  <span>최신 순</span>
-                </div>
-              </button>
+          )}
 
-              <button>
-                <div className="search-post-tag">
-                  <span>인기 순</span>
-                </div>
-              </button>
-
-              <button>
-                <div className="search-post-tag mvw music">
-                  <img src={icon_music} alt="x" />
-                  <span>MUSIC</span>
-                </div>
-              </button>
-
-              <button>
-                <div className="search-post-tag mvw visual">
-                  <img src={icon_visual} alt="x" />
-                  <span>VISUAL</span>
-                </div>
-              </button>
-
-              <button>
-                <div className="search-post-tag mvw writing">
-                  <img src={icon_writing} alt="x" />
-                  <span>WRITING</span>
-                </div>
-              </button>
-            </div>
-
-            <Tabs
-              isFitted
-              variant={'unstyled'}
-              mt={'11px'}
-              onChange={(index) => setTabIndex(index)}
-            >
-              <TabList>
-                <Tab pt={'14px'} pb={'14px'}>
-                  <Text
-                    sx={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      opacity: `${tabIndex !== 0 && '50%'}`,
-                    }}
-                  >
-                    계정
-                  </Text>
-                </Tab>
-                <Tab>
-                  <Text
-                    sx={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      opacity: `${tabIndex !== 1 && '50%'}`,
-                    }}
-                  >
-                    컨텐츠
-                  </Text>
-                </Tab>
-              </TabList>
-              <TabIndicator height={'2px'} bg={'#7Bf7ff'} />
-              <TabPanels>
-                <TabPanel p={0}>
-                  <div className="search-post-recent-lists">
-                    <SearchResultCard text="zinnsong" profile={test_img} />
-                    <SearchResultCard text="witch_park" profile={test_img} />
-                    <SearchResultCard text="Jyori_" profile={test_img} />
+          {isFocused && inputValue === '' && (
+            <>
+              <div className="search-post-recent">
+                <span>최근 검색</span>
+                <button>
+                  <span>모두 지우기</span>
+                </button>
+              </div>
+              <div className="divider" />
+              <div className="search-post-recent-lists">
+                <SearchResultCard isRecent text="감성 글" />
+                <SearchResultCard isRecent text="LandofPeace" />
+                <SearchResultCard isRecent text="지소쿠리클럽" />
+              </div>
+            </>
+          )}
+          {inputValue !== '' && (
+            <>
+              <div className="search-post-tags">
+                <button>
+                  <div className="search-post-tag active">
+                    <span>최신 순</span>
                   </div>
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </>
-        )}
-      </div>
+                </button>
+
+                <button>
+                  <div className="search-post-tag">
+                    <span>인기 순</span>
+                  </div>
+                </button>
+
+                <button>
+                  <div className="search-post-tag mvw music">
+                    <img src={icon_music} alt="x" />
+                    <span>MUSIC</span>
+                  </div>
+                </button>
+
+                <button>
+                  <div className="search-post-tag mvw visual">
+                    <img src={icon_visual} alt="x" />
+                    <span>VISUAL</span>
+                  </div>
+                </button>
+
+                <button>
+                  <div className="search-post-tag mvw writing">
+                    <img src={icon_writing} alt="x" />
+                    <span>WRITING</span>
+                  </div>
+                </button>
+              </div>
+
+              <Tabs
+                isFitted
+                variant={'unstyled'}
+                mt={'11px'}
+                onChange={(index) => setTabIndex(index)}
+              >
+                <TabList>
+                  <Tab pt={'14px'} pb={'14px'}>
+                    <Text
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        opacity: `${tabIndex !== 0 && '50%'}`,
+                      }}
+                    >
+                      계정
+                    </Text>
+                  </Tab>
+                  <Tab>
+                    <Text
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        opacity: `${tabIndex !== 1 && '50%'}`,
+                      }}
+                    >
+                      컨텐츠
+                    </Text>
+                  </Tab>
+                </TabList>
+                <TabIndicator height={'2px'} bg={'#7Bf7ff'} />
+                <TabPanels>
+                  <TabPanel p={0}>
+                    <div className="search-post-recent-lists">
+                      <SearchResultCard text="zinnsong" profile={test_img} />
+                      <SearchResultCard text="witch_park" profile={test_img} />
+                      <SearchResultCard text="Jyori_" profile={test_img} />
+                    </div>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </>
+          )}
+        </div>
+      </NavigatorLayout>
     </SafeAreaLayout>
   );
 };

@@ -1,4 +1,5 @@
 import { Server } from '@/feature/api/index';
+import { PostPick } from '../types/Post.type';
 
 export type FeedImagesResponse = {
   feedImageId: number;
@@ -10,6 +11,15 @@ export type PostArtworkRequest = {
   shortFormIdList: number[];
   feedImageIdList: number[];
   imageUrl: string;
+};
+
+export type ArtworkResponse = {
+  id: number;
+  feedImageList: FeedImagesResponse[];
+  imageUrl: string;
+  name: string;
+  shortFormList: PostPick[];
+  userId: number;
 };
 
 const getFeedsImages = async () => {
@@ -35,4 +45,16 @@ const postArtwork = async ({
   console.log(result);
 };
 
-export { getFeedsImages, postArtwork };
+const getArtworkDetail = async (artwork_id: string) => {
+  const result = await Server.get(`artworks/${artwork_id}`);
+  const data: ArtworkResponse = result.data.data;
+  return data;
+};
+
+const deleteArtwork = async (artwork_id: string) => {
+  const result = await Server.delete(`artworks/${artwork_id}`);
+
+  return result;
+};
+
+export { getFeedsImages, postArtwork, getArtworkDetail, deleteArtwork };

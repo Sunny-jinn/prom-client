@@ -2,8 +2,8 @@ import axios from 'axios';
 import qs from 'qs';
 
 const Server = axios.create({
-  // baseURL: 'https://api.prom-art.store/',
-  baseURL: '/api/',
+  baseURL: 'https://api.prom-art.store/',
+  // baseURL: '/api/',
 });
 
 const addAccessTokenToServer = (access: string) => {

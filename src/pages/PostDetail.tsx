@@ -267,6 +267,9 @@ const PostDetail = () => {
                       fontSize: '14px',
                       position: 'relative',
                     }}
+                    _focusVisible={{
+                      boxShadow: 'none'
+                    }}
                     placeholder={`김진우 님의 게시물에 댓글달기`}
                     value={newComment || ''}
                     onChange={handleCommentChange}

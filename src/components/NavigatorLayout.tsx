@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDisclosure } from '@chakra-ui/react';
 import cn from 'classnames';
@@ -11,7 +11,6 @@ import useAppNavigate from '@/hooks/useAppNavigate';
 import AIGenerator from '@/pages/AIGenerator';
 import UploadIcon from '@/assets/img/icon_upload_button.svg?react';
 import StarIcon from '@/assets/img/icon_star.svg?react';
-import useOuterClick from '@/hooks/useOutterClick';
 
 type NavigatorLayoutProps = {
   children: ReactNode;

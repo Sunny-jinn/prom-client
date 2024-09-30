@@ -38,7 +38,7 @@ const loginAPI = async ({ email, password }: { email: string, password: string }
 };
 
 const logoutAPI = async () => {
-  const result = await Server.post('logout');
+  const result = await Server.post('logout', {}, {withCredentials: true});
   removeAccessTokenToServer()
   return result.data;
 };

@@ -53,10 +53,11 @@ const AppRoute = () => {
 
   const refresh = async () => {
     try {
-      const result = await refreshAPI();
+      await refreshAPI();
       const myInfo = await getMyInfoAPI();
       setUser(myInfo);
-      if (result.role === 'USER') {
+      console.log(myInfo);
+      if (myInfo.role === 'USER') {
         navigate('init');
         return;
       }

@@ -1,4 +1,5 @@
 import { Server } from '@/feature/api/index';
+import { PostPick } from '../types/Post.type';
 import { BaseUser, User } from '../types/User.type';
 
 export type UserTagsResponse = {
@@ -21,6 +22,7 @@ export type UserFeedsResponse = {
   likeCounts: number;
   title: string;
   type: 'VISUAL' | 'MUSIC' | 'WRITING';
+  user: User;
 };
 
 export type UserArtworksResponse = {
@@ -75,6 +77,14 @@ const getPostsDetail = async (feedId: string) => {
   return data;
 };
 
+const getUserPicks = async () => {
+  const result = await Server.get(`posts/short-forms/my`);
+  const data: PostPick[] = result.data.data;
+  console.log(data);
+
+  return data;
+};
+
 export type UpdateUser = Omit<User, 'socialType' | 'id'> &
   Omit<BaseUser, 'email'> & { backgroundImage: string };
 
@@ -108,4 +118,5 @@ export {
   getUserFeeds,
   getPostsDetail,
   updateUserInfo,
+  getUserPicks,
 };

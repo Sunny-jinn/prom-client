@@ -19,8 +19,10 @@ import { timeAgo } from '@/utils/date.utils';
 import './PostDetail.scss';
 import Like from '@/assets/img/icon_like_feed.svg?react'
 import dayjs from 'dayjs';
+import userStore from '@/store/User';
 
 const PostDetail = () => {
+  const{user} = userStore(state => state)
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [isClicked] = useState<boolean>(false);
   const [feedInfo, setFeedInfo] = useState<UserFeedsResponse | null>(null);
@@ -278,7 +280,7 @@ const PostDetail = () => {
               >
                 <Box sx={{ border: '1px solid #fff', borderRadius: '999' }}>
                   <Image
-                    src={feedInfo.user.profileImage}
+                    src={user?.profileImage}
                     alt='profile'
                     sx={{ width: '43px', height: '43px', borderRadius: 999 }}
                   />

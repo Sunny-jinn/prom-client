@@ -27,7 +27,7 @@ export default defineConfig({
     }),
     VitePWA({
       manifest     : manifest as Partial<ManifestOptions>,
-      includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
       // switch to "true" to enable sw on development
       devOptions: {
         enabled: true,

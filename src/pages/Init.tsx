@@ -19,8 +19,9 @@ import Logo from '@/assets/img/img_logo.svg?react';
 import useIsAble from '@/hooks/useIsAble';
 import { ScrollArea } from '@/components/ScrollArea';
 import CheckWave from '@/components/atom/CheckWave';
-import { checkNicknameAPI, updateUserInfoAPI, updateUserInterestAPI } from '@/feature/api/user.api';
+import { checkNicknameAPI, logoutAPI, updateUserInfoAPI, updateUserInterestAPI } from '@/feature/api/user.api';
 import StepProgress from '@/components/StepProgress';
+import userStore from '@/store/User';
 
 type Interest = 'MUSIC' | 'VISUAL' | 'WRITING';
 
@@ -33,6 +34,7 @@ type InitProfile = {
 
 const Init = () => {
   const navigate = useAppNavigate();
+  const {removeUser} = userStore(state => state);
   const [step, setStep] = useState<number>(0);
   const [profile, setProfile] = useState<InitProfile>({
     nickname    : '',
@@ -53,12 +55,23 @@ const Init = () => {
         return <></>;
     }
   }, [profile, step]);
+
+  const onBack = async() => {
+    if(step === 0){
+      await logoutAPI();
+      removeUser();
+      navigate('sign-in')
+      return;
+    }
+    navigate(-1)
+  }
+
   return (
     <SafeAreaLayout flexDirection={'column'}>
       {step === 3 && <InitComplete />}
       {step !== 3 &&
         <div id={'Init'}>
-          <CustomHeader leftOnClick={() => navigate(-1)}>
+          <CustomHeader leftOnClick={() => onBack()}>
             <StepProgress value={(step + 1) / 3} color={'#7bf7ff'}/>
           </CustomHeader>
           <div className='init-header'>
@@ -272,6 +285,7 @@ const InitStep2 = (props: InitStepProps) => {
 
 const InitStep3 = (props: InitStepProps) => {
   const { profile, setProfile, setStep } = props;
+  const {setUser} = userStore(state => state);
   // console.log(profile);
   const isAbleToNext = useIsAble([
     (profile.keywords !== null &&
@@ -326,7 +340,8 @@ const InitStep3 = (props: InitStepProps) => {
       formData.append('nickname', profile.nickname);
       formData.append('phoneNumber', '010-0000-0000');
       formData.append('role', 'ROLE_ARTIST');
-      await updateUserInfoAPI(formData);
+      const updatedResult = await updateUserInfoAPI(formData);
+      setUser(updatedResult)
       const interestArray: Array<Record<string, string>> = [];
       Object.keys(profile.keywords).forEach(key => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

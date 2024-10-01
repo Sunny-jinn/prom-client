@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { getMyInfoAPI, refreshAPI } from '@/feature/api/user.api';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import Home from '@/pages/Home';
@@ -49,6 +49,7 @@ export default RootRouter;
 // '',app,''
 const AppRoute = () => {
   const navigate = useAppNavigate();
+  const location = useLocation();
   const [appLoading, setAppLoading] = useState(true);
   const { setUser } = userStore((state) => state);
 
@@ -61,7 +62,7 @@ const AppRoute = () => {
         navigate('init');
         return;
       }
-      // navigate('home');
+      navigate('home');
     } catch (e) {
       navigate('on-board');
     } finally {
@@ -69,10 +70,12 @@ const AppRoute = () => {
     }
   };
   useEffect(() => {
-    //1. refresh 토큰으로 로그인 여부 확인
-    //1-1. 로그인이 된 유저 중 초기 세팅을 하지 않은 유저일 경우 status 0 => 초기세팅 화면
-    //1-2. 로그인 된 유저 중 초기 세팅을 완료한 유저일 경우 status 1 => 메인 화면
-    refresh();
+    //redirect인 경우 home으로 이동하지 않기
+    if(location.pathname.split('/app/')[1] !== 'redirect'){
+      refresh();
+      return;
+    }
+    setAppLoading(false)
   }, []);
   if(appLoading) {
     return <Splash />;
@@ -90,7 +93,6 @@ const Auth = () => {
 };
 
 const Redirect = () => {
-  console.log(111111);
   useEffect(() => {
     window.close();
   }, [])

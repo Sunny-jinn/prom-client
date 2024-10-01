@@ -1,4 +1,5 @@
 type BaseUser = {
+  id: number;
   role: 'USER' | 'ARTIST' | 'ARTTY';
   username: string;
   profileImage: string;
@@ -7,7 +8,6 @@ type BaseUser = {
 }
 
 type User = BaseUser & {
-  id: number;
   birth: string | null,
   phoneNumber: string | null,
   socialType: number | null

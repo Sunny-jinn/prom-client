@@ -57,6 +57,7 @@ const SignUp = () => {
         password,
       });
       setUser({
+        id: result.id ?? -1,
         email: result.email ?? '',
         username: result.username ?? '',
         profileImage: result.profileImage ?? '',

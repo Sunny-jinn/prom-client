@@ -26,6 +26,7 @@ const SignIn = () => {
       });
       const myInfo = await getMyInfoAPI();
       setUser({
+        id: myInfo.id ?? -1,
         email: myInfo.email ?? '',
         username: myInfo.username ?? '',
         profileImage: myInfo.profileImage ?? '',

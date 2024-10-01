@@ -18,7 +18,6 @@ import { Volume2, VolumeX } from 'lucide-react';
 import Likes from '@/assets/img/icon_like.svg?react';
 import CommentIcon from '@/assets/img/icon_comment.svg?react';
 import More from '@/assets/img/icon_more.svg?react';
-import temp from '@/assets/img/music.png'
 import cn from 'classnames';
 import { followUserAPI, getMyFollowingsAPI, unFollowUserAPI } from '@/feature/api/user.api';
 import { Box, Image, Input, Text, useDisclosure } from '@chakra-ui/react';
@@ -114,7 +113,7 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
     if(!isFollow){
       try{
         //TODO: userId로 변경
-        await followUserAPI(13);
+        await followUserAPI(pick.user.id);
         setIsFollow(true);
       }catch (e) {
         console.log(e);
@@ -122,8 +121,8 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
       return;
     }
     try{
-      // const result = await unFollowUserAPI(pick.user.userId);
-      await unFollowUserAPI(13);
+      await unFollowUserAPI(pick.user.id);
+      // await unFollowUserAPI(13);
       setIsFollow(false);
     }catch (e) {
       console.log(e);
@@ -159,6 +158,8 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
         content: newComment,
       });
       const updatedComments =  await getPickCommentAPI(pickId)
+      const pick = await getPickByIdAPI(pickId);
+      setPick(pick);
       setPickComment(updatedComments);
       setNewComment('');
     } catch {
@@ -289,12 +290,14 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
                     <div className='pick-features-info'>
                       <div className='pick-features-user-wrapper'>
                         <div className='pick-features-user'>
-                          <img src={temp} alt='profile' />
-                          <span>{'Siena'}</span>
+                          <img src={pick.user.profileImage} alt='profile' />
+                          <span>{pick.user.username}</span>
                         </div>
-                        <button className={cn('pick-follow-button', {isFollow: isFollow})} onClick={() => followHandler()}>
-                          {isFollow ? '팔로잉' : '팔로우'}
-                        </button>
+                        {user?.id !== pick.user.id &&
+                          <button className={cn('pick-follow-button', {isFollow: isFollow})} onClick={() => followHandler()}>
+                            {isFollow ? '팔로잉' : '팔로우'}
+                          </button>
+                        }
                       </div>
                       <div onClick={() => setIsContentOpen(prev => !prev)} className={cn('pick-features-content', {isOpen: isContentOpen})}>
                         <span className='pick-title'>{pick.title}</span>

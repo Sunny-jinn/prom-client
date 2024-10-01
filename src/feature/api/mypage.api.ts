@@ -3,8 +3,9 @@ import { PostPick } from '../types/Post.type';
 import { BaseUser, User } from '../types/User.type';
 
 export type UserTagsResponse = {
-  tagId: number;
-  name: string;
+  tagId?: number;
+  tagName?: string;
+  name?: string;
   isMain: boolean;
 };
 
@@ -86,6 +87,23 @@ const getUserPicks = async () => {
   return data;
 };
 
+const createUserTags = async (arr: UserTagsResponse[]) => {
+  const result = await Server.post(`users/tags`, arr);
+  console.log(result);
+
+  return result;
+};
+
+const deleteUserTags = async (tagIds: number[]) => {
+  try {
+    const deletePromises = tagIds.map((tagId) => Server.delete(`users/tags/${tagId}`)); // 각 tagId에 대해 개별적으로 DELETE 요청
+    const result = await Promise.all(deletePromises); // 모든 DELETE 요청이 완료될 때까지 기다림
+    return result;
+  } catch (error) {
+    console.error('Error deleting tags:', error); // 오류 처리
+  }
+};
+
 export type UpdateUser = Omit<User, 'socialType' | 'id'> &
   Omit<BaseUser, 'email'> & { backgroundImage: string };
 
@@ -120,4 +138,6 @@ export {
   getPostsDetail,
   updateUserInfo,
   getUserPicks,
+  createUserTags,
+  deleteUserTags,
 };

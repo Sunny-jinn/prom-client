@@ -93,6 +93,7 @@
       text-align: center;
 
       .my-page-profile-content {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -102,6 +103,16 @@
         border-bottom-left-radius: 25px;
         border-bottom-right-radius: 25px;
         gap: 9px;
+      }
+
+      .icon-change-background {
+        position: absolute;
+        bottom: 9px;
+        right: 10px;
+      }
+
+      .change-background {
+        display: none;
       }
 
       .my-page-profile-icon {

@@ -8,7 +8,7 @@ import CustomSearchInput from '@/components/CustomSearchInput';
 import NavigatorLayout from '@/components/NavigatorLayout';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import SearchResultCard from '@/components/SearchResultCard';
-import { getFeedsAPI } from '@/feature/api/post.api';
+import { getFeedsAndPicksAPI } from '@/feature/api/post.api';
 import './Search.scss';
 
 const Search = () => {
@@ -30,7 +30,7 @@ const Search = () => {
     }
   };
   //TODO: 진우야 여기 필요한 query 넣으면됨, useEffect 안에 넣어놓고 쓰는게 나을듯 query 많아서?
-  getFeedsAPI({});
+  getFeedsAndPicksAPI({});
   //   getShortForms();
 
   return (

@@ -14,7 +14,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Article, ARTICLES } from '@/constants/articles.data';
 import dayjs from 'dayjs';
 import { POST_CATEGORY_DATA, PostCategoryData } from '@/constants/init.data';
-import { getFeedsAPI, getFeedLikesCheckAPI } from '@/feature/api/post.api';
+import { getFeedLikesCheckAPI, getFeedsAPI } from '@/feature/api/post.api';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import DefaultSwiperBullets from '@/components/DefaultSwiperBullets';
 import cn from 'classnames';
@@ -62,7 +62,7 @@ const GrowthOfTheMonth = () => {
 
   const getGrowthUser = async () => {
     try {
-      const result = await getUserInfoAPI(13);
+      const result = await getUserInfoAPI(35);
       setGrowthUser(result);
     } catch (e) {
       console.log(e);
@@ -158,7 +158,7 @@ const PostPreview = (props: PostPreviewProps) => {
   const { name, icon } = category;
   const Icon = icon;
   const navigate = useAppNavigate();
-  const [post, setPost] = useState<Post.PostFeed | null>(null);
+  const [feed, setFeed] = useState<Post.PostFeed | null>(null);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [isUserLikes, setIsUserLikes] = useState(false)
@@ -166,9 +166,9 @@ const PostPreview = (props: PostPreviewProps) => {
   const getRecentPost = async () => {
     try {
       const result = await getFeedsAPI({ size: 1, type: name, orderBy: 'asc' });
-      const post = result[0]
-      setPost(post);
-      const likesCheck = await getFeedLikesCheckAPI(post.postId)
+      const feed = result[0]
+      setFeed(feed);
+      const likesCheck = await getFeedLikesCheckAPI(feed.feedId)
       setIsUserLikes(likesCheck)
     } catch (e) {
       console.log(e);
@@ -176,28 +176,28 @@ const PostPreview = (props: PostPreviewProps) => {
   };
 
   const navigateToPost = () => {
-    if(!post) return;
-    navigate(`post/${post.postId}`)
+    if(!feed) return;
+    navigate(`post/${feed.feedId}`)
   }
 
   useEffect(() => {
     getRecentPost();
   }, [name]);
 
-  if(!post) return <></>;
+  if(!feed) return <></>;
   return (
     <div className='post-preview'>
       <div className='post-preview-header'>
         <div className='post-creator'>
-          <img src={post.user.profileImage} alt='profile' />
+          <img src={feed.user.profileImage} alt='profile' />
           <div className='post-creator-info'>
             <span className='post-creator-name'>
-              {post.user.username}
+              {feed.user.username}
             </span>
             <div className='post-info'>
-              <span>{post.url.length}장의 사진</span>
+              <span>{feed.images.length}장의 사진</span>
               <div className='dot' />
-              <span>{dayjs('2024-09-22').from(dayjs())}</span>
+              <span>{dayjs(feed.createdAt).from(dayjs())}</span>
             </div>
           </div>
         </div>
@@ -216,7 +216,7 @@ const PostPreview = (props: PostPreviewProps) => {
           spaceBetween={10}
           className='post-swiper'
         >
-          {post.url.map((el) => (
+          {feed.images.map((el) => (
             <SwiperSlide className={'post-swiper-slide'}>
               <img src={el} alt='content' />
             </SwiperSlide>
@@ -225,26 +225,26 @@ const PostPreview = (props: PostPreviewProps) => {
         </Swiper>
         <DefaultSwiperBullets
           currentSlideIndex={activeSlideIndex}
-          slideLength={post.url.length}
+          slideLength={feed.images.length}
         />
       </div>
 
       <div className='post-preview-detail'>
         <div className='post-preview-content-wrapper'>
-          <span className='post-preview-content-title'>{post.title}</span>
+          <span className='post-preview-content-title'>{feed.title}</span>
           <div className='post-preview-content-description-wrapper'>
             <span
-              className={cn('post-preview-content-description', { open: descriptionOpen })}>{post.description}</span>
+              className={cn('post-preview-content-description', { open: descriptionOpen })}>{feed.description}</span>
             {!descriptionOpen && <button onClick={() => setDescriptionOpen(true)}>더보기</button>}
           </div>
           <div className='post-preview-interaction-wrapper'>
             <div className='post-preview-interaction' onClick={() => navigateToPost()}>
               <Like fill={isUserLikes ? '#7bf7ff' : '#B8B8B8'}/>
-              <span style={{color: isUserLikes ? '#7bf7ff' : '#ffffff'}}>{post.likesCount}</span>
+              <span style={{color: isUserLikes ? '#7bf7ff' : '#ffffff'}}>{feed.likeCounts}</span>
             </div>
             <div className='post-preview-interaction' onClick={() => navigateToPost()}>
               <Comment fill={'#B8B8B8'}/>
-              <span>{post.commentCounts}</span>
+              <span>{feed.commentCounts}</span>
             </div>
           </div>
         </div>

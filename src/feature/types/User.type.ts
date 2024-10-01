@@ -10,7 +10,8 @@ type BaseUser = {
 type User = BaseUser & {
   birth: string | null,
   phoneNumber: string | null,
-  socialType: number | null
+  socialType: number | null,
+  backgroundImage: string | null
 }
 
 type FollowResponse = {

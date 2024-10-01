@@ -18,10 +18,9 @@ const Picks = () => {
       setPickIds(prev => [Number(params.get('index'))].concat(prev));
     }
     // 이후 uniq하게 조회한 id들 추가, 중복 제거
-    setPickIds(prev => prev.concat([4, 5, 6, 7]))
+    setPickIds(prev => prev.concat([11, 12]))
 
   }, [])
-  console.log(pickIds);
 
   useEffect(() => {
     return () => {

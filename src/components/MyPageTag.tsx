@@ -39,25 +39,27 @@ const TagText = styled.input<{ main: boolean }>`
 `;
 
 type MyPageTagProps = {
+  key: number | string;
   text?: string;
   main?: boolean;
-  onUpdateTag: (newText: string) => void; // 콜백으로 부모 컴포넌트로 데이터 전달
+  onUpdateTag: (newText: string) => void; // 새로운 텍스트가 변경될 때 호출되는 콜백
 };
 
-const MyPageTag = ({ text = '', main = false, onUpdateTag }: MyPageTagProps) => {
+const MyPageTag = ({ key, text = '', main = false, onUpdateTag }: MyPageTagProps) => {
   const [inputValue, setInputValue] = useState(text);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
-    onUpdateTag(e.target.value); // 입력이 변경될 때마다 부모에 업데이트
+    onUpdateTag(e.target.value);
   };
 
   const handleDeleteClick = () => {
     setInputValue('');
+    onUpdateTag('');
   };
 
   return (
-    <Wrapper>
+    <Wrapper key={key}>
       <TagBox main={main}>
         <button onClick={handleDeleteClick}>
           <img src={delete_tag} alt="delete" />

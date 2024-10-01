@@ -139,6 +139,7 @@
 
       .my-page-profile-name {
         display: flex;
+        justify-content: center;
         align-items: center;
 
         .my-page-nickname {
@@ -147,6 +148,7 @@
           font-size: 20px;
           font-weight: 600;
           border: none; /* 테두리 제거 */
+          width: 150px;
         }
 
         img:first-of-type {

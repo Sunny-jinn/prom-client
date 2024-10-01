@@ -52,10 +52,16 @@ const MyPageTag = ({ text = '', main = false, onUpdateTag }: MyPageTagProps) => 
     onUpdateTag(e.target.value); // 입력이 변경될 때마다 부모에 업데이트
   };
 
+  const handleDeleteClick = () => {
+    setInputValue('');
+  };
+
   return (
     <Wrapper>
       <TagBox main={main}>
-        <img src={delete_tag} alt="delete" />
+        <button onClick={handleDeleteClick}>
+          <img src={delete_tag} alt="delete" />
+        </button>
         <TagText
           main={main}
           value={inputValue}
@@ -63,7 +69,7 @@ const MyPageTag = ({ text = '', main = false, onUpdateTag }: MyPageTagProps) => 
           onChange={handleInputChange} // 입력 변경 시 호출
         />
       </TagBox>
-      <img src={hamburger} alt="hamburger" />
+      {!main && <img src={hamburger} alt="hamburger" />}
     </Wrapper>
   );
 };

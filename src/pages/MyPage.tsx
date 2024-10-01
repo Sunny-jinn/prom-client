@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
+import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
-  Image,
   Tab,
   TabIndicator,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
-  Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import edit_icon from '@/assets/img/edit.png';
@@ -17,18 +16,14 @@ import ellipsis from '@/assets/img/ellipsis.png';
 import icon_bottom_arrow from '@/assets/img/icon_bottom_arrow.png';
 import icon_setting from '@/assets/img/icon_setting.svg';
 import icon_up_arrow from '@/assets/img/icon_up_arrow.png';
-import profileBackground from '@/assets/img/profile_background.png';
 import tabbar_all from '@/assets/img/tabbar_all.png';
 import tabbar_shorts from '@/assets/img/tabbar_shorts.png';
 import CustomBottomDrawer from '@/components/CustomBottomDrawer';
-import CustomBottomModal from '@/components/CustomBottomModal';
 import CustomTempModal from '@/components/CustomTempModal';
-import MainBottomDrawer from '@/components/MainBottomDrawer';
 import MyPageArtwork from '@/components/MyPageArtwork';
 import MyPageTag from '@/components/MyPageTag';
 import NavigatorLayout from '@/components/NavigatorLayout';
 import PostCard from '@/components/PostCard';
-import ReportCard from '@/components/ReportCard';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import {
   UserArtworksResponse,
@@ -42,10 +37,11 @@ import {
   getUserTags,
 } from '@/feature/api/mypage.api';
 import { logoutAPI, updateUserInfoAPI } from '@/feature/api/user.api';
+import { User } from '@/feature/types';
 import { PostPick } from '@/feature/types/Post.type';
 import followerStore from '@/store/Follow';
-import './MyPage.scss';
 import userStore from '@/store/User';
+import './MyPage.scss';
 
 type FollowsType = {
   follower: number;
@@ -53,11 +49,10 @@ type FollowsType = {
 };
 
 const MyPage = () => {
-  const {user, removeUser} = userStore(state => state)
+  const { user, removeUser } = userStore((state) => state);
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isMyPage] = useState<boolean>(true);
-  const [showAll, setShowAll] = useState(false);
 
   // const [userInfo, setUserInfo] = useState<User.User>(null);
   const [userTags, setUserTags] = useState<UserTagsResponse[]>([]);
@@ -65,6 +60,7 @@ const MyPage = () => {
     follower: 0,
     following: 0,
   });
+
   const [userFeeds, setUserFeeds] = useState<UserFeedsResponse[]>([]);
   const [userPicks, setUserPicks] = useState<PostPick[]>([]);
   const [userArtworks, setUserArtworks] = useState<UserArtworksResponse[]>([]);
@@ -72,7 +68,10 @@ const MyPage = () => {
   const [newNickname, setNewNickname] = useState<string>(user?.username ?? '');
   const [newDescription, setNewDescription] = useState<string | null>(user?.description ?? '');
   const [tempProfileImage, setTempProfileImage] = useState<string>(user?.profileImage ?? '');
-  const [tempBackgroundImage, setTempBackgroundImage] = useState<string>(user?.profileImage ?? '');
+  const [tempBackgroundImage, setTempBackgroundImage] = useState<string>(
+    user?.backgroundImage ?? '',
+  );
+  const [tempTags, setTempTags] = useState<UserTagsResponse[]>(userTags ?? []);
 
   const { setFollower, setFollowing } = followerStore((state) => ({
     setFollower: state.setFollower,
@@ -82,7 +81,7 @@ const MyPage = () => {
   console.log(user);
 
   useEffect(() => {
-    if(user){
+    if (user) {
       const fetchUserInfo = async () => {
         // const user = await getMyInfoAPI();
         const tags = await getUserTags();
@@ -104,55 +103,16 @@ const MyPage = () => {
         setUserArtworks(artworks);
         // setNewNickname(user.username);
         // setNewDescription(user.description);
-        setTempProfileImage(user.profileImage);
-        setTempBackgroundImage(user.profileImage);
         setUserPicks(picks);
+        setTempTags(tags);
+        console.log(tags);
       };
       fetchUserInfo();
     }
-
   }, [user]);
 
   const profileRef = useRef<HTMLInputElement>(null);
-  const backgroundRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = 'auto';
-      textarea.style.height = `${textarea.scrollHeight}px`;
-    }
-  }, [newDescription]);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewNickname(event.target.value);
-  };
-
-  const handleToggle = () => {
-    setShowAll(!showAll);
-  };
-
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewDescription(event.target.value);
-  };
-
-  const handleUpdateProfileClick = () => {
-    if (profileRef.current) {
-      profileRef.current.click();
-    }
-  };
-
-  const handleUpdateProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setTempProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleUpdateBackground = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -166,7 +126,7 @@ const MyPage = () => {
   };
 
   const handleTagUpdate = (tagId: number, newName: string) => {
-    setUserTags((prevTags) =>
+    setTempTags((prevTags) =>
       prevTags.map((tag) => (tag.tagId === tagId ? { ...tag, name: newName } : tag)),
     );
   };
@@ -190,31 +150,28 @@ const MyPage = () => {
     }
   };
 
+  const handleOnDragEnd = (result: DropResult) => {
+    const { source, destination } = result;
+
+    // destination이 없으면 이동이 취소된 것 (유효한 드롭 위치가 아닐 때)
+    if (!destination) return;
+
+    // source.index와 destination.index를 사용해 순서를 업데이트
+    setTempTags((prevTags) => {
+      const newTags = Array.from(prevTags);
+      const [movedTag] = newTags.splice(source.index + 1, 1); // +1을 하는 이유는 userTags.slice(1)로 인해 0번째 요소를 제외했기 때문
+      newTags.splice(destination.index + 1, 0, movedTag); // +1을 해야 userTags[1]부터 조정됨
+      return newTags;
+    });
+  };
+
   const navigate = useNavigate();
 
   const { isOpen: isMyDrawerOpen, onOpen: openMyDrawer, onClose: closeMyDrawer } = useDisclosure();
-  const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
   const {
     isOpen: isCancelDrawerOpen,
     onOpen: openCancelDrawer,
     onClose: closeCancelDrawer,
-  } = useDisclosure();
-
-  const {
-    isOpen: isBottomModalOpen,
-    onOpen: openBottomModal,
-    onClose: closeBottomModal,
-  } = useDisclosure();
-  const {
-    isOpen: isBlockModalOpen,
-    onOpen: openBlockModal,
-    onClose: closeBlockModal,
-  } = useDisclosure();
-
-  const {
-    isOpen: isReportModalOpen,
-    onOpen: openReportModal,
-    onClose: closeReportModal,
   } = useDisclosure();
 
   const {
@@ -228,24 +185,9 @@ const MyPage = () => {
     closeMyDrawer();
   };
 
-  const hideClickHandler = () => {
-    closeDrawer();
-    openBottomModal();
-  };
-
   const deleteClickHandler = () => {
     setIsEditMode(false);
     closeCancelDrawer();
-  };
-
-  const blockClickHandler = () => {
-    closeDrawer();
-    openBlockModal();
-  };
-
-  const reportClickHandler = () => {
-    closeDrawer();
-    openReportModal();
   };
 
   const logoutClickHandler = () => {
@@ -253,12 +195,12 @@ const MyPage = () => {
     openCenterModal();
   };
 
-  const logout = async() => {
-    try{
+  const logout = async () => {
+    try {
       await logoutAPI();
       removeUser();
-      navigate('on-board')
-    }catch (e) {
+      navigate('on-board');
+    } catch (e) {
       console.log(e);
     }
     closeCenterModal();
@@ -291,266 +233,106 @@ const MyPage = () => {
     },
   ];
 
-  const NotMyPageModalOptions = [
-    {
-      id: 0,
-      text: '관심없음',
-      onClick: hideClickHandler,
-    },
-    {
-      id: 1,
-      text: '차단',
-      onClick: blockClickHandler,
-    },
-    {
-      id: 2,
-      text: '신고하기',
-      delete: true,
-      onClick: reportClickHandler,
-    },
-  ];
-  if(!user) return <></>
+  if (!user) return <></>;
 
   return (
     <NavigatorLayout hasScrollArea>
       <div>
         <div id="MyPage">
-          <div className="my-page-header-container">
-            <SafeAreaLayout flexDirection="column" safeAreaBackground="rgba(0,0,0,0)">
-              <div className="my-page-header-container">
-                <div className={`my-page-header ${isEditMode && 'active'}`}>
-                  {isEditMode ? (
-                    <div onClick={openCancelDrawer}>
-                      <span className="my-page-header-cancel">취소</span>
-                    </div>
-                  ) : (
-                    <img style={{ visibility: 'hidden' }} src={ellipsis} alt="ellipsis" />
-                  )}
-                  <span className="my-page-header-text">마이페이지</span>
-                  {isEditMode ? (
-                    <div onClick={handleEditComplete}>
-                      <span className="my-page-header-confirm">완료</span>
-                    </div>
-                  ) : (
-                    <img
-                      src={ellipsis}
-                      alt="ellipsis"
-                      onClick={isMyPage ? openMyDrawer : openDrawer}
-                    />
-                  )}
-                </div>
-              </div>
-            </SafeAreaLayout>
-          </div>
+          <ProfileHeader
+            isMyPage
+            isEditMode={isEditMode}
+            openCancelDrawer={openCancelDrawer}
+            openProfileDrawer={openMyDrawer}
+            onClick={handleEditComplete}
+          />
 
-          <div className="background-image">
-            <div
-              className="background-image-wrapper"
-              onClick={() => backgroundRef.current?.click()}
-            >
-              <input
-                ref={backgroundRef}
-                type="file"
-                className="my-page-update-profile"
-                onChange={handleUpdateBackground}
-              />
-              <img src={!isEditMode ? profileBackground : tempBackgroundImage} alt="background" />
-            </div>
-            <div className="my-page-profile">
-              <div className="my-page-profile-content">
-                <div className="my-page-profile-icon">
-                  <img
-                    src={!isEditMode ? user.profileImage : tempProfileImage}
-                    alt=""
-                    className="my-page-profile-image"
-                  />
-                  <input
-                    ref={profileRef}
-                    type="file"
-                    className="my-page-update-profile"
-                    onChange={handleUpdateProfile}
-                  />
-                  {isEditMode && (
-                    <button className="my-page-edit-profile" onClick={handleUpdateProfileClick}>
-                      <img src={icon_setting} alt="x" />
-                    </button>
-                  )}
-                </div>
-                <div className="my-page-profile-name">
-                  {isEditMode && <img src={edit_icon} alt="edit" />}
-                  <input
-                    className="my-page-nickname"
-                    value={newNickname || ''}
-                    readOnly={!isEditMode}
-                    onChange={handleInputChange}
-                  />
-                  {isEditMode && <img src={edit_icon} alt="edit" />}
-                </div>
-                <div className="my-page-profile-tags">
-                  {userTags.slice(0, 2).map((tag, index) => (
-                    <div
-                      key={tag.tagId}
-                      className={`my-page-profile-tag ${index === 0 ? 'main-tag' : ''}`}
-                    >
-                      {tag.name}
-                    </div>
-                  ))}
-
-                  {userTags.length > 1 && (
-                    <div className="toggle-button" onClick={handleToggle}>
-                      {showAll ? (
-                        <img src={icon_up_arrow} alt="up" />
-                      ) : (
-                        <img src={icon_bottom_arrow} alt="up" />
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {showAll && (
-                  <div className="my-page-profile-tags">
-                    {userTags.slice(2).map((tag) => (
-                      <div key={tag.tagId} className="my-page-profile-tag">
-                        {tag.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <ProfileImage
+            isEditMode={isEditMode}
+            user={user}
+            handleBackground={handleUpdateBackground}
+            profileRef={profileRef}
+            newNickname={newNickname}
+            userTags={userTags}
+            tempProfileImage={tempProfileImage}
+            setTempProfileImage={setTempProfileImage}
+            tempBackgroundImage={tempBackgroundImage}
+            setNewNickname={setNewNickname}
+          />
 
           {!isEditMode && (
-            <div className="my-page-info-container">
-              <div className="my-page-info">
-                <span className="my-page-info-number">{userFeeds.length}</span>
-                <span className="my-page-info-text">작업</span>
-              </div>
-              <button className="my-page-info" onClick={() => navigate('follow-list/follower')}>
-                <span className="my-page-info-number">{followNumber.follower}</span>
-                <span className="my-page-info-text">팔로워</span>
-              </button>
-              <button className="my-page-info" onClick={() => navigate('follow-list/following')}>
-                <span className="my-page-info-number">{followNumber.following}</span>
-                <span className="my-page-info-text">팔로잉</span>
-              </button>
-            </div>
+            <ProfileNumbers
+              isMyPage
+              postNumber={userFeeds.length}
+              follower={followNumber.follower}
+              following={followNumber.following}
+            />
           )}
 
-          <div className="my-page-intro">
-            <div className="my-page-intro-title">
-              <span>소개</span>
-              {isEditMode && (
-                <button>
-                  <img src={edit_icon} alt="edit" />
-                </button>
-              )}
-            </div>
-            <textarea
-              ref={textareaRef}
-              className={`my-page-intro-content ${!isEditMode ? 'readonly' : ''}`}
-              value={newDescription || ''}
-              readOnly={!isEditMode}
-              onChange={handleChange}
-            />
-          </div>
+          <ProfileDescription
+            isEditMode={isEditMode}
+            newDescription={newDescription}
+            textareaRef={textareaRef}
+            setNewDescription={setNewDescription}
+          />
 
           {!isEditMode && (
-            <>
-              <div className="my-page-artworks">
-                {userArtworks.map((item) => (
-                  <MyPageArtwork
-                    key={item.id}
-                    text={item.name}
-                    image={item.imageUrl}
-                    onClick={() => navigate(`/app/artwork/${item.id}`)}
-                  />
-                ))}
-                <div
-                  className="my-page-artwork artwork-add"
-                  onClick={() => navigate('all-posts')}
-                >
-                  +
-                </div>
-              </div>
-
-              <Tabs isFitted variant={'unstyled'}>
-                <TabList>
-                  <Tab>
-                    <div className="my-page-tabbar-icon active">
-                      <img src={tabbar_all} alt="tab" />
-                    </div>
-                  </Tab>
-                  <Tab>
-                    <div className="my-page-tabbar-icon">
-                      <img src={tabbar_shorts} alt="tab" />
-                    </div>
-                  </Tab>
-                </TabList>
-                <TabIndicator height={'2px'} bg={'#7Bf7ff'} />
-                <TabPanels>
-                  <TabPanel p={0}>
-                    <Box
-                      sx={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(3, 1fr)',
-                        gap: '9px',
-                        marginTop: '12px',
-                      }}
-                    >
-                      {userFeeds.map((item) => (
-                        <PostCard
-                          id={item.feedId}
-                          image={item.images[0]}
-                          type={item.type}
-                          onClick={() => navigate(`/app/post/${item.feedId}`)}
-                        />
-                      ))}
-                    </Box>
-                  </TabPanel>
-                  <TabPanel p={0}>
-                    <Box
-                      sx={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(3, 1fr)',
-                        gap: '9px',
-                        marginTop: '12px',
-                      }}
-                    >
-                      {userPicks.map((item) => (
-                        <MyPageArtwork all image={item.thumbnailUrl} />
-                      ))}
-                    </Box>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </>
+            <ProfilePosts userArtworks={userArtworks} userFeeds={userFeeds} userPicks={userPicks} />
           )}
           {isEditMode && (
             <div className="my-page-update-tag-wrapper">
               <div className="my-page-update-main-tag">
                 <span className="my-page-update-main-tag-text">메인 태그</span>
                 <MyPageTag
-                  text={userTags[0].name}
+                  text={userTags.length === 0 ? '' : userTags[0].name}
                   main
                   onUpdateTag={(newText) => handleTagUpdate(0, newText)}
                 />
               </div>
               <div className="my-page-update-tag">
                 <span className="my-page-update-main-tag-text">보조 태그</span>
-                <div className="my-page-update-tag-list">
-                  {userTags.length === 1 &&
-                    [0, 1, 2, 3].map((item) => (
-                      <MyPageTag key={item} onUpdateTag={() => console.log('hi')} />
-                    ))}
-                  {userTags.slice(1).map((tag) => (
-                    <MyPageTag
-                      key={tag.tagId}
-                      text={tag.name}
-                      onUpdateTag={(newText) => handleTagUpdate(tag.tagId, newText)}
-                    />
-                  ))}
-                </div>
+
+                <DragDropContext onDragEnd={handleOnDragEnd}>
+                  <Droppable droppableId="tags">
+                    {(provided) => (
+                      <div
+                        className="my-page-update-tag-list"
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                      >
+                        {[
+                          ...tempTags.slice(1),
+                          ...Array(Math.max(4 - userTags.length, 0)).fill(null),
+                        ].map((tag, index) => (
+                          <Draggable
+                            key={tag?.tagId || `placeholder-${index}`}
+                            draggableId={`${tag?.tagId || index}`}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <MyPageTag
+                                  key={tag?.tagId || `placeholder-${index}`}
+                                  text={tag?.name || ''}
+                                  onUpdateTag={
+                                    tag
+                                      ? (newText) => handleTagUpdate(tag.tagId, newText)
+                                      : () => console.log('hi')
+                                  }
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
               </div>
             </div>
           )}
@@ -560,14 +342,6 @@ const MyPage = () => {
               cancel
               onClose={closeMyDrawer}
               isOpen={isMyDrawerOpen}
-            />
-          )}
-          {!isMyPage && (
-            <CustomBottomDrawer
-              options={NotMyPageModalOptions}
-              cancel
-              onClose={closeDrawer}
-              isOpen={isDrawerOpen}
             />
           )}
 
@@ -582,132 +356,356 @@ const MyPage = () => {
             onDelete={deleteClickHandler}
           />
 
-          <CustomBottomModal
-            text="아티스트 관심없음"
-            content="이와 비슷한 아티스트가 덜 표시됩니다."
-            isOpen={isBottomModalOpen}
-            onClose={closeBottomModal}
-            icon="modal_eye_off"
-          />
-
           <CustomTempModal
             isOpen={isCenterModalOpen}
             onClose={closeCenterModal}
             logout
             onClick={logout}
           />
-
-          <MainBottomDrawer isOpen={isBlockModalOpen} onClose={closeBlockModal}>
-            <Text sx={{ color: '#fff', textAlign: 'center', fontWeight: 600 }}>차단</Text>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                marginTop: '28px',
-                padding: '0 16px',
-                paddingBottom: '40px',
-                height: '100%',
-              }}
-            >
-              <Box sx={{ border: '1px solid #fff', borderRadius: '999px' }}>
-                <Image
-                  src={profileBackground}
-                  alt="x"
-                  sx={{ width: '74px', height: '74px', borderRadius: '999px' }}
-                />
-              </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px',
-                  marginTop: '19px',
-                }}
-              >
-                <Box sx={{ textAlign: 'center' }}>
-                  <Text
-                    sx={{
-                      color: '#fff',
-                      fontSize: '22px',
-                      fontWeight: '600',
-                      lineHeight: '26.25px',
-                    }}
-                  >
-                    김진우
-                  </Text>
-                  <Text
-                    sx={{
-                      color: '#fff',
-                      fontSize: '22px',
-                      fontWeight: '600',
-                      lineHeight: '26.25px',
-                    }}
-                  >
-                    님을 차단하시겠습니까?
-                  </Text>
-                </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Text
-                    sx={{
-                      fontSize: '14px',
-                      color: '#a6a6a6',
-                      whiteSpace: 'pre-line',
-                      lineHeight: '16.71px',
-                    }}
-                  >
-                    차단 시 해당 사용자의 활동이 귀하에게{`\n`}
-                    표시되지 않으며, 상호작용이 제한됩니다.
-                  </Text>
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  background: '#ff6d6d',
-                  marginTop: 'auto',
-                  width: '100%',
-                  padding: '16px 22px',
-                  justifyContent: 'center',
-                  borderRadius: '17px',
-                }}
-                onClick={closeBlockModal}
-              >
-                <Text sx={{ color: '#fff', fontSize: '14px', fontWeight: '600' }}>차단하기</Text>
-              </Box>
-            </Box>
-          </MainBottomDrawer>
-          <MainBottomDrawer isOpen={isReportModalOpen} onClose={closeReportModal}>
-            <Text sx={{ color: '#fff', textAlign: 'center', fontWeight: 600 }}>신고</Text>
-            <Box sx={{ display: 'flex', flexDirection: 'column', padding: '0 16px' }}>
-              <Box
-                sx={{ display: 'flex', gap: '5px', flexDirection: 'column', marginTop: '32px' }}
-              >
-                <Text sx={{ fontWeight: '600', lineHeight: '19.09px', color: '#fff' }}>
-                  무엇을 신고하시나요?
-                </Text>
-                <Text
-                  sx={{
-                    fontSize: '1ㅅ4px',
-                    fontWeight: '400',
-                    color: '#a6a6a6',
-                    lineHeight: '16.71px',
-                  }}
-                >
-                  커뮤니티의 안전과 질서를 위해 부적절한 행동을 신고해주세요.
-                </Text>
-              </Box>
-              <Box sx={{ borderTop: '1px solid #5f5f5f', marginTop: '22px' }} />
-              <Box sx={{ marginTop: '25px' }}>
-                <ReportCard text="특정 게시물" />
-                <ReportCard text="특정 댓글" />
-                <ReportCard text="계정의 활동" />
-              </Box>
-            </Box>
-          </MainBottomDrawer>
         </div>
       </div>
     </NavigatorLayout>
+  );
+};
+
+type TProfileHeader = {
+  isMyPage?: boolean;
+  isEditMode?: boolean;
+  openCancelDrawer?: () => void;
+  openProfileDrawer?: () => void;
+  onClick?: () => void;
+};
+
+export const ProfileHeader = ({
+  isMyPage = false,
+  isEditMode = false,
+  openCancelDrawer,
+  openProfileDrawer,
+  onClick,
+}: TProfileHeader) => {
+  return (
+    <div className="my-page-header-container">
+      <SafeAreaLayout flexDirection="column" safeAreaBackground="rgba(0,0,0,0)">
+        <div className="my-page-header-container">
+          <div className={`my-page-header ${isEditMode && 'active'}`}>
+            {isEditMode ? (
+              <div onClick={openCancelDrawer}>
+                <span className="my-page-header-cancel">취소</span>
+              </div>
+            ) : (
+              <img style={{ visibility: 'hidden' }} src={ellipsis} alt="ellipsis" />
+            )}
+            {isMyPage && <span className="my-page-header-text">마이페이지</span>}
+            {isEditMode ? (
+              <div onClick={onClick}>
+                <span className="my-page-header-confirm">완료</span>
+              </div>
+            ) : (
+              <img src={ellipsis} alt="ellipsis" onClick={openProfileDrawer} />
+            )}
+          </div>
+        </div>
+      </SafeAreaLayout>
+    </div>
+  );
+};
+
+type TProfileImage = {
+  isEditMode?: boolean;
+  user: User.BaseUser;
+  handleBackground?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  profileRef?: React.RefObject<HTMLInputElement>;
+  handleUpdateProfile?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  newNickname?: string;
+  userTags?: UserTagsResponse[];
+  handleUpdateProfileClick?: () => void;
+  tempProfileImage?: string;
+  setTempProfileImage?: (image: string) => void;
+  tempBackgroundImage?: string;
+  setTempBackgroundImage?: () => void;
+  setNewNickname?: (nickname: string) => void;
+};
+
+export const ProfileImage = ({
+  isEditMode = false,
+  user,
+  handleBackground,
+  profileRef,
+  newNickname,
+  userTags = [],
+  tempProfileImage,
+  setTempProfileImage,
+  tempBackgroundImage,
+  setNewNickname,
+}: TProfileImage) => {
+  const [showAll, setShowAll] = useState(false);
+
+  const handleUpdateProfileClick = () => {
+    if (profileRef?.current) {
+      profileRef.current.click();
+    }
+  };
+
+  const handleUpdateProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setTempProfileImage?.(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleToggle = () => {
+    setShowAll(!showAll);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewNickname?.(e.target.value);
+  };
+
+  return (
+    <div className="background-image">
+      <div className="background-image-wrapper">
+        <input type="file" className="my-page-update-profile" onChange={handleBackground} />
+        <img src={!isEditMode ? user.backgroundImage : tempBackgroundImage} alt="background" />
+      </div>
+      <div className="my-page-profile">
+        <div className="my-page-profile-content">
+          <div className="my-page-profile-icon">
+            <img
+              src={!isEditMode ? user.profileImage : tempProfileImage}
+              alt=""
+              className="my-page-profile-image"
+            />
+            <input
+              ref={profileRef}
+              type="file"
+              className="my-page-update-profile"
+              onChange={handleUpdateProfile}
+            />
+            {isEditMode && (
+              <button className="my-page-edit-profile" onClick={handleUpdateProfileClick}>
+                <img src={icon_setting} alt="x" />
+              </button>
+            )}
+          </div>
+          <div className="my-page-profile-name">
+            {isEditMode && <img src={edit_icon} alt="edit" />}
+            <input
+              className="my-page-nickname"
+              value={newNickname || ''}
+              readOnly={!isEditMode}
+              onChange={handleInputChange}
+            />
+            {isEditMode && <img src={edit_icon} alt="edit" />}
+          </div>
+          <div className="my-page-profile-tags">
+            {userTags.slice(0, 2).map((tag, index) => (
+              <div
+                key={tag.tagId}
+                className={`my-page-profile-tag ${index === 0 ? 'main-tag' : ''}`}
+              >
+                {tag.name}
+              </div>
+            ))}
+
+            {userTags.length > 2 && (
+              <div className="toggle-button" onClick={handleToggle}>
+                {showAll ? (
+                  <img src={icon_up_arrow} alt="up" />
+                ) : (
+                  <img src={icon_bottom_arrow} alt="up" />
+                )}
+              </div>
+            )}
+          </div>
+
+          {showAll && (
+            <div className="my-page-profile-tags">
+              {userTags.slice(2).map((tag) => (
+                <div key={tag.tagId} className="my-page-profile-tag">
+                  {tag.name}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+type TProfileNumbers = {
+  isMyPage?: boolean;
+  postNumber: number;
+  follower: number;
+  following: number;
+};
+
+export const ProfileNumbers = ({
+  isMyPage = false,
+  postNumber,
+  follower,
+  following,
+}: TProfileNumbers) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="my-page-info-container">
+      <div className="my-page-info">
+        <span className="my-page-info-number">{postNumber}</span>
+        <span className="my-page-info-text">작업</span>
+      </div>
+      <button
+        className="my-page-info"
+        onClick={isMyPage ? () => navigate('follow-list/follower') : undefined}
+      >
+        <span className="my-page-info-number">{follower}</span>
+        <span className="my-page-info-text">팔로워</span>
+      </button>
+      <button
+        className="my-page-info"
+        onClick={isMyPage ? () => navigate('follow-list/follower') : undefined}
+      >
+        <span className="my-page-info-number">{following}</span>
+        <span className="my-page-info-text">팔로잉</span>
+      </button>
+    </div>
+  );
+};
+
+type TProfileDescription = {
+  isEditMode?: boolean;
+  newDescription: string | null;
+  textareaRef?: React.RefObject<HTMLTextAreaElement>;
+  setNewDescription?: (e: string) => void;
+};
+
+export const ProfileDescription = ({
+  isEditMode = false,
+  newDescription,
+  textareaRef,
+  setNewDescription,
+}: TProfileDescription) => {
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewDescription?.(event.target.value);
+  };
+
+  useEffect(() => {
+    const textarea = textareaRef?.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [newDescription]);
+
+  return (
+    <div className="my-page-intro">
+      <div className="my-page-intro-title">
+        <span>소개</span>
+        {isEditMode && (
+          <button>
+            <img src={edit_icon} alt="edit" />
+          </button>
+        )}
+      </div>
+      <textarea
+        ref={textareaRef}
+        className={`my-page-intro-content ${!isEditMode ? 'readonly' : ''}`}
+        value={newDescription || ''}
+        readOnly={!isEditMode}
+        onChange={handleChange}
+      />
+    </div>
+  );
+};
+
+type TProfilePosts = {
+  isMyPage?: boolean;
+  userArtworks: UserArtworksResponse[];
+  userFeeds: UserFeedsResponse[];
+  userPicks: PostPick[];
+};
+
+export const ProfilePosts = ({
+  isMyPage = true,
+  userArtworks,
+  userFeeds,
+  userPicks,
+}: TProfilePosts) => {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <div className="my-page-artworks">
+        {userArtworks.map((item) => (
+          <MyPageArtwork
+            key={item.id}
+            text={item.name}
+            image={item.imageUrl}
+            onClick={() => navigate(`/app/artwork/${item.id}`)}
+          />
+        ))}
+        {isMyPage && (
+          <div className="my-page-artwork artwork-add" onClick={() => navigate('all-posts')}>
+            +
+          </div>
+        )}
+      </div>
+
+      <Tabs isFitted variant={'unstyled'}>
+        <TabList>
+          <Tab>
+            <div className="my-page-tabbar-icon active">
+              <img src={tabbar_all} alt="tab" />
+            </div>
+          </Tab>
+          <Tab>
+            <div className="my-page-tabbar-icon">
+              <img src={tabbar_shorts} alt="tab" />
+            </div>
+          </Tab>
+        </TabList>
+        <TabIndicator height={'2px'} bg={'#7Bf7ff'} />
+        <TabPanels>
+          <TabPanel p={0}>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '9px',
+                marginTop: '12px',
+              }}
+            >
+              {userFeeds.map((item) => (
+                <PostCard
+                  id={item.feedId}
+                  image={item.images[0]}
+                  type={item.type}
+                  onClick={() => navigate(`/app/post/${item.feedId}`)}
+                />
+              ))}
+            </Box>
+          </TabPanel>
+          <TabPanel p={0}>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '9px',
+                marginTop: '12px',
+              }}
+            >
+              {userPicks.map((item) => (
+                <MyPageArtwork all image={item.thumbnailUrl} />
+              ))}
+            </Box>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </>
   );
 };
 

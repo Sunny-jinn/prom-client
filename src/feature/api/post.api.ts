@@ -25,50 +25,47 @@ const getPickByIdAPI = async (pickId: number): Promise<Post.PostPick> => {
   return data;
 };
 
-const getFeedsAndPicksAPI = async (
-  {
-    page,
-    size,
-    orderBy,
-    type,
-  }: {
-    page?: number;
-    size?: number;
-    orderBy?: string;
-    type?: Post.PostCategory;
-  }): Promise<Post.PostCommon[]> => {
+const getFeedsAndPicksAPI = async ({
+  page,
+  size,
+  orderBy,
+  type,
+}: {
+  page?: number;
+  size?: number;
+  orderBy?: string;
+  type?: Post.PostCategory;
+}): Promise<Post.PostCommon[]> => {
   const result = await Server.get(`posts${makeQuery({ page, size, orderBy, type })}`);
   const { data } = result.data;
   return data;
 };
 
-const getFeedsAPI = async (
-  {
-    page,
-    size,
-    orderBy,
-    type,
-  }: {
-    page?: number;
-    size?: number;
-    orderBy?: string;
-    type?: Post.PostCategory;
-  }): Promise<Post.PostFeed[]> => {
+const getFeedsAPI = async ({
+  page,
+  size,
+  orderBy,
+  type,
+}: {
+  page?: number;
+  size?: number;
+  orderBy?: string;
+  type?: Post.PostCategory;
+}): Promise<Post.PostFeed[]> => {
   const result = await Server.get(`posts/feeds${makeQuery({ page, size, orderBy, type })}`);
   const { data } = result.data;
   return data;
 };
 
-const getPicksAPI = async (
-  {
-    page,
-    size,
-    orderBy,
-  }: {
-    page?: number;
-    size?: number;
-    orderBy?: string;
-  }): Promise<Post.PostPick[]> => {
+const getPicksAPI = async ({
+  page,
+  size,
+  orderBy,
+}: {
+  page?: number;
+  size?: number;
+  orderBy?: string;
+}): Promise<Post.PostPick[]> => {
   const result = await Server.get(`posts/short-forms${makeQuery({ page, size, orderBy })}`);
   const { data } = result.data;
   return data;
@@ -107,6 +104,13 @@ const getFeedLikesCheckAPI = async (feedId: number): Promise<boolean> => {
   const { data } = result.data;
   const { exist } = data;
   return exist;
+};
+
+const deleteFeedsAPI = async (feedId: string | number) => {
+  const result = await Server.delete(`posts/feeds/${feedId}`);
+  console.log(result);
+
+  return result;
 };
 
 const feedMarkLikeAPI = async (feedId: number) => {
@@ -168,5 +172,6 @@ export {
   pickMarkLikeAPI,
   pickMarkUnLikeAPI,
   createPickCommentAPI,
-  deleteCacheAPI
+  deleteCacheAPI,
+  deleteFeedsAPI,
 };

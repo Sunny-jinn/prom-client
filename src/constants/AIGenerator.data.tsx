@@ -3,6 +3,7 @@ import { Dispatch, FunctionComponentElement, JSX, SetStateAction } from 'react';
 import { PostCategoryData } from '@/constants/init.data';
 import { generateAIMusicAPI, generateAIVisualAPI, generateAIWritingAPI } from '@/feature/api/ai.api';
 import axios from 'axios';
+import { downloadFile } from '@/utils/file.utils';
 
 export type AIGeneratorGridViewType = {
   type: 'GRID';
@@ -232,21 +233,8 @@ export const AI_GENERATOR_DATA = (params: AI_GENERATOR_DATA_PARAMS): Record<Post
       api              : generateAIVisualAPI,
       resultView       : VISUAL_RESULT_VIEW,
       onDownload: async(url: string) => {
-        await axios.get(url, {responseType: "blob"})
-                   .then((response) => {
-                     const url = window.URL.createObjectURL(new Blob([response.data]));
-                     const a = document.createElement("a");
-                     a.href = url;
-                     console.log(response)
-                     a.download = 'PROM_AI_VISUAL_GENERATED.png';
-                     document.body.appendChild(a);
-                     a.click();
-                     window.URL.revokeObjectURL(url);
-                     document.body.removeChild(a);
-                   })
-                   .catch((error) => {
-                     console.error("파일 다운로드 오류:", error);
-                   });
+        const result = await axios.get(url, {responseType: "blob"});
+        downloadFile(result.data, 'PROM_AI_VISUAL_GENERATED.png')
 
       }
 
@@ -339,9 +327,8 @@ export const AI_GENERATOR_DATA = (params: AI_GENERATOR_DATA_PARAMS): Record<Post
       processingComment: '환상적인 글을 생성중입니다!',
       api              : generateAIWritingAPI,
       resultView       : WRITING_RESULT_VIEW,
-      onDownload: (url: string) => {
-        console.log(url);
-
+      onDownload: (text: string) => {
+        downloadFile(text, 'PROM_AI_WRITING_GENERATED.text')
       }
     },
   };

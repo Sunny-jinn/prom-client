@@ -125,6 +125,7 @@ const AIGeneratorInit = (
     setCategory(category);
     setPrompt(viewData[category.name].state);
     setStep(prev => prev + 1);
+    // setStep(FINAL_STEP);
   };
 
 
@@ -645,7 +646,6 @@ const MusicResultView = (props: ResultViewProps) => {
   return (
     <ResultViewWrapper>
       <div className='music-result'>
-        asd
       </div>
       <SaveButton>
         <SaveIcon/>
@@ -674,9 +674,9 @@ const WritingResultView = (props: ResultViewProps) => {
   return (
     <ResultViewWrapper>
       <div className='writing-result'>
-        asd
+        <span>{data}</span>
       </div>
-      <SaveButton>
+      <SaveButton onClick={() => onDownload(data)}>
         <SaveIcon/>
         저장하기
       </SaveButton>

@@ -132,9 +132,13 @@ const GrowthOfTheMonth = () => {
                     </div>
                   </div>
                 </div>
-
+                <div className='growth-user-detail-comment-wrapper'>
+                  <span style={{color: '#ffffff'}}>PROM 에디터 : </span>
+                  <span>{"지난 한 달 동안, Siena 님은 놀라운 성과를 이루어냈습니다. 총 팔로워 수가 560명이 증가했고, 총 좋아요 수가 1250개나 늘었습니다. \n" +
+                    "\n" +
+                    "당신의 작품은 더욱 많은 사람들에게 사랑받고 있습니다. 계속해서 멋진 작품으로 모든 사람들에게 영감을 주세요!"}</span>
+                </div>
               </ScrollArea>
-
             </SafeAreaLayout>
           </div>
         </DrawerContent>
@@ -172,8 +176,6 @@ const FollowerAnalysis = () => {
     },
   };
 
-  const a = ((data.follower.current.count - data.follower.prev.count) / data.follower.prev.count) * 100;
-  console.log(a);
   return (
     <div className='data-analysis'>
       <div className='data-title'>
@@ -182,8 +184,20 @@ const FollowerAnalysis = () => {
           <span style={{ color: '#ffffff' }}>{'총 팔로워 '}</span>
           {`+${(((data.follower.current.count - data.follower.prev.count) / data.follower.prev.count) * 100).toFixed(0)}%`}
         </span>
-        <div className='chart-follow'>
-          ad
+      </div>
+      <div className='chart-follow'>
+        <div className='chart-wrapper'>
+          <div className='follow-chart prev'>
+            <span className='follow-chart-data prev'>{data.follower.prev.count}명</span>
+          </div>
+          <div className='follow-chart current'>
+            <span className='follow-chart-data current'>{data.follower.current.count}명</span>
+          </div>
+        </div>
+        <div style={{ width: '100%', height: 1, backgroundColor: '#3F3F3F', marginBottom: 20 }} />
+        <div className='chart-follow-date-wrapper'>
+          <div className='chart-follow-date prev'>24년{` ${data.follower.prev.month}`}월</div>
+          <div className='chart-follow-date current'>24년{` ${data.follower.current.month}`}월</div>
         </div>
       </div>
     </div>
@@ -203,14 +217,27 @@ const LikesAnalysis = () => {
       },
     },
   };
-  console.log(data);
+
   return (
     <div className='data-analysis'>
       <div className='data-title'>
         <span style={{ color: '#7BF7FF', fontSize: 14, fontWeight: 600 }}>9월 대비</span>
-
+        <span style={{ fontSize: 30, fontWeight: 600, color: '#949494' }}>
+          <span style={{ color: '#ffffff' }}>{'총 좋아요 수 '}</span>
+          {`+${(((data.likes.current.count - data.likes.prev.count) / data.likes.prev.count) * 100).toFixed(0)}%`}
+        </span>
       </div>
-
+      <div className='chart-likes'>
+        <div className='chart-likes-date-wrapper'>
+          <div className='chart-likes-date prev'>24년{` ${data.likes.prev.month}`}월</div>
+          <div className='chart-likes-date current'>24년{` ${data.likes.current.month}`}월</div>
+        </div>
+        <div style={{ height: '100%', width: 1, backgroundColor: '#3F3F3F', marginLeft: 16 }} />
+        <div className='chart-likes-wrapper'>
+          <div className='likes-chart prev'>{data.likes.prev.count}개</div>
+          <div className='likes-chart current'>{data.likes.current.count}개</div>
+        </div>
+      </div>
     </div>
   );
 };

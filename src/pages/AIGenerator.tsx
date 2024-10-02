@@ -125,7 +125,6 @@ const AIGeneratorInit = (
     setCategory(category);
     setPrompt(viewData[category.name].state);
     setStep(prev => prev + 1);
-    // setStep(FINAL_STEP);
   };
 
 
@@ -671,6 +670,7 @@ const VisualResultView = (props: ResultViewProps) => {
 
 const WritingResultView = (props: ResultViewProps) => {
   const { data, onDownload } = props;
+  console.log(data);
   return (
     <ResultViewWrapper>
       <div className='writing-result'>

@@ -5,27 +5,23 @@ type BaseUser = {
   profileImage: string;
   email: string;
   description: string;
-}
+  backgroundImage: string;
+};
 
 type User = BaseUser & {
-  birth: string | null,
-  phoneNumber: string | null,
-  socialType: number | null
-}
+  birth: string | null;
+  phoneNumber: string | null;
+  socialType: number | null;
+};
 
 type FollowResponse = {
   id: number;
   nickname: string;
   profileImageUrl: string;
   createdAt: string;
-}
+};
 
 type Follows = FollowResponse[];
 type Followings = FollowResponse[];
 
-export type {
-  BaseUser,
-  User,
-  Follows,
-  Followings
-};
+export type { BaseUser, User, Follows, Followings };

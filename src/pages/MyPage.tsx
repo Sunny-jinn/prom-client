@@ -38,6 +38,7 @@ import {
   getUserFollowings,
   getUserPicks,
   getUserTags,
+  updateUserTags,
 } from '@/feature/api/mypage.api';
 import { logoutAPI, updateUserInfoAPI } from '@/feature/api/user.api';
 import { User } from '@/feature/types';
@@ -57,7 +58,6 @@ const MyPage = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isMyPage] = useState<boolean>(true);
 
-  // const [userInfo, setUserInfo] = useState<User.User>(null);
   const [userTags, setUserTags] = useState<UserTagsResponse[]>([]);
   const [followNumber, setFollowNumber] = useState<FollowsType>({
     follower: 0,
@@ -86,7 +86,6 @@ const MyPage = () => {
   useEffect(() => {
     if (user) {
       const fetchUserInfo = async () => {
-        // const user = await getMyInfoAPI();
         const tags = await getUserTags();
         const followerNumber = await getUserFollowers();
         const followingNumber = await getUserFollowings();
@@ -100,12 +99,11 @@ const MyPage = () => {
           follower: followerNumber.length,
           following: followingNumber.length,
         });
-        // setUserInfo(user);
+
         setUserTags(tags);
         setUserFeeds(feeds);
         setUserArtworks(artworks);
-        // setNewNickname(user.username);
-        // setNewDescription(user.description);
+
         setUserPicks(picks);
         setTempTags(tags);
         console.log(tags);
@@ -115,34 +113,52 @@ const MyPage = () => {
   }, [user]);
 
   useEffect(() => {
-    // 서버에서 받은 userTags를 tempTags로 설정
-    const initializeTags = [...userTags];
+    const initializeTags = [...userTags].map((tag, index) => ({
+      ...tag,
+      idx: index + 2,
+    }));
 
-    // userTags의 길이가 5보다 작으면 빈 태그로 채움
-    if (initializeTags.length < 5) {
-      const additionalTags = Array(5 - initializeTags.length).fill({ tagName: '', isMain: false });
+    const lastTagId = userTags.length > 0 ? userTags[userTags.length - 1].tagId : 0;
+
+    if (initializeTags.length < 5 && lastTagId) {
+      const additionalTags = Array(5 - initializeTags.length)
+        .fill(null)
+        .map((_, index) => ({
+          tagId: lastTagId + index + 1,
+          tagName: '',
+          isMain: false,
+          idx: initializeTags.length + index + 2,
+        }));
       initializeTags.push(...additionalTags);
     }
-    setTempTags(initializeTags); // tempTags 설정
+
+    setTempTags(initializeTags);
   }, [userTags]);
 
   const handleOnDragEnd = (result: DropResult) => {
     const { source, destination } = result;
 
-    // 드래그한 위치가 유효하지 않으면 return
     if (!destination) return;
 
     setTempTags((prevTags) => {
-      // 첫 번째 태그는 유지하고 나머지 태그들만 변경
-      const updatedTags = Array.from(prevTags);
-      const nonMainTags = updatedTags.slice(1); // 첫 번째 태그 제외
+      const nonMainTags = prevTags.slice(1);
 
-      // 태그 순서 변경
-      const [movedTag] = nonMainTags.splice(source.index, 1);
-      nonMainTags.splice(destination.index, 0, movedTag);
+      const tagNames = nonMainTags.map((tag) => tag.tagName);
+      const idxValues = nonMainTags.map((tag) => tag.idx);
 
-      // 첫 번째 태그는 그대로 두고 나머지 태그들 순서만 변경
-      return [updatedTags[0], ...nonMainTags];
+      const [movedTagName] = tagNames.splice(source.index, 1);
+      const [movedIdx] = idxValues.splice(source.index, 1);
+
+      tagNames.splice(destination.index, 0, movedTagName);
+      idxValues.splice(destination.index, 0, movedIdx);
+
+      const updatedNonMainTags = nonMainTags.map((tag, index) => ({
+        ...tag,
+        tagName: tagNames[index],
+        idx: idxValues[index],
+      }));
+
+      return [prevTags[0], ...updatedNonMainTags];
     });
   };
 
@@ -159,50 +175,63 @@ const MyPage = () => {
 
   const handleTagUpdate = (index: number, newText: string) => {
     setTempTags((prevTags) => {
-      const updatedTags = [...prevTags]; // 기존 배열을 복사
-      updatedTags[index] = { ...updatedTags[index], tagName: newText }; // 해당 인덱스의 태그만 업데이트
+      const updatedTags = [...prevTags];
+      updatedTags[index] = { ...updatedTags[index], tagName: newText };
       return updatedTags;
     });
   };
 
   const handleEditComplete = async () => {
     try {
-      // const formdata = new FormData();
-      // formdata.append('description', newDescription || '');
-      // if (user?.profileImage !== tempProfileImage && profileRef && profileRef.current?.files) {
-      //   formdata.append('profileImage', profileRef.current.files[0]);
-      // }
-      // formdata.append('birthDate', '1999-01-01');
-      // formdata.append('phoneNumber', '112');
-      // formdata.append('nickname', newNickname || '');
-      // if (
-      //   user?.backgroundImage !== tempBackgroundImage &&
-      //   backgroundRef &&
-      //   backgroundRef.current?.files
-      // ) {
-      //   formdata.append('backgroundImage', backgroundRef?.current.files[0]);
-      // }
-      // formdata.append('role', 'ROLE_ARTTY');
+      const formdata = new FormData();
+      formdata.append('description', newDescription || '');
+      if (user?.profileImage !== tempProfileImage && profileRef && profileRef.current?.files) {
+        formdata.append('profileImage', profileRef.current.files[0]);
+      }
+      formdata.append('birthDate', '1999-01-01');
+      formdata.append('phoneNumber', '112');
+      formdata.append('nickname', newNickname || '');
+      if (
+        user?.backgroundImage !== tempBackgroundImage &&
+        backgroundRef &&
+        backgroundRef.current?.files
+      ) {
+        formdata.append('backgroundImage', backgroundRef?.current.files[0]);
+      }
+      formdata.append('role', 'ROLE_ARTTY');
+      const data = await updateUserInfoAPI(formdata);
+      console.log('업데이트 결과 : ', data);
 
-      console.log(tempTags);
+      const newTags = tempTags
+        .filter(
+          (tag) => !userTags.some((userTag) => userTag.tagId === tag.tagId) && tag.tagName !== '',
+        )
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .map(({ tagId, ...rest }) => rest);
 
-      // const data = await updateUserInfoAPI(formdata);
-      // console.log('업데이트 결과 : ', data);
-      const newTags = tempTags.filter((tag) => !tag.tagId && tag.tagName !== ''); // tagId가 없고, tagName이 빈 문자열이 아닌 태그들만 필터링
-      // // console.log('New tags without tagId and with valid tagName:', newTags);
-      // const emptyTagNames = tempTags.filter(
-      //   (tag): tag is { tagId: number; tagName: string; isMain: boolean } =>
-      //     tag.tagId !== undefined && tag.tagName === '',
-      // ); // tagId가 존재하고, tagName이 빈 문자열인 태그들만 필터링
-      // const tagIds = emptyTagNames.map((tag) => tag.tagId); // 필터링된 태그에서 tagId만 추출
-      // // console.log('Tag IDs with empty tagName:', tagIds);
-      // if (tagIds.length > 0) {
-      //   const result = await deleteUserTags(tagIds);
-      //   console.log(result);
-      // }
-      const result = await createUserTags(newTags);
+      const emptyTagNames = tempTags.filter(
+        (tag): tag is { tagId: number; tagName: string; isMain: boolean } =>
+          userTags.some((userTag) => userTag.tagId === tag.tagId) && tag.tagName === '',
+      );
+      const tagIds = emptyTagNames.map((tag) => tag.tagId);
+
+      const updateTags = tempTags.filter(
+        (tag): tag is { tagId: number; tagName: string; isMain: boolean } =>
+          userTags.some((userTag) => userTag.tagId === tag.tagId) && tag.tagName !== '',
+      );
+
+      if (tagIds.length > 0) {
+        await deleteUserTags(tagIds);
+      }
+
+      if (updateTags.length > 0) {
+        await updateUserTags(updateTags);
+      }
+
+      if (newTags.length > 0) {
+        await createUserTags(newTags);
+      }
       setIsEditMode(false);
-      // console.log(result);
     } catch {
       console.log('err');
     }
@@ -329,9 +358,9 @@ const MyPage = () => {
               <span className="my-page-update-main-tag-text">메인 태그</span>
               <MyPageTag
                 key={0}
-                text={tempTags[0]?.tagName || ''} // 첫 번째 태그 입력값
+                text={tempTags[0]?.tagName || ''}
                 main
-                onUpdateTag={(newText) => handleTagUpdate(0, newText)} // 첫 번째 태그 업데이트
+                onUpdateTag={(newText) => handleTagUpdate(0, newText)}
               />
             </div>
 
@@ -347,12 +376,12 @@ const MyPage = () => {
                       ref={provided.innerRef}
                     >
                       {tempTags.slice(1).map((tag, index) => {
-                        console.log(index);
+                        console.log(tag.idx);
                         return (
                           <Draggable
-                            key={`draggable-${index}`} // key 값을 고유하게 설정, index와 tagName 조합
-                            draggableId={`draggable-${index}`} // draggableId도 고유하게 유지
-                            index={index} // 인덱스 처리
+                            key={`draggable-${tag.idx}`}
+                            draggableId={`draggable-${tag.idx}`}
+                            index={index}
                           >
                             {(provided) => (
                               <div
@@ -361,9 +390,8 @@ const MyPage = () => {
                                 {...provided.dragHandleProps}
                               >
                                 <MyPageTag
-                                  key={`tag-${index}`} // key 값을 고유하게 설정
                                   text={tag?.tagName || ''}
-                                  onUpdateTag={(newText) => handleTagUpdate(index + 1, newText)} // 태그 업데이트 처리
+                                  onUpdateTag={(newText) => handleTagUpdate(index + 1, newText)}
                                 />
                               </div>
                             )}
@@ -570,9 +598,11 @@ export const ProfileImage = ({
             className="change-background"
             onChange={handleUpdateBackground}
           />
-          <button className="icon-change-background" onClick={handleUpdateBackgroundClick}>
-            <img src={icon_change_background} alt="x" />
-          </button>
+          {isEditMode && (
+            <button className="icon-change-background" onClick={handleUpdateBackgroundClick}>
+              <img src={icon_change_background} alt="x" />
+            </button>
+          )}
 
           <div className="my-page-profile-name">
             {isEditMode && <img src={edit_icon} alt="edit" />}
@@ -736,6 +766,9 @@ export const ProfilePosts = ({
             +
           </div>
         )}
+        {Array.from({ length: Math.max(0, 2 - userArtworks.length) }).map((_, index) => (
+          <div key={`placeholder-${index}`} className="my-page-artwork placeholder"></div>
+        ))}
       </div>
 
       <Tabs isFitted variant={'unstyled'}>

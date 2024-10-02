@@ -7,6 +7,7 @@ export type UserTagsResponse = {
   tagName?: string;
   name?: string;
   isMain: boolean;
+  idx?: number;
 };
 
 export type UserFollowInfoResponse = {
@@ -104,6 +105,20 @@ const deleteUserTags = async (tagIds: number[]) => {
   }
 };
 
+const updateUserTags = async (tagIds: UserTagsResponse[]) => {
+  try {
+    const deletePromises = tagIds.map((tagId) =>
+      Server.put(`users/tags/${tagId.tagId}`, {
+        tagName: tagId.tagName,
+      }),
+    ); // 각 tagId에 대해 개별적으로 DELETE 요청
+    const result = await Promise.all(deletePromises); // 모든 DELETE 요청이 완료될 때까지 기다림
+    return result;
+  } catch (error) {
+    console.error('Error deleting tags:', error); // 오류 처리
+  }
+};
+
 export type UpdateUser = Omit<User, 'socialType' | 'id'> &
   Omit<BaseUser, 'email'> & { backgroundImage: string };
 
@@ -140,4 +155,5 @@ export {
   getUserPicks,
   createUserTags,
   deleteUserTags,
+  updateUserTags,
 };

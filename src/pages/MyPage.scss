@@ -278,12 +278,16 @@
 
     .artwork-add {
       border-radius: 15px;
-
+      aspect-ratio: 1/1.7;
       background-color: #292929;
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 40px;
+    }
+
+    .placeholder {
+      visibility: hidden; /* 빈 셀은 보이지 않도록 처리 */
     }
   }
 

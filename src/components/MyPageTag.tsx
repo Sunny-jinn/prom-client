@@ -39,13 +39,12 @@ const TagText = styled.input<{ main: boolean }>`
 `;
 
 type MyPageTagProps = {
-  key: number | string;
   text?: string;
   main?: boolean;
   onUpdateTag: (newText: string) => void; // 새로운 텍스트가 변경될 때 호출되는 콜백
 };
 
-const MyPageTag = ({ key, text = '', main = false, onUpdateTag }: MyPageTagProps) => {
+const MyPageTag = ({ text = '', main = false, onUpdateTag }: MyPageTagProps) => {
   const [inputValue, setInputValue] = useState(text);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +58,7 @@ const MyPageTag = ({ key, text = '', main = false, onUpdateTag }: MyPageTagProps
   };
 
   return (
-    <Wrapper key={key}>
+    <Wrapper>
       <TagBox main={main}>
         <button onClick={handleDeleteClick}>
           <img src={delete_tag} alt="delete" />

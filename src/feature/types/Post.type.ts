@@ -4,6 +4,7 @@ type PostType = 'FEED' | 'PICK';
 type PostCategory = 'MUSIC' | 'VISUAL' | 'WRITING';
 type PostFeed = {
   postId: number;
+  feedId: number;
   type: Post.PostCategory;
   description: string;
   title: string;
@@ -11,7 +12,8 @@ type PostFeed = {
   likesCount: number;
   url: string[];
   user: User.User;
-  createdAt: string
+  createdAt: string;
+  images: string[];
 };
 
 type PostPick = {

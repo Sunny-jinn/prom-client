@@ -1,6 +1,6 @@
 import { Server, makeQuery } from '@/feature/api/index';
 import { Post } from '@/feature/types';
-import { FeedComment } from '../types/Post.type';
+import { FeedComment, PostFeed } from '../types/Post.type';
 
 const createFeedAPI = async (formData: FormData) => {
   const result = await Server.post('posts/feeds', formData);
@@ -36,9 +36,10 @@ const getFeedsAPI = async ({
   size?: number;
   orderBy?: string;
   type?: Post.PostCategory;
-}): Promise<Post.PostFeed[]> => {
-  const result = await Server.get(`posts${makeQuery({ page, size, orderBy, type })}`);
+}): Promise<PostFeed[]> => {
+  const result = await Server.get(`posts/feeds${makeQuery({ page, size, orderBy, type })}`);
   const { data } = result.data;
+  console.log(data);
   return data;
 };
 
@@ -118,7 +119,6 @@ const pickMarkUnLikeAPI = async (pickId: number) => {
   return exist;
 };
 
-
 export {
   createFeedAPI,
   createPickAPI,
@@ -135,5 +135,5 @@ export {
   getPickLikesCheckAPI,
   pickMarkLikeAPI,
   pickMarkUnLikeAPI,
-  createPickCommentAPI
+  createPickCommentAPI,
 };

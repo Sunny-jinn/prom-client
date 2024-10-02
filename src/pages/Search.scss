@@ -36,6 +36,16 @@
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: 1fr;
     gap: 5px;
+
+    .search-post-list-card {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
 
   .search-post-list-cards:nth-child(1) {
@@ -62,7 +72,7 @@
 
   .search-post-list-shorts-card {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 1 / 2;
 
     img {
       width: 100%;

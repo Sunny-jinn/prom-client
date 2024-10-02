@@ -1,14 +1,17 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import icon_music from '@/assets/img/icon_Music.svg';
 import icon_visual from '@/assets/img/icon_Visual.svg';
 import icon_writing from '@/assets/img/icon_Writing.svg';
-import test_img from '@/assets/img/profile_background.png';
 import CustomSearchInput from '@/components/CustomSearchInput';
 import NavigatorLayout from '@/components/NavigatorLayout';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
+import { SearchPostLists } from '@/components/SearchPostLists';
 import SearchResultCard from '@/components/SearchResultCard';
-import { getFeedsAPI } from '@/feature/api/post.api';
+import { getFeedsAPI, getPicksAPI } from '@/feature/api/post.api';
+import { searchUser } from '@/feature/api/search.api';
+import { User } from '@/feature/types';
+import { PostFeed, PostPick } from '@/feature/types/Post.type';
 import './Search.scss';
 
 const Search = () => {
@@ -17,9 +20,19 @@ const Search = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState<string>(''); // 입력값을 상태로 관리
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [feeds, setFeeds] = useState<PostFeed[]>([]);
+  const [picks, setPicks] = useState<PostPick[]>([]);
+  const [searchResult, setSearchResult] = useState<User.User[]>([]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value); // 입력값 상태 업데이트
+    if (event.target.value === '') {
+      setSearchResult([]);
+    }
+    if (event.target.value !== '') {
+      const result = await searchUser(event.target.value);
+      setSearchResult(result);
+    }
   };
 
   const handleCancelClick = () => {
@@ -30,8 +43,15 @@ const Search = () => {
     }
   };
   //TODO: 진우야 여기 필요한 query 넣으면됨, useEffect 안에 넣어놓고 쓰는게 나을듯 query 많아서?
-  getFeedsAPI({});
-  //   getShortForms();
+  useEffect(() => {
+    const fetchData = async () => {
+      const feeddata = await getFeedsAPI({});
+      const pickdata = await getPicksAPI();
+      setFeeds(feeddata);
+      setPicks(pickdata);
+    };
+    fetchData();
+  }, []);
 
   return (
     <SafeAreaLayout flexDirection="column">
@@ -50,47 +70,8 @@ const Search = () => {
               <span>취소</span>
             </button>
           </div>
-          {!isFocused && inputValue === '' && (
-            <div className="search-post-list-container">
-              <div className="search-post-list-cards">
-                <div className="search-post-list-card">
-                  <img src={test_img} alt="x" />
-                </div>
-                <div className="search-post-list-card">
-                  <img src={test_img} alt="x" />
-                </div>
-                <div className="search-post-list-card">
-                  <img src={test_img} alt="x" />
-                </div>
-                <div className="search-post-list-card">
-                  <img src={test_img} alt="x" />
-                </div>
-              </div>
-              <div className="search-post-list-shorts">
-                <div className="search-post-list-shorts-card">
-                  <img src={test_img} alt="x" />
-                </div>
-              </div>
-              <div className="search-post-list-shorts">
-                <div className="search-post-list-shorts-card">
-                  <img src={test_img} alt="x" />
-                </div>
-              </div>
-              <div className="search-post-list-cards">
-                <div className="search-post-list-card">
-                  <img src={test_img} alt="x" />
-                </div>
-                <div className="search-post-list-card">
-                  <img src={test_img} alt="x" />
-                </div>
-                <div className="search-post-list-card">
-                  <img src={test_img} alt="x" />
-                </div>
-                <div className="search-post-list-card">
-                  <img src={test_img} alt="x" />
-                </div>
-              </div>
-            </div>
+          {!isFocused && inputValue === '' && feeds && picks && (
+            <SearchPostLists feeds={feeds} picks={picks} />
           )}
 
           {isFocused && inputValue === '' && (
@@ -180,9 +161,14 @@ const Search = () => {
                 <TabPanels>
                   <TabPanel p={0}>
                     <div className="search-post-recent-lists">
-                      <SearchResultCard text="zinnsong" profile={test_img} />
-                      <SearchResultCard text="witch_park" profile={test_img} />
-                      <SearchResultCard text="Jyori_" profile={test_img} />
+                      {searchResult.map((item) => (
+                        <SearchResultCard
+                          key={item.id}
+                          id={String(item.id)}
+                          text={item.username}
+                          profile={item.profileImage}
+                        />
+                      ))}
                     </div>
                   </TabPanel>
                 </TabPanels>

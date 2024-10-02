@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import '@/pages/AIGenerator.scss';
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { POST_CATEGORY_DATA, PostCategoryData } from '@/constants/init.data';
 import CustomHeader from '@/components/CustomHeader';
 import StepProgress from '@/components/StepProgress';
@@ -25,7 +25,11 @@ import cn from 'classnames';
 import { Post } from '@/feature/types';
 import Logo from '@/assets/img/img_logo.svg?react';
 import styled from '@emotion/styled';
-import SaveIcon from '@/assets/img/icon_save.svg?react'
+import SaveIcon from '@/assets/img/icon_save.svg?react';
+import ReactPlayer from 'react-player';
+import BaseReactPlayer from 'react-player/base';
+import { BaseReactPlayerProps } from 'react-player/types/base';
+import { Pause, Play } from 'lucide-react';
 
 type AiGeneratorProps = Omit<DrawerProps, 'children'>
 
@@ -547,9 +551,9 @@ const AIGeneratorFinalize = (
   };
 
   const reGenerate = () => {
-    setIsProcessing(true)
-    setResult(null)
-  }
+    setIsProcessing(true);
+    setResult(null);
+  };
 
   useEffect(() => {
     if(isProcessing) {
@@ -641,13 +645,61 @@ type ResultViewProps = {
 
 const MusicResultView = (props: ResultViewProps) => {
   const { data, onDownload } = props;
-  console.log(data);
+
+  const [playing, setPlaying] = useState(false);
+  const playerRef = useRef<BaseReactPlayer<BaseReactPlayerProps>>(null); // ReactPlayer의 ref 속성에 삽입해 메소드 제어 (변경된 재생 시간에 따른 실제 영상 재생 위치)
+  const [playTime, setPlayTime] = useState(0); // 현재 재생 시간 (0부터 0.999999, 퍼센트로 표기된 총 재생 시간 대비 현재 시간 값)
+  const [ready, setReady] = useState(false); // onReady에서 영상이 로드된 상태값을 받아 사용
+
+  const progressHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    if(!playerRef.current) return;
+    setPlayTime(parseFloat(e.target.value));
+    playerRef.current.seekTo(parseFloat(e.target.value));
+  };
+
+  console.log(playerRef);
+
   return (
     <ResultViewWrapper>
       <div className='music-result'>
+        <ReactPlayer
+          playsinline={true}
+          volume={0.1}
+          url={data} // 링크 배열로 삽입 가능(종료 시 onEnded없이도 자동으로 다음 인덱스의 링크 재생)
+          ref={playerRef} // 실제 영상 재생 위치 조절
+          className='music'
+          playing={playing} // 재생 상태, true - 재생중 / false - 일시 중지
+          controls={true} // 유튜브 재생바 노출 여부
+          onReady={() => setReady(true)} // 영상이 로드되어 준비된 상태
+          onProgress={({ played }) => setPlayTime(played)} // 현재 재생 시간
+        />
+        <div className='music-thumbnail'>
+          <div className='music-thumbnail-circle'>
+            {playing && <Pause onClick={() => setPlaying(false)} width={30} height={30} fill={'#D9D9D9'} stroke={'#D9D9D9'} />}
+            {!playing && <Play onClick={() => setPlaying(true)} width={30} height={30} fill={'#D9D9D9'} stroke={'#D9D9D9'} />}
+          </div>
+        </div>
+        <div className='music-progress-wrapper'>
+          <div className='time-wrapper'>
+            <span>0:00</span>
+            <span>0:20</span>
+          </div>
+          <input
+            className='music-progress'
+            type='range'
+            min='0'
+            max='0.999999'
+            step='any'
+            value={playTime}
+            disabled={!ready}
+            style={{ background: `linear-gradient(to right, #FF7193 ${playTime * 100}%, #554F4F 0)` }}
+            onChange={(e) => progressHandler(e)}
+          />
+        </div>
+
       </div>
-      <SaveButton>
-        <SaveIcon/>
+      <SaveButton onClick={() => onDownload(data)}>
+        <SaveIcon />
         저장하기
       </SaveButton>
     </ResultViewWrapper>
@@ -661,23 +713,22 @@ const VisualResultView = (props: ResultViewProps) => {
     <ResultViewWrapper>
       <img className='visual-result' src={data} alt='result' />
       <SaveButton onClick={() => onDownload(data)}>
-        <SaveIcon/>
+        <SaveIcon />
         저장하기
       </SaveButton>
     </ResultViewWrapper>
-  )
+  );
 };
 
 const WritingResultView = (props: ResultViewProps) => {
   const { data, onDownload } = props;
-  console.log(data);
   return (
     <ResultViewWrapper>
       <div className='writing-result'>
         <span>{data}</span>
       </div>
       <SaveButton onClick={() => onDownload(data)}>
-        <SaveIcon/>
+        <SaveIcon />
         저장하기
       </SaveButton>
     </ResultViewWrapper>

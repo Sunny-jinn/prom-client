@@ -114,7 +114,6 @@ const PickContent = ({ pickId, activeIndex, index }: { pickId: number, activeInd
     if(!pick) return;
     if(!isFollow){
       try{
-        //TODO: userId로 변경
         await followUserAPI(pick.user.id);
         setIsFollow(true);
       }catch (e) {

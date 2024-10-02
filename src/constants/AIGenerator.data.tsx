@@ -151,8 +151,9 @@ export const AI_GENERATOR_DATA = (params: AI_GENERATOR_DATA_PARAMS): Record<Post
       processingComment: '멋있는 음악을 생성중입니다!',
       api              : generateAIMusicAPI,
       resultView       : MUSIC_RESULT_VIEW,
-      onDownload: (url: string) => {
-        console.log(url);
+      onDownload: async(url: string) => {
+        const result = await axios.get(url, {responseType: "blob"});
+        downloadFile(result.data, 'PROM_AI_MUSIC_GENERATED.wav')
       }
     },
     VISUAL : {

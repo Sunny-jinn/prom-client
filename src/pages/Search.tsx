@@ -46,7 +46,7 @@ const Search = () => {
   useEffect(() => {
     const fetchData = async () => {
       const feeddata = await getFeedsAPI({});
-      const pickdata = await getPicksAPI();
+      const pickdata = await getPicksAPI({});
       setFeeds(feeddata);
       setPicks(pickdata);
     };

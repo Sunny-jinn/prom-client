@@ -102,14 +102,24 @@ const ArtworkDetailPage = () => {
                 <TabPanel p={0}>
                   <div className="my-page-all-posts-content">
                     {artwork.feedImageList.map((item) => (
-                      <MyPageArtwork all image={item.imageUrl} id={item.feedImageId} />
+                      <MyPageArtwork
+                        all
+                        image={item.imageUrl}
+                        id={item.feedImageId}
+                        key={item.feedImageId}
+                      />
                     ))}
                   </div>
                 </TabPanel>
                 <TabPanel p={0}>
                   <div className="my-page-all-posts-content">
                     {artwork.shortFormList.map((item) => (
-                      <MyPageArtwork all image={item.thumbnailUrl} id={item.shortFormId} />
+                      <MyPageArtwork
+                        all
+                        image={item.thumbnailUrl}
+                        id={item.shortFormId}
+                        key={item.shortFormId}
+                      />
                     ))}
                   </div>
                 </TabPanel>

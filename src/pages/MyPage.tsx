@@ -41,7 +41,7 @@ import {
   getUserTags,
   updateUserTags,
 } from '@/feature/api/mypage.api';
-import { logoutAPI, updateUserInfoAPI } from '@/feature/api/user.api';
+import { getUserInfoAPI, logoutAPI, updateUserInfoAPI } from '@/feature/api/user.api';
 import { User } from '@/feature/types';
 import { PostPick } from '@/feature/types/Post.type';
 import followerStore from '@/store/Follow';
@@ -54,7 +54,7 @@ export type FollowsType = {
 };
 
 const MyPage = () => {
-  const { user, removeUser } = userStore((state) => state);
+  const { user, setUser, removeUser } = userStore((state) => state);
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isMyPage] = useState<boolean>(true);
@@ -90,6 +90,7 @@ const MyPage = () => {
     const feeds = await getUserFeeds();
     const artworks = await getUserArtworks();
     const picks = await getUserPicks();
+    const userInfo = await getUserInfoAPI(user!.id);
 
     setFollower(followerNumber);
     setFollowing(followingNumber);
@@ -97,6 +98,7 @@ const MyPage = () => {
       follower: followerNumber.length,
       following: followingNumber.length,
     });
+    setUser(userInfo);
 
     setUserTags(tags);
     setUserFeeds(feeds);
@@ -111,7 +113,7 @@ const MyPage = () => {
     if (user) {
       fetchUserInfo();
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     const initializeTags = [...userTags].map((tag, index) => ({

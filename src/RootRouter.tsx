@@ -16,6 +16,7 @@ import MyPageAllPosts from './pages/MyPageAllPosts';
 import PostDetail from './pages/PostDetail';
 import Search from './pages/Search';
 import SignUp from './pages/SignUp';
+import Profile from '@/pages/Profile';
 
 const RootRouter = () => {
   return (
@@ -38,6 +39,7 @@ const RootRouter = () => {
           <Route path='artwork/:artwork_id' element={<ArtworkDetailPage />} />
           <Route path='search' element={<Search />} />
           <Route path='pick/*' element={<Picks />} />
+          <Route path='profile/:user_id' element={<Profile />} />
         </Route>
       </Route>
     </Routes>

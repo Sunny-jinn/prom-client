@@ -64,10 +64,10 @@ const FollowList = () => {
               <div className="follow-list-divider" />
               <div className="follow-list-subtitle">
                 <span className="follow-list-subtitle-text">팔로워 리스트</span>
-                <div className="follow-list-sort">
+                {/* <div className="follow-list-sort">
                   <img src={icon_sort} alt="sort" />
                   <span>최신순</span>
-                </div>
+                </div> */}
               </div>
               <div className="follow-list-users">
                 {follower.map((item) => (
@@ -75,6 +75,7 @@ const FollowList = () => {
                     profile={item.profileImageUrl}
                     name={item.nickname}
                     key={item.profileImageUrl}
+                    onClick={() => navigate(`/app/profile/${item.id}`)}
                   />
                 ))}
               </div>
@@ -85,10 +86,10 @@ const FollowList = () => {
               <div className="follow-list-divider" />
               <div className="follow-list-subtitle">
                 <span className="follow-list-subtitle-text">팔로잉 리스트</span>
-                <div className="follow-list-sort">
+                {/* <div className="follow-list-sort">
                   <img src={icon_sort} alt="sort" />
                   <span>최신순</span>
-                </div>
+                </div> */}
               </div>
               <div className="follow-list-users">
                 {following.map((item) => (
@@ -96,6 +97,7 @@ const FollowList = () => {
                     profile={item.profileImageUrl}
                     name={item.nickname}
                     key={item.profileImageUrl}
+                    onClick={() => navigate(`/app/profile/${item.id}`)}
                   />
                 ))}
               </div>

@@ -11,6 +11,7 @@ import {
   Tabs,
   useDisclosure,
 } from '@chakra-ui/react';
+import default_background from '@/assets/img/default_background.png';
 import edit_icon from '@/assets/img/edit.png';
 import ellipsis from '@/assets/img/ellipsis.png';
 import icon_bottom_arrow from '@/assets/img/icon_bottom_arrow.png';
@@ -74,7 +75,7 @@ const MyPage = () => {
   const [newDescription, setNewDescription] = useState<string | null>(user?.description ?? '');
   const [tempProfileImage, setTempProfileImage] = useState<string>(user?.profileImage ?? '');
   const [tempBackgroundImage, setTempBackgroundImage] = useState<File | string>(
-    user?.backgroundImage ?? '',
+    user?.backgroundImage ?? default_background,
   );
   const [tempTags, setTempTags] = useState<UserTagsResponse[]>(userTags ?? []);
 
@@ -566,12 +567,12 @@ export const ProfileImage = ({
         <img
           src={
             !isEditMode
-              ? user.backgroundImage
+              ? user.backgroundImage || default_background
               : typeof tempBackgroundImage === 'string'
                 ? tempBackgroundImage
                 : tempBackgroundImage
                   ? URL.createObjectURL(tempBackgroundImage)
-                  : undefined
+                  : default_background
           }
           alt="background"
         />
@@ -696,7 +697,7 @@ export const ProfileNumbers = ({
       ) : (
         <button
           className="my-page-info  flex-1"
-          onClick={isMyPage ? () => navigate('follow-list/follower') : undefined}
+          onClick={isMyPage ? () => navigate('follow-list/following') : undefined}
         >
           <span className="my-page-info-number">{following}</span>
           <span className="my-page-info-text">팔로잉</span>
@@ -836,7 +837,12 @@ export const ProfilePosts = ({
               }}
             >
               {userPicks.map((item) => (
-                <MyPageArtwork all image={item.thumbnailUrl} key={item.thumbnailUrl} />
+                <MyPageArtwork
+                  all
+                  image={item.thumbnailUrl}
+                  key={item.thumbnailUrl}
+                  onClick={() => navigate(`/app/pick?index=${item.shortFormId}`)}
+                />
               ))}
             </Box>
           </TabPanel>

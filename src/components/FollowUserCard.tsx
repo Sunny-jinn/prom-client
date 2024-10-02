@@ -35,12 +35,12 @@ type FollowUserCard = {
 
 const FollowUserCard = ({ profile, name, onClick }: FollowUserCard) => {
   return (
-    <Wrapper>
+    <Wrapper onClick={onClick}>
       <Image src={profile} alt="x" />
       <Nickname>{name}</Nickname>
-      <IconBox onClick={onClick}>
+      {/* <IconBox>
         <img src={icon_ellipsis} alt="x" />
-      </IconBox>
+      </IconBox> */}
     </Wrapper>
   );
 };

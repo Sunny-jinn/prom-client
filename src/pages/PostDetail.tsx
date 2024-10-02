@@ -17,6 +17,7 @@ import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import { UserFeedsResponse, getPostsDetail } from '@/feature/api/mypage.api';
 import {
   createCommentAPI,
+  deleteFeedsAPI,
   feedMarkLikeAPI,
   feedMarkUnLikeAPI,
   getCommentAPI,
@@ -107,9 +108,15 @@ const PostDetail = () => {
     openDeleteDrawer();
   };
 
-  const newDeleteClick = () => {
-    closeDeleteDrawer();
-    openDeleteModal();
+  const newDeleteClick = async () => {
+    try {
+      await deleteFeedsAPI(feedInfo!.feedId);
+      closeDeleteDrawer();
+      openDeleteModal();
+      navigate(-1);
+    } catch {
+      console.log('err');
+    }
   };
 
   const MyPostDetailModal = [
@@ -168,6 +175,14 @@ const PostDetail = () => {
     }
   };
 
+  const clickProfile = (id: string | number) => {
+    if (id === user?.id) {
+      navigate('/app/my-page');
+    } else {
+      navigate(`/app/profile/${id}`);
+    }
+  };
+
   return (
     <SafeAreaLayout flexDirection="column">
       {feedInfo && (
@@ -221,7 +236,7 @@ const PostDetail = () => {
           </div>
 
           <div className="post-detail-author">
-            <button onClick={() => navigate(`/app/profile/${feedInfo.user.id}`)}>
+            <button onClick={() => clickProfile(feedInfo.user.id)}>
               <img src={feedInfo.user.profileImage} alt="profile" />
             </button>
             <span>{feedInfo.user.username}</span>
@@ -249,6 +264,8 @@ const PostDetail = () => {
             onClose={closeDeleteDrawer}
             isOpen={isDeleteDrawerOpen}
             isDelete
+            deleteTitle={'이 게시물을 삭제하시겠습니까?'}
+            deleteContent={'이 게시물을 삭제하면 복구할 수 없습니다.'}
             onDelete={newDeleteClick}
           />
 

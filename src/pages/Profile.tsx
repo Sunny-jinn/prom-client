@@ -15,6 +15,7 @@ import {
   getUserProfileFollowings,
   getUserProfilePicksAPI,
 } from '@/feature/api/profile.api';
+import { checkFollowStatusAPI, followUserAPI, unFollowUserAPI } from '@/feature/api/user.api';
 import { User } from '@/feature/types';
 import { PostPick } from '@/feature/types/Post.type';
 import {
@@ -38,6 +39,7 @@ const Profile = () => {
     follower: 0,
     following: 0,
   });
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
   const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
   const {
@@ -68,6 +70,7 @@ const Profile = () => {
         const follower = await getUserProfileFollowers(user_id);
         const following = await getUserProfileFollowings(user_id);
         const artworks = await getUserProfileArtworksAPI(user_id);
+        const followStatus = await checkFollowStatusAPI(Number(user_id));
         setUserInfo(user);
         setNewNickname(user.username);
         setUserFeeds(feeds);
@@ -77,6 +80,7 @@ const Profile = () => {
           following: following.length,
         });
         setUserArtworks(artworks);
+        setIsFollowing(followStatus);
       }
     };
     fetchData();
@@ -103,6 +107,15 @@ const Profile = () => {
   const reportClickHandler = () => {
     closeDrawer();
     openReportModal();
+  };
+
+  const followHandler = async () => {
+    try {
+      isFollowing ? await unFollowUserAPI(Number(user_id)) : await followUserAPI(Number(user_id));
+      setIsFollowing((isFollowing) => !isFollowing);
+    } catch {
+      console.log('팔로우 실패!');
+    }
   };
 
   const NotMyPageModalOptions = [
@@ -134,6 +147,8 @@ const Profile = () => {
             postNumber={userFeeds.length + userPicks.length}
             follower={followNumber.follower}
             following={followNumber.following}
+            onClick={followHandler}
+            isFollowing={isFollowing}
           />
           <ProfileDescription textareaRef={textareaRef} newDescription={userInfo.description} />
           <ProfilePosts

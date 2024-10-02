@@ -21,6 +21,7 @@ import tabbar_all from '@/assets/img/tabbar_all.png';
 import tabbar_shorts from '@/assets/img/tabbar_shorts.png';
 import CustomBottomDrawer from '@/components/CustomBottomDrawer';
 import CustomTempModal from '@/components/CustomTempModal';
+import { Loading } from '@/components/Loading';
 import MyPageArtwork from '@/components/MyPageArtwork';
 import MyPageTag from '@/components/MyPageTag';
 import NavigatorLayout from '@/components/NavigatorLayout';
@@ -47,7 +48,7 @@ import followerStore from '@/store/Follow';
 import userStore from '@/store/User';
 import './MyPage.scss';
 
-type FollowsType = {
+export type FollowsType = {
   follower: number;
   following: number;
 };
@@ -57,6 +58,7 @@ const MyPage = () => {
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isMyPage] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [userTags, setUserTags] = useState<UserTagsResponse[]>([]);
   const [followNumber, setFollowNumber] = useState<FollowsType>({
@@ -81,33 +83,32 @@ const MyPage = () => {
     setFollowing: state.setFollowing,
   }));
 
-  console.log(user);
+  const fetchUserInfo = async () => {
+    const tags = await getUserTags();
+    const followerNumber = await getUserFollowers();
+    const followingNumber = await getUserFollowings();
+    const feeds = await getUserFeeds();
+    const artworks = await getUserArtworks();
+    const picks = await getUserPicks();
+
+    setFollower(followerNumber);
+    setFollowing(followingNumber);
+    setFollowNumber({
+      follower: followerNumber.length,
+      following: followingNumber.length,
+    });
+
+    setUserTags(tags);
+    setUserFeeds(feeds);
+    setUserArtworks(artworks);
+
+    setUserPicks(picks);
+    setTempTags(tags);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     if (user) {
-      const fetchUserInfo = async () => {
-        const tags = await getUserTags();
-        const followerNumber = await getUserFollowers();
-        const followingNumber = await getUserFollowings();
-        const feeds = await getUserFeeds();
-        const artworks = await getUserArtworks();
-        const picks = await getUserPicks();
-
-        setFollower(followerNumber);
-        setFollowing(followingNumber);
-        setFollowNumber({
-          follower: followerNumber.length,
-          following: followingNumber.length,
-        });
-
-        setUserTags(tags);
-        setUserFeeds(feeds);
-        setUserArtworks(artworks);
-
-        setUserPicks(picks);
-        setTempTags(tags);
-        console.log(tags);
-      };
       fetchUserInfo();
     }
   }, [user]);
@@ -231,6 +232,8 @@ const MyPage = () => {
       if (newTags.length > 0) {
         await createUserTags(newTags);
       }
+
+      await fetchUserInfo();
       setIsEditMode(false);
     } catch {
       console.log('err');
@@ -305,7 +308,7 @@ const MyPage = () => {
     },
   ];
 
-  if (!user) return <></>;
+  if (!user || isLoading) return <Loading />;
 
   return (
     <NavigatorLayout hasScrollArea>
@@ -336,7 +339,7 @@ const MyPage = () => {
         {!isEditMode && (
           <ProfileNumbers
             isMyPage
-            postNumber={userFeeds.length}
+            postNumber={userFeeds.length + userPicks.length}
             follower={followNumber.follower}
             following={followNumber.following}
           />
@@ -655,6 +658,8 @@ type TProfileNumbers = {
   postNumber: number;
   follower: number;
   following: number;
+  isFollowing?: boolean;
+  onClick?: () => void;
 };
 
 export const ProfileNumbers = ({
@@ -662,29 +667,39 @@ export const ProfileNumbers = ({
   postNumber,
   follower,
   following,
+  isFollowing,
+  onClick,
 }: TProfileNumbers) => {
   const navigate = useNavigate();
 
   return (
     <div className="my-page-info-container">
-      <div className="my-page-info">
+      <div className="my-page-info flex-1">
         <span className="my-page-info-number">{postNumber}</span>
         <span className="my-page-info-text">작업</span>
       </div>
       <button
-        className="my-page-info"
+        className="my-page-info flex-1"
         onClick={isMyPage ? () => navigate('follow-list/follower') : undefined}
       >
         <span className="my-page-info-number">{follower}</span>
         <span className="my-page-info-text">팔로워</span>
       </button>
-      <button
-        className="my-page-info"
-        onClick={isMyPage ? () => navigate('follow-list/follower') : undefined}
-      >
-        <span className="my-page-info-number">{following}</span>
-        <span className="my-page-info-text">팔로잉</span>
-      </button>
+      {!isMyPage ? (
+        <div className="my-page-info  flex-1">
+          <button className="my-page-profile-follow-button" onClick={onClick}>
+            <span>{isFollowing ? '팔로우 중' : '팔로우'}</span>
+          </button>
+        </div>
+      ) : (
+        <button
+          className="my-page-info  flex-1"
+          onClick={isMyPage ? () => navigate('follow-list/follower') : undefined}
+        >
+          <span className="my-page-info-number">{following}</span>
+          <span className="my-page-info-text">팔로잉</span>
+        </button>
+      )}
     </div>
   );
 };
@@ -749,6 +764,7 @@ export const ProfilePosts = ({
   userPicks,
 }: TProfilePosts) => {
   const navigate = useNavigate();
+  const [tabIndex, setTabIndex] = useState<number>(0);
 
   return (
     <>
@@ -766,20 +782,22 @@ export const ProfilePosts = ({
             +
           </div>
         )}
-        {Array.from({ length: Math.max(0, 2 - userArtworks.length) }).map((_, index) => (
+        {Array.from({
+          length: Math.max(0, isMyPage ? 2 - userArtworks.length : 3 - userArtworks.length),
+        }).map((_, index) => (
           <div key={`placeholder-${index}`} className="my-page-artwork placeholder"></div>
         ))}
       </div>
 
-      <Tabs isFitted variant={'unstyled'}>
+      <Tabs isFitted variant={'unstyled'} onChange={(index) => setTabIndex(index)}>
         <TabList>
           <Tab>
-            <div className="my-page-tabbar-icon active">
+            <div className={`my-page-tabbar-icon ${tabIndex === 0 ? 'active' : 'inactive'}`}>
               <img src={tabbar_all} alt="tab" />
             </div>
           </Tab>
           <Tab>
-            <div className="my-page-tabbar-icon">
+            <div className={`my-page-tabbar-icon ${tabIndex === 1 && 'active'}`}>
               <img src={tabbar_shorts} alt="tab" />
             </div>
           </Tab>
@@ -798,6 +816,7 @@ export const ProfilePosts = ({
               {userFeeds.map((item) => (
                 <PostCard
                   id={item.feedId}
+                  key={item.feedId}
                   image={item.images[0]}
                   type={item.type}
                   onClick={() => navigate(`/app/post/${item.feedId}`)}
@@ -815,7 +834,7 @@ export const ProfilePosts = ({
               }}
             >
               {userPicks.map((item) => (
-                <MyPageArtwork all image={item.thumbnailUrl} />
+                <MyPageArtwork all image={item.thumbnailUrl} key={item.thumbnailUrl} />
               ))}
             </Box>
           </TabPanel>

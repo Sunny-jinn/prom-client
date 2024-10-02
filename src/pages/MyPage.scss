@@ -207,8 +207,9 @@
 
   .my-page-info-container {
     display: flex;
+    width: 100%;
     justify-content: space-between;
-    padding: 17px 62px;
+    padding: 17px 40px;
     margin-top: 12px;
     background-color: #292929;
     border-radius: 25px;
@@ -216,6 +217,7 @@
     .my-page-info {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
 
       &-number {
@@ -227,6 +229,34 @@
         font-weight: 500;
         color: #a1a1a1;
       }
+    }
+
+    .flex-1 {
+      flex: 1;
+    }
+
+    .my-page-profile-follow-button {
+      padding: 7px 16px;
+      border: 1px solid #7bf7ff;
+      border-radius: 10px;
+      color: #7bf7ff;
+      background-color: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      line-height: 1;
+      user-select: none;
+      transition: 0.1s ease-in-out;
+
+      span {
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 15.51px;
+      }
+    }
+    .my-page-profile-follow-button:active {
+      background-color: #7bf7ff;
+      color: #000;
     }
   }
 
@@ -269,7 +299,7 @@
     display: grid;
     grid-auto-flow: column; /* 가로로 요소를 나열 */
     grid-template-rows: 1fr; /* 한 줄로 고정 */
-    grid-auto-columns: minmax(30%, 1fr); /* 각 항목의 너비 설정 */
+    grid-auto-columns: minmax(31%, 1fr); /* 각 항목의 너비 설정 */
     gap: 10px;
     margin-top: 12px;
     overflow-x: auto;
@@ -302,6 +332,14 @@
 
       img {
         width: 26px;
+      }
+
+      &.active {
+        filter: brightness(0) invert(100%);
+      }
+
+      &.inactive {
+        filter: brightness(60%);
       }
     }
   }

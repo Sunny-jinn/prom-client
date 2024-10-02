@@ -59,8 +59,17 @@ const getFeedsAPI = async (
   return data;
 };
 
-const getPicksAPI = async () => {
-  const result = await Server.get(`posts/short-forms`);
+const getPicksAPI = async (
+  {
+    page,
+    size,
+    orderBy,
+  }: {
+    page?: number;
+    size?: number;
+    orderBy?: string;
+  }): Promise<Post.PostPick[]> => {
+  const result = await Server.get(`posts/short-forms${makeQuery({ page, size, orderBy })}`);
   const { data } = result.data;
   return data;
 };

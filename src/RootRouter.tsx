@@ -17,6 +17,7 @@ import PostDetail from './pages/PostDetail';
 import Search from './pages/Search';
 import SignUp from './pages/SignUp';
 import Profile from '@/pages/Profile';
+import { deleteCacheAPI } from '@/feature/api/post.api';
 
 const RootRouter = () => {
   return (
@@ -59,6 +60,7 @@ const AppRoute = () => {
     try {
       await refreshAPI();
       const myInfo = await getMyInfoAPI();
+      await deleteCacheAPI();
       setUser(myInfo);
       if(myInfo.role === 'USER') {
         navigate('init');

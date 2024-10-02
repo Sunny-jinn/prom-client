@@ -1,6 +1,6 @@
 import '@/components/PickViewer.scss';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import {
   createPickCommentAPI,
   getPickByIdAPI, getPickCommentAPI,
@@ -30,11 +30,12 @@ import userStore from '@/store/User';
 
 type PickViewerProps = {
   pickIds: number[];
+  setCurrentIndex: Dispatch<SetStateAction<number>>
 }
 
 
 const PickViewer = (props: PickViewerProps) => {
-  const { pickIds } = props;
+  const { pickIds, setCurrentIndex } = props;
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
@@ -42,6 +43,7 @@ const PickViewer = (props: PickViewerProps) => {
       <Swiper
         onActiveIndexChange={(swiper) => {
           setActiveIndex(swiper.activeIndex);
+          setCurrentIndex(swiper.activeIndex);
         }}
         centeredSlides={true}
         direction={'vertical'}

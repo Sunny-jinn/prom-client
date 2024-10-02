@@ -144,6 +144,12 @@ const pickMarkUnLikeAPI = async (pickId: number) => {
   return exist;
 };
 
+const deleteCacheAPI = async () => {
+  const result = await Server.delete(`caches`);
+  const { data } = result.data;
+  return data;
+};
+
 export {
   createFeedAPI,
   createPickAPI,
@@ -162,4 +168,5 @@ export {
   pickMarkLikeAPI,
   pickMarkUnLikeAPI,
   createPickCommentAPI,
+  deleteCacheAPI
 };

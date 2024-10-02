@@ -697,7 +697,7 @@ export const ProfileNumbers = ({
       ) : (
         <button
           className="my-page-info  flex-1"
-          onClick={isMyPage ? () => navigate('follow-list/follower') : undefined}
+          onClick={isMyPage ? () => navigate('follow-list/following') : undefined}
         >
           <span className="my-page-info-number">{following}</span>
           <span className="my-page-info-text">팔로잉</span>

@@ -175,6 +175,14 @@ const PostDetail = () => {
     }
   };
 
+  const clickProfile = (id: string | number) => {
+    if (id === user?.id) {
+      navigate('/app/my-page');
+    } else {
+      navigate(`/app/profile/${id}`);
+    }
+  };
+
   return (
     <SafeAreaLayout flexDirection="column">
       {feedInfo && (
@@ -228,7 +236,7 @@ const PostDetail = () => {
           </div>
 
           <div className="post-detail-author">
-            <button onClick={() => navigate(`/app/profile/${feedInfo.user.id}`)}>
+            <button onClick={() => clickProfile(feedInfo.user.id)}>
               <img src={feedInfo.user.profileImage} alt="profile" />
             </button>
             <span>{feedInfo.user.username}</span>

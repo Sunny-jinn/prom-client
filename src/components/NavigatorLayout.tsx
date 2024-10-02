@@ -64,7 +64,9 @@ const NavigatorLayout = (props: NavigatorLayoutProps) => {
             ))}
           </div>
           <button className='upload-content' onClick={() => setIsSelectMode(prev => !prev)}>
-            <Plus transform={isSelectMode ? 'rotate(45)' : 'rotate(0)'} color={'#1B1B1B'} strokeLinecap={'square'}
+            <Plus style={{
+              transform: isSelectMode ? 'rotate(45deg)' : 'rotate(0)'
+            }} color={'#1B1B1B'} strokeLinecap={'square'}
                   strokeWidth={3} />
           </button>
           <div className='menu-container'>

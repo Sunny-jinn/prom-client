@@ -466,7 +466,7 @@ const UploadFinalize = (props: UploadFinalizeProps) => {
               {POST_CATEGORY_DATA.map(el => {
                 const Icon = el.icon;
                 return (
-                  <div onClick={() => setType(el.name)} className='upload-type'
+                  <div onClick={() => setType(el.name)} className='upload-finalize-type'
                        style={{ borderColor: el.name === type ? el.color : '#000000' }}>
                     <Icon height={14} width={14} />
                     <span style={{ fontSize: 14, color: el.color, fontWeight: 600 }}>{el.name}</span>

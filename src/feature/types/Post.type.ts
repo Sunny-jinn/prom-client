@@ -1,20 +1,33 @@
-import { Post, User } from '@/feature/types/index';
+import { User } from '@/feature/types/index';
 
 type PostType = 'FEED' | 'PICK';
 type PostCategory = 'MUSIC' | 'VISUAL' | 'WRITING';
-type PostFeed = {
+
+//getFeedsAndPicks Response
+type PostCommon = {
   postId: number;
-  feedId: number;
-  type: Post.PostCategory;
+  type: PostCategory
+  title: string
   description: string;
-  title: string;
-  commentCounts: number;
+  commentCounts: number
   likesCount: number;
-  url: string[];
+  url: string[]
+  createdAt: string;
   user: User.User;
+
+}
+
+type PostFeed = {
+  feedId: number;
+  title: string;
+  likeCounts: number
+  commentCounts: number;
+  description: string;
+  type: PostCategory
+  user: User.User
   createdAt: string;
   images: string[];
-};
+}
 
 type PostPick = {
   shortFormId: number;
@@ -48,4 +61,4 @@ type PickComment = {
   parentCommentId: number;
 };
 
-export type { PostType, PostCategory, PostFeed, PostPick, FeedComment, PickComment };
+export type { PostType, PostCategory, PostCommon, PostFeed, PostPick, FeedComment, PickComment };

@@ -9,10 +9,10 @@ type BaseUser = {
 };
 
 type User = BaseUser & {
-  birth: string | null;
-  phoneNumber: string | null;
-  socialType: number | null;
-};
+  birth: string | null,
+  phoneNumber: string | null,
+  socialType: number | null,
+}
 
 type FollowResponse = {
   id: number;

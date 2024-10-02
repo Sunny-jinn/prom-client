@@ -18,13 +18,15 @@ import { getFeedLikesCheckAPI, getFeedsAPI } from '@/feature/api/post.api';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import DefaultSwiperBullets from '@/components/DefaultSwiperBullets';
 import cn from 'classnames';
-import { Drawer, DrawerContent, DrawerProps, useDisclosure } from '@chakra-ui/react';
+import { Drawer, DrawerContent, DrawerOverlay, DrawerProps, useDisclosure } from '@chakra-ui/react';
 import { ScrollArea } from '@/components/ScrollArea';
 import { getUserInfoAPI } from '@/feature/api/user.api';
 import { Post, User } from '@/feature/types';
-import Like from '@/assets/img/icon_like_feed.svg?react'
-import Comment from '@/assets/img/icon_comment_feed.svg?react'
+import Like from '@/assets/img/icon_like_feed.svg?react';
+import Comment from '@/assets/img/icon_comment_feed.svg?react';
 import useAppNavigate from '@/hooks/useAppNavigate';
+import X from '@/assets/img/icon_close.svg?react';
+import From from '@/assets/img/icon_insight.svg?react';
 
 dayjs.extend(relativeTime);
 
@@ -59,6 +61,9 @@ const Home = () => {
 
 const GrowthOfTheMonth = () => {
   const [growthUser, setGrowthUser] = useState<User.User | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [dataType, setDataType] = useState<'FOLLOWER' | 'LIKES'>('FOLLOWER');
 
   const getGrowthUser = async () => {
     try {
@@ -72,20 +77,140 @@ const GrowthOfTheMonth = () => {
   useEffect(() => {
     getGrowthUser();
   }, []);
-  if(!growthUser) return <></>
+  if(!growthUser) return <></>;
   return (
-    <div className='growth'>
-      <div className='growth-text'>
-        <div className='growth-title'>
-          <Tropy/>
-          <span>이달의 성장</span>
+    <>
+      <Drawer onClose={onClose} isOpen={isOpen} placement='bottom' size={'full'}>
+        <DrawerOverlay />
+        <DrawerContent bgColor={'#121212'}>
+          <div className='growth-user-detail'>
+            <SafeAreaLayout safeAreaBackground={'#000000'} flexDirection={'column'}>
+              <ScrollArea>
+                <div className='growth-user-detail-top'>
+                  <div className='growth-user-detail-gradient' />
+                  <div className='growth-user-detail-header'>
+                    <div style={{ width: 25 }} />
+                    <span>PROM</span>
+                    <X onClick={() => onClose()} />
+                  </div>
+                  <div className='growth-user-detail-user'>
+                    <div className='growth-user-detail-user-text'>
+                      <div className='growth-user-detail-user-title'>
+                        <Tropy width={30} height={30} />
+                        <span>이달의 성장</span>
+                      </div>
+                      <span style={{ color: '#7bf7ff' }}>축하합니다!</span>
+                    </div>
+                    <div className='growth-user-detail-user-profile'>
+                      <img src={growthUser.profileImage} alt='' />
+                      <span>{`${growthUser.username}님`}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className='growth-user-detail-data-wrapper'>
+                  <div className='growth-user-detail-data'>
+                    <div className='growth-user-detail-data-from'>
+                      <From />
+                      <span>PROM 인사이트</span>
+                    </div>
+                    {dataType === 'FOLLOWER' && <FollowerAnalysis />}
+                    {dataType === 'LIKES' && <LikesAnalysis />}
+                    <div className='analysis-type'>
+                      <div className='switch'>
+                        <div className={cn('switch-handler', { likes: dataType === 'LIKES' })} />
+                        <div className='slider'>
+                          <div className={cn('type', { selected: dataType === 'FOLLOWER' })}
+                               onClick={() => setDataType('FOLLOWER')}>
+                            <span>팔로워</span>
+                          </div>
+                          <div className={cn('type', { selected: dataType === 'LIKES' })}
+                               onClick={() => setDataType('LIKES')}>
+                            <span>좋아요</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </ScrollArea>
+
+            </SafeAreaLayout>
+          </div>
+        </DrawerContent>
+      </Drawer>
+      <div className='growth' onClick={() => onOpen()}>
+        <div className='growth-text'>
+          <div className='growth-title'>
+            <Tropy />
+            <span>이달의 성장</span>
+          </div>
+          <span className='growth-description'>총 팔로워, 좋아요 수가 늘어난 아티스트 </span>
         </div>
-        <span className='growth-description'>총 팔로워, 좋아요 수가 늘어난 아티스트 </span>
+        <div className='growth-user'>
+          <img src={growthUser.profileImage} alt='user' />
+          <span>{growthUser.username}님</span>
+        </div>
       </div>
-      <div className='growth-user'>
-        <img src={growthUser.profileImage} alt='user' />
-        <span>{growthUser.username}님</span>
+    </>
+
+  );
+};
+
+const FollowerAnalysis = () => {
+
+  const data = {
+    follower: {
+      prev   : {
+        month: 9,
+        count: 1240,
+      },
+      current: {
+        month: 10,
+        count: 1800,
+      },
+    },
+  };
+
+  const a = ((data.follower.current.count - data.follower.prev.count) / data.follower.prev.count) * 100;
+  console.log(a);
+  return (
+    <div className='data-analysis'>
+      <div className='data-title'>
+        <span style={{ color: '#7BF7FF', fontSize: 14, fontWeight: 600 }}>9월 대비</span>
+        <span style={{ fontSize: 30, fontWeight: 600, color: '#949494' }}>
+          <span style={{ color: '#ffffff' }}>{'총 팔로워 '}</span>
+          {`+${(((data.follower.current.count - data.follower.prev.count) / data.follower.prev.count) * 100).toFixed(0)}%`}
+        </span>
+        <div className='chart-follow'>
+          ad
+        </div>
       </div>
+    </div>
+  );
+};
+
+const LikesAnalysis = () => {
+  const data = {
+    likes: {
+      prev   : {
+        month: 9,
+        count: 1250,
+      },
+      current: {
+        month: 10,
+        count: 2500,
+      },
+    },
+  };
+  console.log(data);
+  return (
+    <div className='data-analysis'>
+      <div className='data-title'>
+        <span style={{ color: '#7BF7FF', fontSize: 14, fontWeight: 600 }}>9월 대비</span>
+
+      </div>
+
     </div>
   );
 };
@@ -161,15 +286,18 @@ const PostPreview = (props: PostPreviewProps) => {
   const [feed, setFeed] = useState<Post.PostFeed | null>(null);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
-  const [isUserLikes, setIsUserLikes] = useState(false)
+  const [isUserLikes, setIsUserLikes] = useState(false);
 
   const getRecentPost = async () => {
     try {
       const result = await getFeedsAPI({ size: 1, type: name, orderBy: 'asc' });
-      const feed = result[0]
-      setFeed(feed);
-      const likesCheck = await getFeedLikesCheckAPI(feed.feedId)
-      setIsUserLikes(likesCheck)
+      if(result.length !== 0) {
+        const feed = result[0];
+        setFeed(feed);
+        const likesCheck = await getFeedLikesCheckAPI(feed.feedId);
+        setIsUserLikes(likesCheck);
+        return;
+      }
     } catch (e) {
       console.log(e);
     }
@@ -177,8 +305,8 @@ const PostPreview = (props: PostPreviewProps) => {
 
   const navigateToPost = () => {
     if(!feed) return;
-    navigate(`post/${feed.feedId}`)
-  }
+    navigate(`post/${feed.feedId}`);
+  };
 
   useEffect(() => {
     getRecentPost();
@@ -239,11 +367,11 @@ const PostPreview = (props: PostPreviewProps) => {
           </div>
           <div className='post-preview-interaction-wrapper'>
             <div className='post-preview-interaction' onClick={() => navigateToPost()}>
-              <Like fill={isUserLikes ? '#7bf7ff' : '#B8B8B8'}/>
-              <span style={{color: isUserLikes ? '#7bf7ff' : '#ffffff'}}>{feed.likeCounts}</span>
+              <Like fill={isUserLikes ? '#7bf7ff' : '#B8B8B8'} />
+              <span style={{ color: isUserLikes ? '#7bf7ff' : '#ffffff' }}>{feed.likeCounts}</span>
             </div>
             <div className='post-preview-interaction' onClick={() => navigateToPost()}>
-              <Comment fill={'#B8B8B8'}/>
+              <Comment fill={'#B8B8B8'} />
               <span>{feed.commentCounts}</span>
             </div>
           </div>

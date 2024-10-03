@@ -16,6 +16,7 @@ import { SearchPostResponse, searchPostAPI, searchUser } from '@/feature/api/sea
 import { User } from '@/feature/types';
 import { PostFeed, PostPick } from '@/feature/types/Post.type';
 import './Search.scss';
+import _ from 'lodash';
 
 const Search = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
@@ -65,10 +66,10 @@ const Search = () => {
   //TODO: 진우야 여기 필요한 query 넣으면됨, useEffect 안에 넣어놓고 쓰는게 나을듯 query 많아서?
   useEffect(() => {
     const fetchData = async () => {
-      const feeddata = await getFeedsAPI({});
-      const pickdata = await getPicksAPI({});
-      setFeeds(feeddata);
-      setPicks(pickdata);
+      const feeddata = await getFeedsAPI({orderBy: 'desc', size: 40});
+      const pickdata = await getPicksAPI({orderBy: 'desc', size: 20});
+      setFeeds(_.shuffle(feeddata));
+      setPicks(_.shuffle(pickdata));
     };
     fetchData();
   }, []);

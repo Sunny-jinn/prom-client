@@ -1,4 +1,3 @@
-import React from 'react';
 import { PostFeed, PostPick } from '@/feature/types/Post.type';
 import useAppNavigate from '@/hooks/useAppNavigate';
 import styled from '@emotion/styled';

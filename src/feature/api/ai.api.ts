@@ -2,7 +2,7 @@ import { Server } from '@/feature/api/index';
 
 const generateAIMusicAPI = async (prompt: Record<string, string>) => {
   const response = await Server.post(`ai/music`, {
-    ...prompt
+    ...prompt,
   });
   const { data } = response.data;
   const { result } = data;
@@ -11,7 +11,7 @@ const generateAIMusicAPI = async (prompt: Record<string, string>) => {
 
 const generateAIVisualAPI = async (prompt: Record<string, string>) => {
   const response = await Server.post(`ai/visual`, {
-    ...prompt
+    ...prompt,
   });
   const { data } = response.data;
   const { result } = data;
@@ -20,15 +20,11 @@ const generateAIVisualAPI = async (prompt: Record<string, string>) => {
 
 const generateAIWritingAPI = async (prompt: Record<string, string>) => {
   const response = await Server.post(`ai/writing`, {
-    ...prompt
+    ...prompt,
   });
   const { data } = response.data;
   const { result } = data;
   return result;
 };
 
-export {
-  generateAIMusicAPI,
-  generateAIVisualAPI,
-  generateAIWritingAPI
-}
+export { generateAIMusicAPI, generateAIVisualAPI, generateAIWritingAPI };

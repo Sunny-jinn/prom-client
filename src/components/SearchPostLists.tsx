@@ -32,49 +32,52 @@ export const SearchPostLists = ({ feeds, picks }: SearchPostListsProps) => {
   const navigate = useAppNavigate();
 
   return (
-    <div className='search-post-list-container'>
+    <div className="search-post-list-container">
       {feedShortsChunks.map((chunk, index) => (
         <React.Fragment key={index}>
           {/* 짝수 인덱스일 때는 post cards가 왼쪽, shorts가 오른쪽 */}
           {index % 2 === 0 ? (
             <>
-              <div className='search-post-list-cards'>
+              <div className="search-post-list-cards">
                 {chunk.feeds.map((feed, feedIndex) => (
                   <div
-                    className='search-post-list-card'
+                    className="search-post-list-card"
                     key={feedIndex}
                     onClick={() => navigate(`post/${feed.feedId}`)}
                   >
-                    <img src={feed.images[0]} alt='Feed' />
+                    <img src={feed.images[0]} alt="Feed" />
                   </div>
                 ))}
               </div>
-              <div className='search-post-list-shorts'>
+              <div className="search-post-list-shorts">
                 <div
-                  className='search-post-list-shorts-card'
+                  className="search-post-list-shorts-card"
                   onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)}
                 >
-                  <img src={chunk.short.thumbnailUrl} alt='Short' />
+                  <img src={chunk.short.thumbnailUrl} alt="Short" />
                 </div>
               </div>
             </>
           ) : (
             /* 홀수 인덱스일 때는 shorts가 왼쪽, post cards가 오른쪽 */
             <>
-              <div className='search-post-list-shorts'>
-                <div className='search-post-list-shorts-card'>
-                  <img src={chunk.short.thumbnailUrl} alt='Short'
-                       onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)} />
+              <div className="search-post-list-shorts">
+                <div className="search-post-list-shorts-card">
+                  <img
+                    src={chunk.short.thumbnailUrl}
+                    alt="Short"
+                    onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)}
+                  />
                 </div>
               </div>
-              <div className='search-post-list-cards'>
+              <div className="search-post-list-cards">
                 {chunk.feeds.map((feed, feedIndex) => (
                   <div
-                    className='search-post-list-card'
+                    className="search-post-list-card"
                     key={feedIndex}
                     onClick={() => navigate(`post/${feed.feedId}`)}
                   >
-                    <img src={feed.images[0]} alt='Feed' />
+                    <img src={feed.images[0]} alt="Feed" />
                   </div>
                 ))}
               </div>

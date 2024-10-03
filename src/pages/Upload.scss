@@ -29,7 +29,7 @@
           border-radius: 15px;
         }
 
-        video{
+        video {
           width: 60%;
           aspect-ratio: 9/16;
           min-width: 170px;
@@ -73,7 +73,7 @@
         span {
           font-weight: 500;
           font-size: 14px;
-          color: #ffffff
+          color: #ffffff;
         }
       }
 
@@ -116,11 +116,11 @@
   }
 }
 
-.pick-wrapper{
+.pick-wrapper {
   display: flex;
   justify-content: center;
   width: 100%;
-  video{
+  video {
     width: 50%;
     min-width: 170px;
     aspect-ratio: 9/16;
@@ -227,7 +227,7 @@
       padding-left: 18px;
 
       &::placeholder {
-        color: #A6A6A6;
+        color: #a6a6a6;
       }
     }
 
@@ -247,26 +247,26 @@
       }
 
       &::placeholder {
-        color: #A6A6A6;
+        color: #a6a6a6;
       }
     }
   }
-  .upload-finalize-type-wrapper{
+  .upload-finalize-type-wrapper {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    .upload-finalize-type-title{
+    .upload-finalize-type-title {
       font-size: 14px;
       color: #ffffff;
       font-weight: 600;
     }
-    .upload-finalize-type-list{
+    .upload-finalize-type-list {
       display: flex;
       align-items: center;
       width: 100%;
       gap: 7px;
       flex-wrap: wrap;
-      .upload-finalize-type{
+      .upload-finalize-type {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -281,26 +281,26 @@
       }
     }
   }
-  .upload-finalize-comment{
+  .upload-finalize-comment {
     padding-bottom: 20px;
     ol {
       padding-left: 15px;
     }
     li {
       list-style: disc;
-      &::marker{
+      &::marker {
         width: 2px;
         height: 2px;
         border-radius: 50%;
         color: #515151;
       }
     }
-    span{
+    span {
       color: #515151;
       font-size: 14px;
     }
   }
-  .upload-button-wrapper{
+  .upload-button-wrapper {
     display: flex;
     padding: 0 16px;
   }
@@ -322,7 +322,7 @@
     font-weight: 600;
 
     &:disabled {
-      color: #47A5AC;
+      color: #47a5ac;
       cursor: default;
     }
   }
@@ -352,14 +352,14 @@
       border-radius: 50px;
 
       &:after {
-        content: "";
+        content: '';
         position: absolute;
         right: calc(82px + 10px);
         width: 82px;
         height: 34px;
         background-color: #353535;
         border-radius: 40px;
-        transition: right .3s;
+        transition: right 0.3s;
         -webkit-backface-visibility: hidden;
       }
 
@@ -387,10 +387,10 @@
   }
 }
 
-.upload-finalize-feed-swiper{
+.upload-finalize-feed-swiper {
   width: 100%;
 
-  .upload-finalize-feed-swiper-slide{
+  .upload-finalize-feed-swiper-slide {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -399,7 +399,7 @@
     aspect-ratio: 1;
     border-radius: 10px;
     overflow: hidden;
-    img{
+    img {
       width: 100%;
       aspect-ratio: 1;
       object-fit: cover;
@@ -409,8 +409,7 @@
 
 /* HTML: <div class="loader"></div> */
 
-
-.uploading{
+.uploading {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -418,7 +417,7 @@
   width: 100%;
   height: 100%;
   gap: 40px;
-  .uploading-preview{
+  .uploading-preview {
     position: relative;
     display: flex;
     justify-content: center;
@@ -435,7 +434,7 @@
       object-fit: cover;
       border-radius: 15px;
     }
-    .uploading-preview-blur{
+    .uploading-preview-blur {
       position: absolute;
       top: 0;
       right: 0;
@@ -448,29 +447,29 @@
       border-radius: 10px;
     }
   }
-  .upload-complete{
+  .upload-complete {
     display: flex;
     justify-content: center;
     font-size: 24px;
     font-weight: 600;
     color: #ffffff;
   }
-  .upload-processing{
+  .upload-processing {
     display: flex;
     flex-direction: column;
     gap: 20px;
 
-    .upload-processing-title{
+    .upload-processing-title {
       display: flex;
       justify-content: center;
       //align-items: flex-end ;
-      span{
+      span {
         color: #ffffff;
         font-size: 24px;
         font-weight: 600;
       }
     }
-    span{
+    span {
       font-size: 14px;
       font-weight: 600;
       color: #a6a6a6;
@@ -480,5 +479,8 @@
   }
 }
 
-
-@keyframes l1 {to{clip-path: inset(0 -34% 0 0)}}
+@keyframes l1 {
+  to {
+    clip-path: inset(0 -34% 0 0);
+  }
+}

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import icon_ellipsis from '@/assets/img/ellipsis.png';
+
+// import icon_ellipsis from '@/assets/img/ellipsis.png';
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,14 +19,14 @@ const Nickname = styled.span`
   font-weight: 500;
 `;
 
-const IconBox = styled.button`
-  margin-left: auto;
-
-  img {
-    width: 25px;
-    height: 25px;
-  }
-`;
+// const IconBox = styled.button`
+//   margin-left: auto;
+//
+//   img {
+//     width: 25px;
+//     height: 25px;
+//   }
+// `;
 
 type FollowUserCard = {
   profile: string;

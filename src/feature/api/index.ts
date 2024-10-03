@@ -11,7 +11,7 @@ const addAccessTokenToServer = (access: string) => {
 };
 
 const removeAccessTokenToServer = () => {
-  delete Server.defaults.headers.common.Authorization
+  delete Server.defaults.headers.common.Authorization;
 };
 
 const makeQuery = (query: object) => qs.stringify(query, { addQueryPrefix: true });

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 type StepProgressProps = {
   color: string;
-}
+};
 
 export const StepProgress = styled.progress<StepProgressProps>`
   appearance: none;
@@ -13,7 +13,7 @@ export const StepProgress = styled.progress<StepProgressProps>`
   -moz-transition: width 5s ease;
   -o-transition: width 5s ease;
   transition: width 5s ease;
-  
+
   &::-webkit-progress-bar {
     background: #212121;
     border-radius: 12px;
@@ -25,6 +25,6 @@ export const StepProgress = styled.progress<StepProgressProps>`
     border-radius: 20px;
     transition: all 0.5s ease;
   }
-`
+`;
 
 export default StepProgress;

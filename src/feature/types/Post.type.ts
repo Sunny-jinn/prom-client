@@ -6,28 +6,27 @@ type PostCategory = 'MUSIC' | 'VISUAL' | 'WRITING';
 //getFeedsAndPicks Response
 type PostCommon = {
   postId: number;
-  type: PostCategory
-  title: string
+  type: PostCategory;
+  title: string;
   description: string;
-  commentCounts: number
+  commentCounts: number;
   likesCount: number;
-  url: string[]
+  url: string[];
   createdAt: string;
   user: User.User;
-
-}
+};
 
 type PostFeed = {
   feedId: number;
   title: string;
-  likeCounts: number
+  likeCounts: number;
   commentCounts: number;
   description: string;
-  type: PostCategory
-  user: User.User
+  type: PostCategory;
+  user: User.User;
   createdAt: string;
   images: string[];
-}
+};
 
 type PostPick = {
   shortFormId: number;

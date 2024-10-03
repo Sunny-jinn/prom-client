@@ -1,57 +1,61 @@
+import { FunctionComponent, SVGProps } from 'react';
 import MusicIcon from '@/assets/img/icon_Music.svg?react';
 import VisualIcon from '@/assets/img/icon_Visual.svg?react';
 import WritingIcon from '@/assets/img/icon_Writing.svg?react';
 import { Post } from '@/feature/types';
-import { FunctionComponent, SVGProps } from 'react';
 
 const INIT_STEP_HEADER_TEXT = [
   {
-    title   : '프로필 설정',
-    subTitle: <span className='init-header-sub-title'>이름과 사진을 설정해주세요.</span>,
+    title: '프로필 설정',
+    subTitle: <span className="init-header-sub-title">이름과 사진을 설정해주세요.</span>,
   },
   {
-    title   : '관심 분야 설정',
-    subTitle: <span className='init-header-sub-title'>관심있는 분야를 선택해주세요.</span>,
+    title: '관심 분야 설정',
+    subTitle: <span className="init-header-sub-title">관심있는 분야를 선택해주세요.</span>,
   },
   {
-    title   : '관심 키워드',
-    subTitle: <span className='init-header-sub-title'>각 분야별 관심있는 키워드를 <span style={{ color: '#7BF7FF' }}>2개 이상 </span>선택해주세요.</span>,
+    title: '관심 키워드',
+    subTitle: (
+      <span className="init-header-sub-title">
+        각 분야별 관심있는 키워드를 <span style={{ color: '#7BF7FF' }}>2개 이상 </span>선택해주세요.
+      </span>
+    ),
   },
 ];
 
 export type PostCategoryData = {
   icon: FunctionComponent<SVGProps<SVGSVGElement>>;
-  name: Post.PostCategory
+  name: Post.PostCategory;
   color: string;
   description: string;
-}
+};
 
 const POST_CATEGORY_DATA: PostCategoryData[] = [
   {
-    icon       : MusicIcon,
-    name       : 'MUSIC',
-    color      : '#FF7193',
+    icon: MusicIcon,
+    name: 'MUSIC',
+    color: '#FF7193',
     description: '다양한 카테코리의 음악',
   },
   {
-    icon       : VisualIcon,
-    name       : 'VISUAL',
-    color      : '#5DED6B',
+    icon: VisualIcon,
+    name: 'VISUAL',
+    color: '#5DED6B',
     description: '디지털 아트, 손 그림등 다양한 분야',
   },
   {
-    icon       : WritingIcon,
-    name       : 'WRITING',
-    color      : '#6F63FF',
+    icon: WritingIcon,
+    name: 'WRITING',
+    color: '#6F63FF',
     description: 'SF소설, 시등 다양한 글들',
   },
 ];
 
 const INIT_STEP_3 = {
-  'MUSIC'  : {
-    icon    : MusicIcon,
-    name    : 'MUSIC',
-    color   : '#FF7193',
+  MUSIC: {
+    icon: MusicIcon,
+    name: 'MUSIC',
+    color: '#FF7193',
     keywords: [
       '팝',
       '록',
@@ -67,10 +71,10 @@ const INIT_STEP_3 = {
       '브릿 팝',
     ],
   },
-  'VISUAL' : {
-    icon    : VisualIcon,
-    name    : 'VISUAL',
-    color   : '#5DED6B',
+  VISUAL: {
+    icon: VisualIcon,
+    name: 'VISUAL',
+    color: '#5DED6B',
     keywords: [
       '그래픽 디자인',
       'UI/UX',
@@ -86,10 +90,10 @@ const INIT_STEP_3 = {
       '라인 드로잉',
     ],
   },
-  'WRITING': {
-    icon    : WritingIcon,
-    name    : 'WRITING',
-    color   : '#6F63FF',
+  WRITING: {
+    icon: WritingIcon,
+    name: 'WRITING',
+    color: '#6F63FF',
     keywords: [
       '판타지',
       'SF',
@@ -107,8 +111,4 @@ const INIT_STEP_3 = {
   },
 };
 
-export {
-  INIT_STEP_HEADER_TEXT,
-  POST_CATEGORY_DATA,
-  INIT_STEP_3,
-};
+export { INIT_STEP_HEADER_TEXT, POST_CATEGORY_DATA, INIT_STEP_3 };

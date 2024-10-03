@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import "@/style/_fonts.scss";
+import '@/style/_fonts.scss';
 
 export const reset = css`
   * {
@@ -67,8 +67,8 @@ export const reset = css`
   *::after {
     box-sizing: border-box;
   }
-  
-  *::-webkit-scrollbar{
+
+  *::-webkit-scrollbar {
     display: none;
   }
 
@@ -111,6 +111,16 @@ export const reset = css`
       overscroll-behavior: none;
     }
   }
-  body { overflow-y: auto; }
-  input, span, select, textarea, button, a, label {-webkit-tap-highlight-color:rgba(0,0,0,0);}
+  body {
+    overflow-y: auto;
+  }
+  input,
+  span,
+  select,
+  textarea,
+  button,
+  a,
+  label {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
 `;

@@ -8,8 +8,8 @@ interface IUserStore {
 }
 
 const userStore = create<IUserStore>((set) => ({
-  user      : null,
-  setUser   : (user) => set({ user }),
+  user: null,
+  setUser: (user) => set({ user }),
   removeUser: () => set({ user: null }),
 }));
 

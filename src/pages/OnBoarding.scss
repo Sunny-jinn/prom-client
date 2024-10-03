@@ -41,12 +41,14 @@
         background-color: #121212;
         overflow: hidden;
 
-        & > img, video {
+        & > img,
+        video {
           height: 412px;
           object-fit: cover;
         }
 
-        &:not(:last-child) > img, video {
+        &:not(:last-child) > img,
+        video {
           width: 90%;
           max-width: 390px;
           object-fit: contain;
@@ -71,4 +73,3 @@
     }
   }
 }
-

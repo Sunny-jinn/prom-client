@@ -9,7 +9,7 @@ import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import { SearchPostLists } from '@/components/SearchPostLists';
 import SearchResultCard from '@/components/SearchResultCard';
 import { getFeedsAPI, getPicksAPI } from '@/feature/api/post.api';
-import { searchUser } from '@/feature/api/search.api';
+import { SearchPostResponse, searchPostAPI, searchUser } from '@/feature/api/search.api';
 import { User } from '@/feature/types';
 import { PostFeed, PostPick } from '@/feature/types/Post.type';
 import './Search.scss';
@@ -23,6 +23,8 @@ const Search = () => {
   const [feeds, setFeeds] = useState<PostFeed[]>([]);
   const [picks, setPicks] = useState<PostPick[]>([]);
   const [searchResult, setSearchResult] = useState<User.User[]>([]);
+  const [searchFeeds, setSearchFeeds] = useState<SearchPostResponse[]>([]);
+  const [searchPicks, setSearchPicks] = useState<SearchPostResponse[]>([]);
 
   const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value); // 입력값 상태 업데이트
@@ -30,10 +32,25 @@ const Search = () => {
       setSearchResult([]);
     }
     if (event.target.value !== '') {
-      const result = await searchUser(event.target.value);
-      setSearchResult(result);
+      if (tabIndex === 0) {
+        const result = await searchUser(event.target.value);
+        setSearchResult(result);
+      }
+      if (tabIndex === 1) {
+        const postResult = await searchPostAPI(event.target.value);
+        setSearchFeeds(postResult.feeds);
+        setSearchPicks(postResult.shortForms);
+      }
     }
+
+    console.log(searchFeeds, searchPicks);
   };
+
+  useEffect(() => {
+    if (inputValue !== '') {
+      handleInputChange({ target: { value: inputValue } } as React.ChangeEvent<HTMLInputElement>);
+    }
+  }, [tabIndex]);
 
   const handleCancelClick = () => {
     setInputValue(''); // 입력값을 빈 문자열로 설정
@@ -170,6 +187,9 @@ const Search = () => {
                         />
                       ))}
                     </div>
+                  </TabPanel>
+                  <TabPanel p={0}>
+                    {/* <SearchPostLists feeds={searchFeeds} picks={searchPicks} /> */}
                   </TabPanel>
                 </TabPanels>
               </Tabs>

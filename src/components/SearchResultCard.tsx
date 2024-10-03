@@ -25,7 +25,6 @@ const IconBox = styled.div`
   align-items: center;
   width: 51px;
   height: 51px;
-  padding: 10px;
   background-color: #212121;
   border-radius: 999px;
 
@@ -77,7 +76,7 @@ const SearchResultCard = ({ isRecent, recentSearch, setRecentSearch, text, value
 
   return (
     <Wrapper onClick={() => clickHandler()}>
-      <IconBox>
+      <IconBox style={{padding: isRecent ? 10 : 0}}>
         {isRecent ? <img src={icon_search} alt='' /> : <img src={profile} alt='' />}
       </IconBox>
       <span>{text}</span>

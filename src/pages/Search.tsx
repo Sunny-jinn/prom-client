@@ -81,6 +81,11 @@ const Search = () => {
     getRecentSearch()
   }, [])
 
+  const removeAllSearch = () => {
+    localStorage.removeItem('recent-search');
+    setRecentSearch([])
+  }
+
   return (
     <SafeAreaLayout flexDirection="column">
       <NavigatorLayout hasScrollArea>
@@ -107,7 +112,7 @@ const Search = () => {
               <div className="search-post-recent">
                 <span>최근 검색</span>
                 <button>
-                  <span>모두 지우기</span>
+                  <span onClick={() => removeAllSearch()}>모두 지우기</span>
                 </button>
               </div>
               <div className="divider" />

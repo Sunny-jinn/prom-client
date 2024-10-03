@@ -122,7 +122,8 @@ const MyPage = () => {
       idx: index + 2,
     }));
 
-    const lastTagId = userTags.length > 0 ? userTags[userTags.length - 1].tagId : 0;
+    const lastTagId = userTags.length > 0 ? userTags[userTags.length - 1].tagId : 10;
+    console.log(lastTagId);
 
     if (initializeTags.length < 5 && lastTagId) {
       const additionalTags = Array(5 - initializeTags.length)
@@ -203,8 +204,7 @@ const MyPage = () => {
         formdata.append('backgroundImage', backgroundRef?.current.files[0]);
       }
       formdata.append('role', 'ROLE_ARTTY');
-      const data = await updateUserInfoAPI(formdata);
-      console.log('업데이트 결과 : ', data);
+      await updateUserInfoAPI(formdata);
 
       const newTags = tempTags
         .filter(
@@ -382,7 +382,6 @@ const MyPage = () => {
                       ref={provided.innerRef}
                     >
                       {tempTags.slice(1).map((tag, index) => {
-                        console.log(tag.idx);
                         return (
                           <Draggable
                             key={`draggable-${tag.idx}`}

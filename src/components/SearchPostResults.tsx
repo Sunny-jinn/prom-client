@@ -1,34 +1,46 @@
 import { useNavigate } from 'react-router-dom';
 import { SearchPostResponse } from '@/feature/api/search.api';
+import { saveRecentSearch } from '@/utils/storage.utils';
 
 type SearchPostResultsProps = {
   feeds?: SearchPostResponse[];
   picks?: SearchPostResponse[];
+  text: string
 };
 
-export const SearchPostResults = ({ feeds = [], picks = [] }: SearchPostResultsProps) => {
+export const SearchPostResults = ({ feeds = [], picks = [], text }: SearchPostResultsProps) => {
   const navigate = useNavigate();
 
+  const onClickFeed = (id: number) => {
+    saveRecentSearch(text)
+    navigate(`/app/post/${id}`)
+  }
+
+  const onClickPick = (id: number) => {
+    saveRecentSearch(text)
+    navigate(`/app/pick?index=${id}`)
+  }
+
   return (
-    <div className="search-post-result-container">
+    <div className='search-post-result-container'>
       {feeds.length > 0 &&
         feeds.map((item, idx) => (
           <div
-            className="search-result-feed-card"
+            className='search-result-feed-card'
             key={idx}
-            onClick={() => navigate(`/app/post/${item.id}`)}
+            onClick={() => onClickFeed(item.id)}
           >
-            <img src={item.imageUrl} alt="x" />
+            <img src={item.imageUrl} alt='x' />
           </div>
         ))}
       {picks.length > 0 &&
         picks.map((item, idx) => (
           <div
-            className="search-result-pick-card"
+            className='search-result-pick-card'
             key={idx}
-            onClick={() => navigate(`/app/pick?index=${item.id}`)}
+            onClick={() => onClickPick(item.id)}
           >
-            <img src={item.imageUrl} alt="x" />
+            <img src={item.imageUrl} alt='x' />
           </div>
         ))}
     </div>

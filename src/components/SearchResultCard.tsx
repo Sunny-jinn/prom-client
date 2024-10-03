@@ -3,6 +3,8 @@ import styled from '@emotion/styled';
 import icon_delete from '@/assets/img/icon_delete_recent.svg';
 import icon_search from '@/assets/img/icon_search_square.svg';
 import userStore from '@/store/User';
+import { Dispatch, SetStateAction, MouseEvent } from 'react';
+import { removeRecentSearch, saveRecentSearch } from '@/utils/storage.utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -23,13 +25,14 @@ const IconBox = styled.div`
   align-items: center;
   width: 51px;
   height: 51px;
+  padding: 10px;
   background-color: #212121;
   border-radius: 999px;
 
   img {
     width: 100%;
     height: 100%;
-    border-radius: 999px;
+    border-radius: 50%;
     object-fit: cover;
   }
 `;
@@ -37,30 +40,48 @@ const IconBox = styled.div`
 type SearchResultCardProps = {
   isRecent?: boolean;
   text: string;
+  value?: string;
   profile?: string;
   id?: string;
+  setInput?: Dispatch<SetStateAction<string>>
+  recentSearch?: string[];
+  setRecentSearch?: Dispatch<SetStateAction<string[]>>
 };
 
-const SearchResultCard = ({ isRecent, text, profile, id }: SearchResultCardProps) => {
+const SearchResultCard = ({ isRecent, recentSearch, setRecentSearch, text, value, profile, id, setInput }: SearchResultCardProps) => {
   const navigate = useNavigate();
 
   const { user } = userStore();
 
-  const clickHandler = (id: string | undefined) => {
-    if (String(user?.id) === id) {
+  const clickHandler = () => {
+    if(isRecent && setInput) {
+      setInput(text);
+      return;
+    }
+    if(value) {
+      saveRecentSearch(value);
+    }
+    if(String(user?.id) === id) {
       navigate('/app/my-page');
     } else {
       navigate(`/app/profile/${id}`);
     }
   };
+  const onClickX = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    if(!recentSearch || !setRecentSearch) return;
+    const filteredValue = recentSearch.filter(el => el !== text);
+    setRecentSearch(filteredValue)
+    removeRecentSearch(text)
+  }
 
   return (
-    <Wrapper onClick={() => clickHandler(id)}>
+    <Wrapper onClick={() => clickHandler()}>
       <IconBox>
-        {isRecent ? <img src={icon_search} alt="" /> : <img src={profile} alt="" />}
+        {isRecent ? <img src={icon_search} alt='' /> : <img src={profile} alt='' />}
       </IconBox>
       <span>{text}</span>
-      <button>{isRecent && <img src={icon_delete} alt="x" />}</button>
+      <button onClick={(e) => onClickX(e)}>{isRecent && <img src={icon_delete} alt='x' />}</button>
     </Wrapper>
   );
 };

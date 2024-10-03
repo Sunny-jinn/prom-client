@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 // import icon_music from '@/assets/img/icon_Music.svg';
 // import icon_visual from '@/assets/img/icon_Visual.svg';
@@ -29,30 +29,39 @@ const Search = () => {
   const [searchFeeds, setSearchFeeds] = useState<SearchPostResponse[]>([]);
   const [searchPicks, setSearchPicks] = useState<SearchPostResponse[]>([]);
 
-  const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const [recentSearch, setRecentSearch] = useState<string[]>([])
+
+  const handleInputChange = async (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value); // 입력값 상태 업데이트
-    if (event.target.value === '') {
+    await getResult(event.target.value)
+  };
+
+  const getResult = async(value: string) => {
+    if (value === '') {
       setTabIndex(0);
       setSearchResult([]);
     }
-    if (event.target.value !== '') {
-      const result = await searchUser(event.target.value);
+    if (value !== '') {
+      const result = await searchUser(value);
       setSearchResult(result);
-      const postResult = await searchPostAPI(event.target.value);
+      const postResult = await searchPostAPI(value);
       setSearchFeeds(postResult.feeds);
       setSearchPicks(postResult.shortForms);
     }
-
-    console.log(searchFeeds, searchPicks);
-  };
+  }
 
   const handleCancelClick = () => {
     setInputValue(''); // 입력값을 빈 문자열로 설정
-    if (inputRef.current) {
-      inputRef.current.value = '';
-      inputRef.current.blur();
-    }
+    setIsFocused(false)
   };
+
+  const getRecentSearch = () => {
+    const recentSearch = localStorage.getItem('recent-search');
+    if(recentSearch){
+      console.log(JSON.parse(recentSearch));
+      setRecentSearch(JSON.parse(recentSearch))
+    }
+  }
   //TODO: 진우야 여기 필요한 query 넣으면됨, useEffect 안에 넣어놓고 쓰는게 나을듯 query 많아서?
   useEffect(() => {
     const fetchData = async () => {
@@ -64,24 +73,32 @@ const Search = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    getResult(inputValue);
+  }, [inputValue])
+
+  useEffect(() => {
+    getRecentSearch()
+  }, [])
+
   return (
     <SafeAreaLayout flexDirection="column">
       <NavigatorLayout hasScrollArea>
         <div id="Search">
           <div className="search-input-container">
             <CustomSearchInput
+              value={inputValue}
               placeholder="검색어를 입력해주세요."
               style={{ fontSize: '16px' }}
               ref={inputRef}
               onChange={handleInputChange}
               onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
             />
             <button onClick={handleCancelClick}>
               <span>취소</span>
             </button>
           </div>
-          {!isFocused && inputValue === '' && feeds && picks && (
+          {(!isFocused && inputValue === '' && feeds && picks) && (
             <SearchPostLists feeds={feeds} picks={picks} />
           )}
 
@@ -95,9 +112,9 @@ const Search = () => {
               </div>
               <div className="divider" />
               <div className="search-post-recent-lists">
-                <SearchResultCard isRecent text="감성 글" />
-                <SearchResultCard isRecent text="LandofPeace" />
-                <SearchResultCard isRecent text="지소쿠리클럽" />
+                {recentSearch.map(el =>
+                  <SearchResultCard recentSearch={recentSearch} setRecentSearch={setRecentSearch} isRecent={true} setInput={setInputValue} text={el} />
+                )}
               </div>
             </>
           )}
@@ -188,6 +205,7 @@ const Search = () => {
                     <div className="search-post-recent-lists">
                       {searchResult.map((item) => (
                         <SearchResultCard
+                          value={inputValue}
                           key={item.id}
                           id={String(item.id)}
                           text={item.username}
@@ -197,10 +215,10 @@ const Search = () => {
                     </div>
                   </TabPanel>
                   <TabPanel p={0}>
-                    <SearchPostResults feeds={searchFeeds} />
+                    <SearchPostResults text={inputValue} feeds={searchFeeds} />
                   </TabPanel>
                   <TabPanel p={0}>
-                    <SearchPostResults picks={searchPicks} />
+                    <SearchPostResults text={inputValue} picks={searchPicks} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>

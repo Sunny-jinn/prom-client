@@ -27,8 +27,6 @@ const FollowList = () => {
     following: state.following,
   }));
 
-  console.log(follower, following);
-
   return (
     <SafeAreaLayout flexDirection="column">
       <div id="FollowList">

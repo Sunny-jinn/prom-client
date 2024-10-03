@@ -204,7 +204,7 @@ const PickContent = ({
                 nickname={item.userName}
                 content={item.comment}
                 date={timeAgo(item.createdAt)}
-                isArtist={item.userId === user?.id}
+                isArtist={item.userId === pick?.user.id}
               />
             ))}
             <Box

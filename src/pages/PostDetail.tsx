@@ -295,7 +295,7 @@ const PostDetail = () => {
                   nickname={item.userName}
                   content={item.comment}
                   date={timeAgo(item.createdAt)}
-                  isArtist={item.userId === 12}
+                  isArtist={item.userId === feedInfo?.user.id}
                 />
               ))}
               <Box

@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
-import icon_music from '@/assets/img/icon_Music.svg';
-import icon_visual from '@/assets/img/icon_Visual.svg';
-import icon_writing from '@/assets/img/icon_Writing.svg';
+// import icon_music from '@/assets/img/icon_Music.svg';
+// import icon_visual from '@/assets/img/icon_Visual.svg';
+// import icon_writing from '@/assets/img/icon_Writing.svg';
+import icon_feeds from '@/assets/img/tabbar_all.png';
+import icon_picks from '@/assets/img/tabbar_shorts.png';
 import CustomSearchInput from '@/components/CustomSearchInput';
 import NavigatorLayout from '@/components/NavigatorLayout';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import { SearchPostLists } from '@/components/SearchPostLists';
+import { SearchPostResults } from '@/components/SearchPostResults';
 import SearchResultCard from '@/components/SearchResultCard';
 import { getFeedsAPI, getPicksAPI } from '@/feature/api/post.api';
 import { SearchPostResponse, searchPostAPI, searchUser } from '@/feature/api/search.api';
@@ -29,28 +32,19 @@ const Search = () => {
   const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value); // 입력값 상태 업데이트
     if (event.target.value === '') {
+      setTabIndex(0);
       setSearchResult([]);
     }
     if (event.target.value !== '') {
-      if (tabIndex === 0) {
-        const result = await searchUser(event.target.value);
-        setSearchResult(result);
-      }
-      if (tabIndex === 1) {
-        const postResult = await searchPostAPI(event.target.value);
-        setSearchFeeds(postResult.feeds);
-        setSearchPicks(postResult.shortForms);
-      }
+      const result = await searchUser(event.target.value);
+      setSearchResult(result);
+      const postResult = await searchPostAPI(event.target.value);
+      setSearchFeeds(postResult.feeds);
+      setSearchPicks(postResult.shortForms);
     }
 
     console.log(searchFeeds, searchPicks);
   };
-
-  useEffect(() => {
-    if (inputValue !== '') {
-      handleInputChange({ target: { value: inputValue } } as React.ChangeEvent<HTMLInputElement>);
-    }
-  }, [tabIndex]);
 
   const handleCancelClick = () => {
     setInputValue(''); // 입력값을 빈 문자열로 설정
@@ -109,7 +103,7 @@ const Search = () => {
           )}
           {inputValue !== '' && (
             <>
-              <div className="search-post-tags">
+              {/* <div className="search-post-tags">
                 <button>
                   <div className="search-post-tag active">
                     <span>최신 순</span>
@@ -142,14 +136,9 @@ const Search = () => {
                     <span>WRITING</span>
                   </div>
                 </button>
-              </div>
+              </div> */}
 
-              <Tabs
-                isFitted
-                variant={'unstyled'}
-                mt={'11px'}
-                onChange={(index) => setTabIndex(index)}
-              >
+              <Tabs isFitted variant={'unstyled'} onChange={(index) => setTabIndex(index)}>
                 <TabList>
                   <Tab pt={'14px'} pb={'14px'}>
                     <Text
@@ -170,12 +159,31 @@ const Search = () => {
                         opacity: `${tabIndex !== 1 && '50%'}`,
                       }}
                     >
-                      컨텐츠
+                      <img
+                        src={icon_feeds}
+                        alt=""
+                        className={`search-result-icon ${tabIndex === 1 && 'active'}`}
+                      />
+                    </Text>
+                  </Tab>
+                  <Tab>
+                    <Text
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        opacity: `${tabIndex !== 2 && '50%'}`,
+                      }}
+                    >
+                      <img
+                        src={icon_picks}
+                        alt=""
+                        className={`search-result-icon ${tabIndex === 2 && 'active'}`}
+                      />
                     </Text>
                   </Tab>
                 </TabList>
                 <TabIndicator height={'2px'} bg={'#7Bf7ff'} />
-                <TabPanels>
+                <TabPanels mt={'15px'}>
                   <TabPanel p={0}>
                     <div className="search-post-recent-lists">
                       {searchResult.map((item) => (
@@ -189,7 +197,10 @@ const Search = () => {
                     </div>
                   </TabPanel>
                   <TabPanel p={0}>
-                    {/* <SearchPostLists feeds={searchFeeds} picks={searchPicks} /> */}
+                    <SearchPostResults feeds={searchFeeds} />
+                  </TabPanel>
+                  <TabPanel p={0}>
+                    <SearchPostResults picks={searchPicks} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>

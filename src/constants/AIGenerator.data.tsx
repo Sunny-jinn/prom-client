@@ -190,8 +190,8 @@ export const AI_GENERATOR_DATA = (
           data: [
             { label: '자연', value: 'NATURE' },
             { label: '도시', value: 'CITY' },
-            { label: '정물', value: 'STILL-LIF' },
-            { label: '추상', value: 'ABSTRACT_ART' },
+            // { label: '정물', value: 'STILL-LIFE' },
+            // { label: '추상', value: 'ABSTRACT_ART' },
           ],
         },
         {

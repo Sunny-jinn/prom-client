@@ -141,6 +141,12 @@
   }
 }
 
+.preferred-category{
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
 .growth {
   display: flex;
   flex-direction: column;

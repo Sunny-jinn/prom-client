@@ -30,6 +30,7 @@ import './Home.scss';
 import CustomHeader from '@/components/CustomHeader';
 import { getNotificationsAPI, Notification } from '@/feature/api/notification.api';
 import { timeAgo } from '@/utils/date.utils';
+import _ from 'lodash';
 
 dayjs.extend(relativeTime);
 
@@ -46,11 +47,11 @@ const Home = () => {
   }
 
   const todayAlarm = useMemo(() => {
-    return alarms.filter(el => dayjs().diff(el.createdAt, 'd') === 0)
+    return _.sortBy(alarms.filter(el => dayjs().diff(el.createdAt, 'd') === 0), 'createdAt').reverse()
   },[alarms]);
 
   const weekAlarm = useMemo(() => {
-    return alarms.filter(el => dayjs().diff(el.createdAt, 'd') !== 0)
+    return _.sortBy(alarms.filter(el => dayjs().diff(el.createdAt, 'd') !== 0), 'createdAt').reverse()
   },[alarms]);
 
   useEffect(() => {
@@ -71,9 +72,11 @@ const Home = () => {
         <DrawerOverlay />
         <DrawerContent>
           <SafeAreaLayout flexDirection={'column'}>
-            <CustomHeader leftOnClick={() => onClose()}>
-              <span>알림</span>
-            </CustomHeader>
+            <div style={{display: 'flex', padding: '0 16px', alignItems: 'center', width: '100%'}}>
+              <CustomHeader leftOnClick={() => onClose()}>
+                <span>알림</span>
+              </CustomHeader>
+            </div>
             <div className='home-alarm-list'>
               <ScrollArea>
                 <div className='home-alarm-list-container'>
@@ -143,6 +146,7 @@ const Home = () => {
             </div>
           </div>
           <div className='home'>
+            {/*<PreferredCategory/>*/}
             <GrowthOfTheMonth />
             <Articles />
             <div className='home-posts'>
@@ -154,9 +158,24 @@ const Home = () => {
         </NavigatorLayout>
       </SafeAreaLayout>
     </>
-
   );
 };
+
+// const PreferredCategory = () => {
+//
+//   const user  = userStore(state => state)
+//   console.log(user);
+//   const [myCategory, setMyCategory] = useState([]);
+//
+//   const getMyCategory = async() => {
+//
+//   }
+//   return (
+//     <div className='preferred-category'>
+//       asd
+//     </div>
+//   )
+// }
 
 const GrowthOfTheMonth = () => {
   const [growthUser, setGrowthUser] = useState<User.User | null>(null);

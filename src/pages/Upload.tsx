@@ -412,7 +412,7 @@ const UploadPick = ({ onClose, uploadType, step, setStep }: UploadContentProps) 
               type="file"
               onChange={(e) => handlePick(e)}
               ref={ref}
-              accept={'video/*, audio/*'}
+              accept={'video/mp4, audio/*'}
             />
             <div className="upload-content-selector">
               {!pick && (

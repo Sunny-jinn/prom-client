@@ -29,7 +29,6 @@ import { followUserAPI, getMyFollowingsAPI, unFollowUserAPI } from '@/feature/ap
 import { Post } from '@/feature/types';
 import userStore from '@/store/User';
 import { timeAgo } from '@/utils/date.utils';
-import { useNavigate } from 'react-router-dom';
 import useAppNavigate from '@/hooks/useAppNavigate';
 
 type PickViewerProps = {

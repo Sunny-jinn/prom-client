@@ -690,8 +690,11 @@ export const ProfileNumbers = ({
       </button>
       {!isMyPage ? (
         <div className="my-page-info  flex-1">
-          <button className="my-page-profile-follow-button" onClick={onClick}>
-            <span>{isFollowing ? '팔로우 중' : '팔로우'}</span>
+          <button
+            className={`my-page-profile-follow-button ${isFollowing && 'isFollowing'}`}
+            onClick={onClick}
+          >
+            <span>{isFollowing ? '팔로잉' : '팔로우'}</span>
           </button>
         </div>
       ) : (

@@ -7,10 +7,12 @@ import CustomSearchInput from '@/components/CustomSearchInput';
 import FollowUserCard from '@/components/FollowUserCard';
 import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import followerStore from '@/store/Follow';
+import userStore from '@/store/User';
 import './FollowList.scss';
 
 const FollowList = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
+  const { user } = userStore();
 
   const navigate = useNavigate();
 
@@ -34,7 +36,7 @@ const FollowList = () => {
           <button onClick={() => navigate(-1)}>
             <img src={icon_left_arrow} alt="left" />
           </button>
-          <span>김진우</span>
+          <span>{user?.username}</span>
           <button className="hidden" disabled>
             <img src={icon_left_arrow} alt="left" />
           </button>

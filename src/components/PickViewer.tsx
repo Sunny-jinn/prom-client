@@ -29,6 +29,8 @@ import { followUserAPI, getMyFollowingsAPI, unFollowUserAPI } from '@/feature/ap
 import { Post } from '@/feature/types';
 import userStore from '@/store/User';
 import { timeAgo } from '@/utils/date.utils';
+import { useNavigate } from 'react-router-dom';
+import useAppNavigate from '@/hooks/useAppNavigate';
 
 type PickViewerProps = {
   pickIds: number[];
@@ -74,6 +76,7 @@ const PickContent = ({
   activeIndex: number;
   index: number;
 }) => {
+  const navigate = useAppNavigate();
   const [loading, setLoading] = useState(true);
   const [pick, setPick] = useState<Post.PostPick | null>(null);
   const [isFollow, setIsFollow] = useState(false);
@@ -176,6 +179,10 @@ const PickContent = ({
       console.log('error');
     }
   };
+
+  const navigateToProfile = (userId: number) => {
+    navigate(`profile/${userId}`)
+  }
 
   useEffect(() => {
     if (pickId && activeIndex === index) {
@@ -305,8 +312,8 @@ const PickContent = ({
                     <div className="pick-features-info">
                       <div className="pick-features-user-wrapper">
                         <div className="pick-features-user">
-                          <img src={pick.user.profileImage} alt="profile" />
-                          <span>{pick.user.username}</span>
+                          <img src={pick.user.profileImage} alt="profile" onClick={() => navigateToProfile(pick?.user.id)} />
+                          <span onClick={() => navigateToProfile(pick?.user.id)}>{pick.user.username}</span>
                         </div>
                         {user?.id !== pick.user.id && (
                           <button

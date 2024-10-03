@@ -139,7 +139,7 @@ const Home = () => {
                   <span>{alarms.length}</span>
                 </div>
               )}
-              <Alarm onClick={() => onOpen()} width={19} height={19} />
+              <Alarm onClick={() => alarms.length > 0 ? onOpen() : undefined} width={19} height={19} />
             </div>
           </div>
           <div className='home'>

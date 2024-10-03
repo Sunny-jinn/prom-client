@@ -253,6 +253,11 @@
         font-weight: 500;
         line-height: 15.51px;
       }
+
+      &.isFollowing {
+        background-color: #7bf7ff;
+        color: #000;
+      }
     }
     .my-page-profile-follow-button:active {
       background-color: #7bf7ff;

@@ -27,9 +27,9 @@ import {
 } from '@/feature/api/post.api';
 import { followUserAPI, getMyFollowingsAPI, unFollowUserAPI } from '@/feature/api/user.api';
 import { Post } from '@/feature/types';
+import useAppNavigate from '@/hooks/useAppNavigate';
 import userStore from '@/store/User';
 import { timeAgo } from '@/utils/date.utils';
-import useAppNavigate from '@/hooks/useAppNavigate';
 
 type PickViewerProps = {
   pickIds: number[];
@@ -180,8 +180,8 @@ const PickContent = ({
   };
 
   const navigateToProfile = (userId: number) => {
-    navigate(`profile/${userId}`)
-  }
+    navigate(`profile/${userId}`);
+  };
 
   useEffect(() => {
     if (pickId && activeIndex === index) {
@@ -311,8 +311,14 @@ const PickContent = ({
                     <div className="pick-features-info">
                       <div className="pick-features-user-wrapper">
                         <div className="pick-features-user">
-                          <img src={pick.user.profileImage} alt="profile" onClick={() => navigateToProfile(pick?.user.id)} />
-                          <span onClick={() => navigateToProfile(pick?.user.id)}>{pick.user.username}</span>
+                          <img
+                            src={pick.user.profileImage}
+                            alt="profile"
+                            onClick={() => navigateToProfile(pick?.user.id)}
+                          />
+                          <span onClick={() => navigateToProfile(pick?.user.id)}>
+                            {pick.user.username}
+                          </span>
                         </div>
                         {user?.id !== pick.user.id && (
                           <button

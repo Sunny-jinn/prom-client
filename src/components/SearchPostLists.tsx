@@ -1,6 +1,6 @@
+import styled from '@emotion/styled';
 import { PostFeed, PostPick } from '@/feature/types/Post.type';
 import useAppNavigate from '@/hooks/useAppNavigate';
-import styled from '@emotion/styled';
 
 const renderFeedShorts = (feeds: PostFeed[], shorts: PostPick[]) => {
   const feedChunkSize = 4;
@@ -32,28 +32,37 @@ export const SearchPostLists = ({ feeds, picks }: SearchPostListsProps) => {
   const navigate = useAppNavigate();
 
   return (
-    <div className='search-post-list-container'>
+    <div className="search-post-list-container">
       {feedShortsChunks.map((chunk, index) => {
-        if(index % 2 === 0) {
+        if (index % 2 === 0) {
           return (
-            <PostWrapper style={{gridTemplateColumns: '2fr 1fr'}}>
+            <PostWrapper style={{ gridTemplateColumns: '2fr 1fr' }}>
               <PostFeedWrapper>
-                {chunk.feeds.map(el => <PostFeedCard onClick={() => navigate(`post/${el.feedId}`)} src={el.images[0]} />)}
+                {chunk.feeds.map((el) => (
+                  <PostFeedCard onClick={() => navigate(`post/${el.feedId}`)} src={el.images[0]} />
+                ))}
               </PostFeedWrapper>
-              <PostPickCard onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)} src={chunk.short.thumbnailUrl} />
+              <PostPickCard
+                onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)}
+                src={chunk.short.thumbnailUrl}
+              />
             </PostWrapper>
           );
         }
         return (
-          <PostWrapper style={{gridTemplateColumns: '1fr 2fr'}}>
-            <PostPickCard onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)} src={chunk.short.thumbnailUrl} />
+          <PostWrapper style={{ gridTemplateColumns: '1fr 2fr' }}>
+            <PostPickCard
+              onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)}
+              src={chunk.short.thumbnailUrl}
+            />
             <PostFeedWrapper>
-              {chunk.feeds.map(el => <PostFeedCard onClick={() => navigate(`post/${el.feedId}`)} src={el.images[0]} />)}
+              {chunk.feeds.map((el) => (
+                <PostFeedCard onClick={() => navigate(`post/${el.feedId}`)} src={el.images[0]} />
+              ))}
             </PostFeedWrapper>
           </PostWrapper>
         );
       })}
-
     </div>
   );
 };

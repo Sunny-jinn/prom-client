@@ -6,7 +6,7 @@ export type Notification = {
   userImage: string;
   createdAt: string;
   type: string;
-}
+};
 
 const getNotificationsAPI = async (): Promise<Notification[]> => {
   const result = await Server.get(`notifications`);
@@ -14,6 +14,4 @@ const getNotificationsAPI = async (): Promise<Notification[]> => {
   return data;
 };
 
-export {
-  getNotificationsAPI,
-};
+export { getNotificationsAPI };

@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import _ from 'lodash';
 import NavigatorLayout from '@/components/NavigatorLayout';
 import PickViewer from '@/components/PickViewer';
 import { deleteCacheAPI, getPicksAPI } from '@/feature/api/post.api';
 import '@/pages/Picks.scss';
-import _ from 'lodash';
 
 const Picks = () => {
   const location = useLocation();
@@ -15,7 +15,7 @@ const Picks = () => {
   // query 확인 후 index id가 존재하면 해당 id를 첫번째 index로 설정
   // 없을 경우 randomly하게 조회한 아이디들로 배열 구성
 
-  const uniqPickIDs = useMemo(() => _.uniq(pickIds), [pickIds])
+  const uniqPickIDs = useMemo(() => _.uniq(pickIds), [pickIds]);
   const getPicks = async () => {
     try {
       const result = await getPicksAPI({
@@ -59,7 +59,6 @@ const Picks = () => {
       getPicks();
     }
   }, [pickIds, currentIndex]);
-
 
   useEffect(() => {
     return () => {

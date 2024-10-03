@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
+import _ from 'lodash';
 // import icon_music from '@/assets/img/icon_Music.svg';
 // import icon_visual from '@/assets/img/icon_Visual.svg';
 // import icon_writing from '@/assets/img/icon_Writing.svg';
@@ -16,7 +17,6 @@ import { SearchPostResponse, searchPostAPI, searchUser } from '@/feature/api/sea
 import { User } from '@/feature/types';
 import { PostFeed, PostPick } from '@/feature/types/Post.type';
 import './Search.scss';
-import _ from 'lodash';
 
 const Search = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
@@ -30,14 +30,14 @@ const Search = () => {
   const [searchFeeds, setSearchFeeds] = useState<SearchPostResponse[]>([]);
   const [searchPicks, setSearchPicks] = useState<SearchPostResponse[]>([]);
 
-  const [recentSearch, setRecentSearch] = useState<string[]>([])
+  const [recentSearch, setRecentSearch] = useState<string[]>([]);
 
   const handleInputChange = async (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value); // 입력값 상태 업데이트
-    await getResult(event.target.value)
+    await getResult(event.target.value);
   };
 
-  const getResult = async(value: string) => {
+  const getResult = async (value: string) => {
     if (value === '') {
       setTabIndex(0);
       setSearchResult([]);
@@ -49,25 +49,25 @@ const Search = () => {
       setSearchFeeds(postResult.feeds);
       setSearchPicks(postResult.shortForms);
     }
-  }
+  };
 
   const handleCancelClick = () => {
     setInputValue(''); // 입력값을 빈 문자열로 설정
-    setIsFocused(false)
+    setIsFocused(false);
   };
 
   const getRecentSearch = () => {
     const recentSearch = localStorage.getItem('recent-search');
-    if(recentSearch){
+    if (recentSearch) {
       console.log(JSON.parse(recentSearch));
-      setRecentSearch(JSON.parse(recentSearch))
+      setRecentSearch(JSON.parse(recentSearch));
     }
-  }
+  };
   //TODO: 진우야 여기 필요한 query 넣으면됨, useEffect 안에 넣어놓고 쓰는게 나을듯 query 많아서?
   useEffect(() => {
     const fetchData = async () => {
-      const feeddata = await getFeedsAPI({orderBy: 'desc', size: 40});
-      const pickdata = await getPicksAPI({orderBy: 'desc', size: 20});
+      const feeddata = await getFeedsAPI({ orderBy: 'desc', size: 40 });
+      const pickdata = await getPicksAPI({ orderBy: 'desc', size: 20 });
       setFeeds(_.shuffle(feeddata));
       setPicks(_.shuffle(pickdata));
     };
@@ -76,16 +76,16 @@ const Search = () => {
 
   useEffect(() => {
     getResult(inputValue);
-  }, [inputValue])
+  }, [inputValue]);
 
   useEffect(() => {
-    getRecentSearch()
-  }, [])
+    getRecentSearch();
+  }, []);
 
   const removeAllSearch = () => {
     localStorage.removeItem('recent-search');
-    setRecentSearch([])
-  }
+    setRecentSearch([]);
+  };
 
   return (
     <SafeAreaLayout flexDirection="column">
@@ -104,7 +104,7 @@ const Search = () => {
               <span>취소</span>
             </button>
           </div>
-          {(!isFocused && inputValue === '' && feeds && picks) && (
+          {!isFocused && inputValue === '' && feeds && picks && (
             <SearchPostLists feeds={feeds} picks={picks} />
           )}
 
@@ -118,9 +118,15 @@ const Search = () => {
               </div>
               <div className="divider" />
               <div className="search-post-recent-lists">
-                {recentSearch.map(el =>
-                  <SearchResultCard recentSearch={recentSearch} setRecentSearch={setRecentSearch} isRecent={true} setInput={setInputValue} text={el} />
-                )}
+                {recentSearch.map((el) => (
+                  <SearchResultCard
+                    recentSearch={recentSearch}
+                    setRecentSearch={setRecentSearch}
+                    isRecent={true}
+                    setInput={setInputValue}
+                    text={el}
+                  />
+                ))}
               </div>
             </>
           )}

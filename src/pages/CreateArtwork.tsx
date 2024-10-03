@@ -12,9 +12,9 @@ import { SafeAreaLayout } from '@/components/SafeAreaLayout';
 import { FeedImagesResponse, getFeedsImages, postArtwork } from '@/feature/api/artworks.api';
 import { getUserPicks } from '@/feature/api/mypage.api';
 import { PostPick } from '@/feature/types/Post.type';
-import './MyPageAllPosts.scss';
+import './CreateArtwork.scss';
 
-const MyPageAllPosts = () => {
+const CreateArtwork = () => {
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [selectedPosts, setSelectedPosts] = useState<FeedImagesResponse[]>([]);
   const [selectedPicks, setSelectedPicks] = useState<PostPick[]>([]);
@@ -251,4 +251,4 @@ const MyPageAllPosts = () => {
   );
 };
 
-export default MyPageAllPosts;
+export default CreateArtwork;

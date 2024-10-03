@@ -12,9 +12,9 @@ import SignIn from '@/pages/SignIn';
 import Splash from '@/pages/Splash';
 import userStore from '@/store/User';
 import ArtworkDetailPage from './pages/ArtworkDetailPage';
+import CreateArtwork from './pages/CreateArtwork';
 import FollowList from './pages/FollowList';
 import MyPage from './pages/MyPage';
-import MyPageAllPosts from './pages/MyPageAllPosts';
 import PostDetail from './pages/PostDetail';
 import Search from './pages/Search';
 import SignUp from './pages/SignUp';
@@ -33,7 +33,7 @@ const RootRouter = () => {
           <Route path="home" element={<Home />} />
           <Route path="my-page/*">
             <Route index element={<MyPage />} />
-            <Route path={'all-posts'} element={<MyPageAllPosts />} />
+            <Route path={'all-posts'} element={<CreateArtwork />} />
             <Route path={'follow-list/:status'} element={<FollowList />} />
           </Route>
           <Route path="post/:post_id" element={<PostDetail />} />

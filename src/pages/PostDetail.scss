@@ -27,6 +27,12 @@
       }
     }
 
+    .post-detail-back-btn {
+      img {
+        filter: brightness(0) invert(100%);
+      }
+    }
+
     .post-detail-ellipsis-btn {
       width: 25px;
     }

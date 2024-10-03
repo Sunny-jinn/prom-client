@@ -29,6 +29,10 @@
       object-fit: cover;
       border-radius: 15px;
     }
+
+    .search-result-card {
+      aspect-ratio: 1 /1;
+    }
   }
 
   .search-post-list-cards {
@@ -154,6 +158,44 @@
       img {
         width: 14.69px;
         height: 14.69px;
+      }
+    }
+  }
+
+  .search-result-icon {
+    width: 30px;
+
+    &.active {
+      filter: brightness(0) invert(100%);
+    }
+  }
+
+  .search-post-result-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    margin-top: 5px;
+
+    img {
+      object-fit: cover;
+      border-radius: 15px;
+    }
+
+    .search-result-feed-card {
+      aspect-ratio: 1 /1;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .search-result-pick-card {
+      aspect-ratio: 1 /2;
+
+      img {
+        width: 100%;
+        height: 100%;
       }
     }
   }

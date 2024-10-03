@@ -1,6 +1,7 @@
 import React from 'react';
 import { PostFeed, PostPick } from '@/feature/types/Post.type';
 import useAppNavigate from '@/hooks/useAppNavigate';
+import styled from '@emotion/styled';
 
 const renderFeedShorts = (feeds: PostFeed[], shorts: PostPick[]) => {
   const feedChunkSize = 4;
@@ -32,59 +33,57 @@ export const SearchPostLists = ({ feeds, picks }: SearchPostListsProps) => {
   const navigate = useAppNavigate();
 
   return (
-    <div className="search-post-list-container">
-      {feedShortsChunks.map((chunk, index) => (
-        <React.Fragment key={index}>
-          {/* 짝수 인덱스일 때는 post cards가 왼쪽, shorts가 오른쪽 */}
-          {index % 2 === 0 ? (
-            <>
-              <div className="search-post-list-cards">
-                {chunk.feeds.map((feed, feedIndex) => (
-                  <div
-                    className="search-post-list-card"
-                    key={feedIndex}
-                    onClick={() => navigate(`post/${feed.feedId}`)}
-                  >
-                    <img src={feed.images[0]} alt="Feed" />
-                  </div>
-                ))}
-              </div>
-              <div className="search-post-list-shorts">
-                <div
-                  className="search-post-list-shorts-card"
-                  onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)}
-                >
-                  <img src={chunk.short.thumbnailUrl} alt="Short" />
-                </div>
-              </div>
-            </>
-          ) : (
-            /* 홀수 인덱스일 때는 shorts가 왼쪽, post cards가 오른쪽 */
-            <>
-              <div className="search-post-list-shorts">
-                <div className="search-post-list-shorts-card">
-                  <img
-                    src={chunk.short.thumbnailUrl}
-                    alt="Short"
-                    onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)}
-                  />
-                </div>
-              </div>
-              <div className="search-post-list-cards">
-                {chunk.feeds.map((feed, feedIndex) => (
-                  <div
-                    className="search-post-list-card"
-                    key={feedIndex}
-                    onClick={() => navigate(`post/${feed.feedId}`)}
-                  >
-                    <img src={feed.images[0]} alt="Feed" />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </React.Fragment>
-      ))}
+    <div className='search-post-list-container'>
+      {feedShortsChunks.map((chunk, index) => {
+        if(index % 2 === 0) {
+          return (
+            <PostWrapper style={{gridTemplateColumns: '2fr 1fr'}}>
+              <PostFeedWrapper>
+                {chunk.feeds.map(el => <PostFeedCard onClick={() => navigate(`post/${el.feedId}`)} src={el.images[0]} />)}
+              </PostFeedWrapper>
+              <PostPickCard onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)} src={chunk.short.thumbnailUrl} />
+            </PostWrapper>
+          );
+        }
+        return (
+          <PostWrapper style={{gridTemplateColumns: '1fr 2fr'}}>
+            <PostPickCard onClick={() => navigate(`pick?index=${chunk.short.shortFormId}`)} src={chunk.short.thumbnailUrl} />
+            <PostFeedWrapper>
+              {chunk.feeds.map(el => <PostFeedCard onClick={() => navigate(`post/${el.feedId}`)} src={el.images[0]} />)}
+            </PostFeedWrapper>
+          </PostWrapper>
+        );
+      })}
+
     </div>
   );
 };
+
+const PostWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  width: 100%;
+  grid-gap: 5px;
+`;
+
+const PostFeedWrapper = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+  grid-gap: 5px;
+`;
+
+const PostFeedCard = styled.img`
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 15px;
+`;
+
+const PostPickCard = styled.img`
+  width: 100%;
+  object-fit: cover;
+  aspect-ratio: 1/2;
+  border-radius: 15px;
+  grid-row: span / 2;
+`;

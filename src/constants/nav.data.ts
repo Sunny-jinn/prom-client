@@ -1,38 +1,38 @@
 import { FunctionComponent, SVGProps } from 'react';
 import Home from '@/assets/img/icon_nav_home.svg?react';
+import MyPage from '@/assets/img/icon_nav_mypage.svg?react';
 import Search from '@/assets/img/icon_nav_search.svg?react';
 import Shorts from '@/assets/img/icon_nav_shorts.svg?react';
-import MyPage from '@/assets/img/icon_nav_mypage.svg?react';
 
 export type NavData = {
   icon: FunctionComponent<SVGProps<SVGSVGElement>>;
   label: string;
   root: string;
-}
+};
 
 export const NAV_DATA: Record<string, Array<NavData>> = {
-  left : [
+  left: [
     {
-      icon : Home,
+      icon: Home,
       label: '홈',
-      root: 'home'
+      root: 'home',
     },
     {
-      icon : Search,
+      icon: Search,
       label: '탐색',
-      root: 'search'
+      root: 'search',
     },
   ],
   right: [
     {
-      icon : Shorts,
+      icon: Shorts,
       label: '쇼츠',
-      root: 'shorts'
+      root: 'pick',
     },
     {
-      icon : MyPage,
+      icon: MyPage,
       label: 'MY',
-      root: 'my-page'
+      root: 'my-page',
     },
   ],
 };

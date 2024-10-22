@@ -1,0 +1,143 @@
+#Search {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  padding: 0 16px 20px 16px;
+  color: #fff;
+
+  .search-input-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+    margin-bottom: 7px;
+    align-items: center;
+
+    div {
+      flex: 1;
+    }
+  }
+
+  .search-post-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+  }
+
+  .search-post-recent {
+    display: flex;
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 16.71px;
+    color: #a1a1a1;
+
+    button {
+      margin-left: auto;
+      color: #47a5ac;
+    }
+  }
+
+  .divider {
+    margin: 18px -16px 0 -16px;
+    border-bottom: 1px solid #3e3e3e;
+  }
+
+  .search-post-recent-lists {
+    display: flex;
+    flex-direction: column;
+    gap: 27px;
+    margin-top: 13px;
+  }
+
+  .search-post-tags {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-top: 12px;
+    width: 100%;
+
+    .search-post-tag {
+      display: flex;
+      justify-content: center;
+      gap: 9.18px;
+      padding: 9px 15.5px;
+      color: #7df7ff;
+      box-shadow: 0 0 0 1px #7df7ff inset;
+      border-radius: 36px;
+
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 16.71px;
+
+      &.active {
+        background: #7df7ff;
+        color: #000;
+      }
+
+      &.mvw {
+        background-color: #000;
+        box-shadow: none;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 15.51px;
+      }
+
+      &.music {
+        color: #ff7193;
+      }
+
+      &.visual {
+        color: #5ded6b;
+      }
+
+      &.writing {
+        color: #6f63ff;
+      }
+
+      img {
+        width: 14.69px;
+        height: 14.69px;
+      }
+    }
+  }
+
+  .search-result-icon {
+    width: 30px;
+
+    &.active {
+      filter: brightness(0) invert(100%);
+    }
+  }
+
+  .search-post-result-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    margin-top: 5px;
+
+    img {
+      object-fit: cover;
+      border-radius: 15px;
+    }
+
+    .search-result-feed-card {
+      aspect-ratio: 1 /1;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .search-result-pick-card {
+      aspect-ratio: 1 /2;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}

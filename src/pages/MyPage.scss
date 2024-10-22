@@ -5,16 +5,22 @@
   flex-direction: column;
   position: relative;
   width: 100%;
-  padding: 0 16px 150px 16px;
+  padding: 0 16px 50px 16px;
   color: #fff;
+
+  .my-page-header-container {
+    position: absolute;
+    box-sizing: border-box;
+    width: calc(100% - 16px);
+    background: none;
+    z-index: 1;
+  }
 
   .my-page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 51px;
-
-    z-index: 1;
 
     img {
       width: 25px;
@@ -42,9 +48,13 @@
     }
   }
 
+  .my-page-update-profile {
+    display: none;
+  }
+
   .background-image {
     position: relative;
-    margin-top: -85px;
+    // margin-top: -85px;
 
     .background-image-wrapper {
       position: relative;
@@ -57,12 +67,13 @@
         left: 0;
         width: 100%;
         height: 25%;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       }
     }
 
     img {
       width: 100%;
+      aspect-ratio: 1 / 1.03;
       object-fit: cover;
       border-bottom-left-radius: 25px;
       border-bottom-right-radius: 25px;
@@ -82,36 +93,73 @@
       text-align: center;
 
       .my-page-profile-content {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
         padding-bottom: 27px;
         width: 100%;
         background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+        border-bottom-left-radius: 25px;
+        border-bottom-right-radius: 25px;
         gap: 9px;
       }
 
+      .icon-change-background {
+        position: absolute;
+        bottom: 9px;
+        right: 10px;
+      }
+
+      .change-background {
+        display: none;
+      }
+
       .my-page-profile-icon {
+        position: relative;
         width: 74px;
         height: 74px;
         border: 1px solid #fff;
         border-radius: 50px;
 
-        img {
+        .my-page-profile-image {
           width: 100%;
           height: 100%;
           object-fit: cover;
           border-radius: 50px;
         }
+
+        .my-page-edit-profile {
+          position: absolute;
+          bottom: -5px;
+          right: -5px;
+          width: 30px;
+          height: 30px;
+          background-color: #545454;
+          border-radius: 999px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          img {
+            width: 22px;
+            height: 22px;
+          }
+        }
       }
 
       .my-page-profile-name {
         display: flex;
+        justify-content: center;
         align-items: center;
 
         .my-page-nickname {
+          text-align: center;
+          background: none; /* 배경 제거 */
           font-size: 20px;
           font-weight: 600;
+          border: none; /* 테두리 제거 */
+          width: 150px;
         }
 
         img:first-of-type {
@@ -159,8 +207,9 @@
 
   .my-page-info-container {
     display: flex;
+    width: 100%;
     justify-content: space-between;
-    padding: 17px 62px;
+    padding: 17px 40px;
     margin-top: 12px;
     background-color: #292929;
     border-radius: 25px;
@@ -168,6 +217,7 @@
     .my-page-info {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
 
       &-number {
@@ -179,6 +229,39 @@
         font-weight: 500;
         color: #a1a1a1;
       }
+    }
+
+    .flex-1 {
+      flex: 1;
+    }
+
+    .my-page-profile-follow-button {
+      padding: 7px 16px;
+      border: 1px solid #7bf7ff;
+      border-radius: 10px;
+      color: #7bf7ff;
+      background-color: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      line-height: 1;
+      user-select: none;
+      transition: 0.1s ease-in-out;
+
+      span {
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 15.51px;
+      }
+
+      &.isFollowing {
+        background-color: #7bf7ff;
+        color: #000;
+      }
+    }
+    .my-page-profile-follow-button:active {
+      background-color: #7bf7ff;
+      color: #000;
     }
   }
 
@@ -204,51 +287,42 @@
     }
 
     &-content {
+      width: 100%;
+      background: none;
       font-size: 14px;
+      border: 0;
+      resize: none;
+
+      &.readonly {
+        outline: none;
+        border: none;
+      }
     }
   }
 
   .my-page-artworks {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-auto-flow: column; /* 가로로 요소를 나열 */
+    grid-template-rows: 1fr; /* 한 줄로 고정 */
+    grid-auto-columns: minmax(31%, 1fr); /* 각 항목의 너비 설정 */
+    gap: 10px;
     margin-top: 12px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scroll-snap-type: x mandatory; /* 부드러운 스크롤 경험을 위해 snap 사용 */
 
-    .my-page-artwork {
-      width: 113px;
-      border-radius: 15px;
-
-      &-top-image {
-        height: 145px;
-
-        img {
-          width: 100%;
-          height: 100%;
-          border-top-left-radius: 15px;
-          border-top-right-radius: 15px;
-          object-fit: cover;
-        }
-      }
-
-      &-bottom-text {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        padding: 14px 0 17px 0;
-        border-bottom-left-radius: 15px;
-        border-bottom-right-radius: 15px;
-        background-color: #292929;
-
-        span {
-          font-size: 14px;
-        }
-      }
-    }
     .artwork-add {
+      border-radius: 15px;
+      aspect-ratio: 1/1.7;
       background-color: #292929;
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 40px;
+    }
+
+    .placeholder {
+      visibility: hidden; /* 빈 셀은 보이지 않도록 처리 */
     }
   }
 
@@ -263,6 +337,14 @@
 
       img {
         width: 26px;
+      }
+
+      &.active {
+        filter: brightness(0) invert(100%);
+      }
+
+      &.inactive {
+        filter: brightness(60%);
       }
     }
   }

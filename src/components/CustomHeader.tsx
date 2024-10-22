@@ -1,9 +1,9 @@
+import { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import LeftArrowIcon from '@/assets/img/icon_left_arrow.svg?react';
-import { ReactNode } from 'react';
 
 type CustomHeaderProps = {
-  children?: ReactNode
+  children?: ReactNode;
   leftOnClick?: () => void;
 };
 
@@ -23,9 +23,9 @@ const Wrapper = styled.header`
 const CustomHeader = ({ children, leftOnClick }: CustomHeaderProps) => {
   return (
     <Wrapper>
-      {leftOnClick ? <LeftArrowIcon onClick={leftOnClick} /> : <div style={{width: 37}}/>}
+      {leftOnClick ? <LeftArrowIcon onClick={leftOnClick} /> : <div style={{ width: 37 }} />}
       {children && children}
-      <div style={{width: 37}}/>
+      <div style={{ width: 37 }} />
     </Wrapper>
   );
 };

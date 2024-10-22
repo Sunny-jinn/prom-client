@@ -44,7 +44,7 @@
 }
 
 .react-calendar__month-view__weekdays__weekday {
-  color: #A1A1A1;
+  color: #a1a1a1;
 }
 
 .react-calendar__month-view__weekdays__weekday abbr[title] {
@@ -53,7 +53,7 @@
   text-decoration: none;
 }
 
-.react-calendar__month-view__weekdays__weekday--weekend abbr[title="일요일"] {
+.react-calendar__month-view__weekdays__weekday--weekend abbr[title='일요일'] {
   color: $red-color;
 }
 
@@ -68,12 +68,10 @@
   color: $red-color;
 }
 
-
-
 .react-calendar__month-view__days__day--neighboringMonth,
 .react-calendar__decade-view__years__year--neighboringDecade,
 .react-calendar__century-view__decades__decade--neighboringCentury {
-  color: #A1A1A1;
+  color: #a1a1a1;
 }
 
 .react-calendar__year-view .react-calendar__tile,
@@ -89,7 +87,7 @@
   text-align: center;
   padding: 10px 0;
 
-  abbr{
+  abbr {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -110,7 +108,7 @@
   background-color: transparent;
 }
 
-.react-calendar__month-view__days__day{
+.react-calendar__month-view__days__day {
   display: flex;
   flex-direction: column;
   //justify-content: center;
@@ -119,7 +117,7 @@
   color: #ffffff;
 }
 
-.react-calendar__month-view__days__day--weekend{
+.react-calendar__month-view__days__day--weekend {
   color: $red-color;
 }
 
@@ -131,11 +129,11 @@
 .react-calendar__month-view__days__day--neighboringMonth,
 .react-calendar__decade-view__years__year--neighboringDecade,
 .react-calendar__century-view__decades__decade--neighboringCentury {
-  color: #A1A1A1;
+  color: #a1a1a1;
 }
 
 .react-calendar__tile--now {
-  abbr{
+  abbr {
     color: #000000;
     background-color: $main-color;
     border-radius: 50px;
@@ -157,10 +155,8 @@
     border: 1px solid $main-color;
     border-radius: 50px;
   }
-
 }
 
 .react-calendar--selectRange .react-calendar__tile--hover {
   background-color: transparent;
 }
-

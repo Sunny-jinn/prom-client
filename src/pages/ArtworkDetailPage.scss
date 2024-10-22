@@ -1,0 +1,54 @@
+#ArtworkDetailPage {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  padding: 0 16px 150px 16px;
+  color: #fff;
+
+  .artwork-detail-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 13px 0px 12px 0px;
+
+    .artwork-detail-user {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      line-height: 16.7px;
+
+      &-name {
+        color: #a1a1a1;
+      }
+    }
+
+    .artwork-detail-back-btn {
+      img {
+        filter: brightness(0) invert(100%);
+      }
+    }
+
+    .artwork-detail-ellipsis-btn {
+      display: flex;
+      align-items: center;
+      width: 25px;
+    }
+  }
+
+  .my-page-all-posts-content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 12px;
+    gap: 10px;
+  }
+
+  .tab-icon {
+    width: 25px;
+
+    &.active {
+      filter: brightness(0) invert(1);
+    }
+  }
+}

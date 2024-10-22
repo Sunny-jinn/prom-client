@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import "@/style/_fonts.scss";
+import '@/style/_fonts.scss';
 
 export const reset = css`
   * {
@@ -68,6 +68,10 @@ export const reset = css`
     box-sizing: border-box;
   }
 
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
   img,
   video {
     height: auto;
@@ -95,19 +99,28 @@ export const reset = css`
     width: 100%;
     height: 100%;
     background-color: #121212;
-    //background-color: #ffffff;
   }
   html {
     width: 100%;
-    height: 100dvh;
+    height: 100vh;
     //padding-top: env(safe-area-inset-top);
-    //overscroll-behavior: none;
+    overscroll-behavior: none;
 
     @media all and (display-mode: standalone) {
       height: 100vh;
       overscroll-behavior: none;
     }
   }
-  body { overflow-y: auto; }
-  input, span, select, textarea, button, a, label {-webkit-tap-highlight-color:rgba(0,0,0,0);}
+  body {
+    overflow-y: auto;
+  }
+  input,
+  span,
+  select,
+  textarea,
+  button,
+  a,
+  label {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
 `;

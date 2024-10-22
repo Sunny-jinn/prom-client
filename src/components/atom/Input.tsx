@@ -10,8 +10,8 @@ const Input = styled.input<InputHTMLAttributes<HTMLInputElement>>`
   border-radius: 17px;
   color: #fff;
   font-size: 15px;
-  &::placeholder{
-    color: #A6A6A6;
+  &::placeholder {
+    color: #a6a6a6;
   }
 `;
 
